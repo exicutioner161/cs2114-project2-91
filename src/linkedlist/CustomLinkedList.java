@@ -773,7 +773,10 @@ public class CustomLinkedList<T> {
             return false;
         }
         var other = (CustomLinkedList<?>) o;
-        return size == other.size() && Arrays.equals(this.toArray(), other.toArray());
+        if (size != other.size()) {
+            return false;
+        }
+        return Arrays.equals(this.toArray(), other.toArray());
     }
 
     /**
