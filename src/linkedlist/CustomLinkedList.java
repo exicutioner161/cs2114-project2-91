@@ -456,25 +456,6 @@ public class CustomLinkedList<T> {
     }
 
     /**
-     * Returns the list contents in bracketed, comma-separated form.
-     *
-     * @return a string representation of the list contents
-     */
-    @Override
-    public String toString() {
-        if (head == null) {
-            return "[]";
-        }
-        StringBuilder sb = new StringBuilder("[");
-        Node<T> node;
-        for (node = head; node.getNext() != head; node = node.getNext()) {
-            sb.append(node.getValue().toString()).append(", ");
-        }
-        sb.append(node.getValue().toString()).append("]");
-        return sb.toString();
-    }
-
-    /**
      * Inserts a value at the front of the list.
      *
      * @param x the value to insert
@@ -771,5 +752,24 @@ public class CustomLinkedList<T> {
             node = nextNode;
         }
         return modified;
+    }
+
+    /**
+     * Returns the list contents in bracketed, comma-separated form.
+     *
+     * @return a string representation of the list contents
+     */
+    @Override
+    public String toString() {
+        if (head == null) {
+            return "[]";
+        }
+        StringBuilder sb = new StringBuilder("[");
+        Node<T> node;
+        for (node = head; node.getNext() != head; node = node.getNext()) {
+            sb.append(node.getValue().toString()).append(", ");
+        }
+        sb.append(node.getValue().toString()).append("]");
+        return sb.toString();
     }
 }
