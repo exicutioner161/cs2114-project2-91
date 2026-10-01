@@ -754,6 +754,13 @@ public class CustomLinkedList<T> {
         return modified;
     }
 
+    /**
+     * Compares this list with another object for equal size and element order.
+     *
+     * @param o the object to compare with this list
+     * @return {@code true} if the objects contain equal values in the same order;
+     *         otherwise {@code false}
+     */
     @Override
     public boolean equals(Object o) {
         if (o == null) {
@@ -769,6 +776,11 @@ public class CustomLinkedList<T> {
         return size == other.size() && Arrays.equals(this.toArray(), other.toArray());
     }
 
+    /**
+     * Returns a hash code based on the values in this list and their order.
+     *
+     * @return the hash code for this list
+     */
     @Override
     public int hashCode() {
         return Arrays.hashCode(toArray());
