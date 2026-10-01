@@ -275,7 +275,6 @@ public class CustomLinkedList<T> {
      *                                   from {@code 0} through the list size
      */
     @SuppressWarnings("unchecked")
-
     public boolean addAll(int index, Collection<? extends T> c) {
         if (index < 0 || index > size) {
             throw new IndexOutOfBoundsException();
