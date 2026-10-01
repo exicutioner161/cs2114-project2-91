@@ -26,18 +26,6 @@ public class Node<T> {
     }
 
     /**
-     * Creates a node containing a value and a next-node link.
-     *
-     * @param value the value to store
-     * @param next  the next node in the list
-     */
-    public Node(T value, Node<T> next) {
-        this.value = value;
-        this.prev = null;
-        this.next = prev;
-    }
-
-    /**
      * Creates a node containing a value and links to adjacent nodes.
      *
      * @param value the value to store
