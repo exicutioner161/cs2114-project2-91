@@ -754,6 +754,26 @@ public class CustomLinkedList<T> {
         return modified;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == null) {
+            return false;
+        }
+        if (o == this) {
+            return true;
+        }
+        if (o.getClass() != this.getClass()) {
+            return false;
+        }
+        var other = (CustomLinkedList<?>) o;
+        return size == other.size() && Arrays.equals(this.toArray(), other.toArray());
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(toArray());
+    }
+
     /**
      * Returns the list contents in bracketed, comma-separated form.
      *
