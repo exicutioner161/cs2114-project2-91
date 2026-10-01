@@ -45,15 +45,11 @@ public class Node<T> {
         return next;
     }
 
-    public void setNext(Node<T> next) {
-        this.next = next;
+    public void setPrev(Node<T> prev) {
+        this.prev = prev;
     }
 
-    public void set(boolean setNext, Node<T> node) {
-        if (setNext) {
-            next = node;
-        } else {
-            prev = node;
-        }
+    public void setNext(Node<T> next) {
+        this.next = next;
     }
 }
