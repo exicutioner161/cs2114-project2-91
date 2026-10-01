@@ -1,5 +1,7 @@
 package linkedlist;
 
+import java.util.NoSuchElementException;
+
 public class CustomLinkedList<T> {
     private Node<T> head;
     private Node<T> tail;
@@ -45,8 +47,41 @@ public class CustomLinkedList<T> {
         size++;
     }
 
+    /**
+     * Returns the first value in the list.
+     *
+     * @return the first stored value
+     * @throws NoSuchElementException if the list is empty
+     */
+    public T getFirst() {
+        validateIfListIsEmpty();
+        return head.getValue();
+    }
+
+    /**
+     * Returns the last value in the list.
+     *
+     * @return the last stored value
+     * @throws NoSuchElementException if the list is empty
+     */
+    public T getLast() {
+        validateIfListIsEmpty();
+        return tail.getValue();
+    }
+
     public boolean contains(Object o) {
         return indexOf(o) >= 0;
+    }
+
+    /**
+     * Throws an exception when the list has no elements.
+     *
+     * @throws NoSuchElementException if the list is empty
+     */
+    private void validateIfListIsEmpty() {
+        if (head == null) {
+            throw new NoSuchElementException();
+        }
     }
 
     /**
@@ -58,6 +93,19 @@ public class CustomLinkedList<T> {
     private void validateIfArgumentIsNull(T x) {
         if (x == null) {
             throw new IllegalArgumentException();
+        }
+    }
+
+    /**
+     * Throws an exception when an index does not identify an existing element.
+     *
+     * @param index the index to validate
+     * @throws IndexOutOfBoundsException if {@code index} is outside the current
+     *                                   element range
+     */
+    private void validateIfIndexExists(int index) {
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
         }
     }
 
