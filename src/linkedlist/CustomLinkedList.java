@@ -415,7 +415,7 @@ public class CustomLinkedList<T> {
                 return true;
             }
             node = node.getNext();
-        } while (node != head);
+        } while (node != null);
 
         return false;
     }
