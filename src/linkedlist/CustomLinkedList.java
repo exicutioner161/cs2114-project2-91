@@ -455,175 +455,6 @@ public class CustomLinkedList<T> {
     }
 
     /**
-     * Inserts a value at the front of the list.
-     *
-     * @param x the value to insert
-     * @return {@code true} after the value is inserted
-     * @throws IllegalArgumentException if {@code x} is {@code null}
-     */
-    public boolean offerFirst(T x) {
-        addFirst(x);
-        return true;
-    }
-
-    /**
-     * Appends a value to the end of the list.
-     *
-     * @param x the value to append
-     * @return {@code true} after the value is inserted
-     * @throws IllegalArgumentException if {@code x} is {@code null}
-     */
-    public boolean offerLast(T x) {
-        return add(x);
-    }
-
-    /**
-     * Removes and returns the first value, or returns {@code null} when the list
-     * is empty.
-     *
-     * @return the removed first value, or {@code null} if the list is empty
-     */
-    public T pollFirst() {
-        return head == null ? null : removeFirst();
-    }
-
-    /**
-     * Removes and returns the last value, or returns {@code null} when the list
-     * is empty.
-     *
-     * @return the removed last value, or {@code null} if the list is empty
-     */
-    public T pollLast() {
-        return tail == null ? null : removeLast();
-    }
-
-    /**
-     * Returns the first value without removing it, or {@code null} when the list
-     * is empty.
-     *
-     * @return the first value, or {@code null} if the list is empty
-     */
-    public T peekFirst() {
-        return head == null ? null : getFirst();
-    }
-
-    /**
-     * Returns the last value without removing it, or {@code null} when the list
-     * is empty.
-     *
-     * @return the last value, or {@code null} if the list is empty
-     */
-    public T peekLast() {
-        return tail == null ? null : getLast();
-    }
-
-    /**
-     * Removes the first occurrence of a matching value.
-     *
-     * @param x the value to remove
-     * @return {@code true} if a matching value was removed; otherwise
-     *         {@code false}
-     */
-    public boolean removeFirstOccurrence(T x) {
-        return remove(x);
-    }
-
-    /**
-     * Removes the last occurrence of a matching value.
-     *
-     * @param x the value to remove
-     * @return {@code true} if a matching value was removed; otherwise
-     *         {@code false}
-     */
-    public boolean removeLastOccurrence(T x) {
-        if (tail == null) {
-            return false;
-        }
-
-        Node<T> node = tail;
-        do {
-            if (node.getValue().equals(x)) {
-                unlinkNode(node);
-                return true;
-            }
-            node = node.getPrev();
-        } while (node != tail);
-
-        return false;
-    }
-
-    /**
-     * Appends a value to the end of the list.
-     *
-     * @param x the value to append
-     * @return {@code true} after the value is inserted
-     * @throws IllegalArgumentException if {@code x} is {@code null}
-     */
-    public boolean offer(T x) {
-        return add(x);
-    }
-
-    /**
-     * Removes and returns the first value in the list.
-     *
-     * @return the removed first value
-     * @throws NoSuchElementException if the list is empty
-     */
-    public T remove() {
-        return removeFirst();
-    }
-
-    /**
-     * Removes and returns the first value, or returns {@code null} when the list
-     * is empty.
-     *
-     * @return the removed first value, or {@code null} if the list is empty
-     */
-    public T poll() {
-        return head == null ? null : removeFirst();
-    }
-
-    /**
-     * Returns the first value without removing it.
-     *
-     * @return the first value
-     * @throws NoSuchElementException if the list is empty
-     */
-    public T element() {
-        return getFirst();
-    }
-
-    /**
-     * Returns the first value without removing it, or {@code null} when the list
-     * is empty.
-     *
-     * @return the first value, or {@code null} if the list is empty
-     */
-    public T peek() {
-        return head == null ? null : getFirst();
-    }
-
-    /**
-     * Pushes a value onto the front of the list for stack-style use.
-     *
-     * @param x the value to push
-     * @throws IllegalArgumentException if {@code x} is {@code null}
-     */
-    public void push(T x) {
-        addFirst(x);
-    }
-
-    /**
-     * Pops and returns the first value in the list.
-     *
-     * @return the removed first value
-     * @throws NoSuchElementException if the list is empty
-     */
-    public T pop() {
-        return removeFirst();
-    }
-
-    /**
      * Removes the first occurrence of a matching value.
      *
      * @param o the object to remove
@@ -644,113 +475,6 @@ public class CustomLinkedList<T> {
         } while (node != head);
 
         return false;
-    }
-
-    /**
-     * Returns the list contents as an array.
-     *
-     * @return an array containing the list values in order
-     */
-    public Object[] toArray() {
-        Object[] arr = new Object[size];
-        if (head == null) {
-            return arr;
-        }
-
-        int index = 0;
-        Node<T> node = head;
-        do {
-            arr[index++] = node.getValue();
-            node = node.getNext();
-        } while (node != head);
-
-        return arr;
-    }
-
-    /**
-     * Returns the list contents in an array of the requested type.
-     *
-     * @param a   the array into which values should be stored
-     * @param <E> the array element type
-     * @return an array containing the list values in order
-     */
-    @SuppressWarnings("unchecked")
-
-    public <E> E[] toArray(E[] a) {
-        Object[] arr = toArray();
-        if (a.length < size) {
-            return (E[]) Arrays.copyOf(arr, size, a.getClass());
-        }
-        System.arraycopy(arr, 0, a, 0, size);
-        if (a.length > size()) {
-            a[size] = null;
-        }
-        return a;
-    }
-
-    /**
-     * Returns whether the list contains every value in a collection.
-     *
-     * @param c the collection of values to find
-     * @return {@code true} if every value is present; otherwise {@code false}
-     */
-    public boolean containsAll(Collection<?> c) {
-        for (Object o : c) {
-            if (!contains(o)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Removes every value that is also contained in a collection.
-     *
-     * @param c the collection of values to remove
-     * @return {@code true} if the list changed; otherwise {@code false}
-     */
-    public boolean removeAll(Collection<?> c) {
-        if (head == null || c.isEmpty()) {
-            return false;
-        }
-
-        boolean modified = false;
-        int originalSize = size;
-        Node<T> node = head;
-        for (int i = 0; i < originalSize && size > 0; i++) {
-            Node<T> nextNode = node.getNext();
-            if (c.contains(node.getValue())) {
-                unlinkNode(node);
-                modified = true;
-            }
-            node = nextNode;
-        }
-        return modified;
-    }
-
-    /**
-     * Removes every value that is not contained in a collection.
-     *
-     * @param c the collection of values to retain
-     * @return {@code true} if the list changed; otherwise {@code false}
-     */
-    public boolean retainAll(Collection<?> c) {
-        if (head == null) {
-            return false;
-        }
-
-        boolean modified = false;
-        int originalSize = size;
-        Node<T> node = head;
-        for (int i = 0; i < originalSize && size > 0; i++) {
-            Node<T> nextNode = node.getNext();
-            if (!c.contains(node.getValue())) {
-                unlinkNode(node);
-                modified = true;
-            }
-            node = nextNode;
-        }
-        return modified;
     }
 
     /**
@@ -786,6 +510,27 @@ public class CustomLinkedList<T> {
     @Override
     public int hashCode() {
         return Arrays.hashCode(toArray());
+    }
+
+    /**
+     * Returns the list contents as an array.
+     *
+     * @return an array containing the list values in order
+     */
+    public Object[] toArray() {
+        Object[] arr = new Object[size];
+        if (head == null) {
+            return arr;
+        }
+
+        int index = 0;
+        Node<T> node = head;
+        do {
+            arr[index++] = node.getValue();
+            node = node.getNext();
+        } while (node != head);
+
+        return arr;
     }
 
     /**
