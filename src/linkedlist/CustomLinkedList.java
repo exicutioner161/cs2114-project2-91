@@ -471,7 +471,7 @@ public class CustomLinkedList<T> {
         do {
             arr[index++] = node.getValue();
             node = node.getNext();
-        } while (node != head);
+        } while (node != null);
 
         return arr;
     }
