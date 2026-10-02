@@ -359,7 +359,7 @@ public class CustomLinkedList<T> {
             }
             node = node.getNext();
             index++;
-        } while (node != head);
+        } while (node != null);
 
         return -1;
     }
