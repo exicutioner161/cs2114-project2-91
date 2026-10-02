@@ -1,7 +1,6 @@
 package linkedlist;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.NoSuchElementException;
 
 public class CustomLinkedList<T> {
@@ -16,20 +15,6 @@ public class CustomLinkedList<T> {
         head = null;
         tail = null;
         size = 0;
-    }
-
-    /**
-     * Creates a linked list containing the values from a collection in iteration
-     * order.
-     *
-     * @param c the collection whose values should be copied into the list
-     */
-    @SuppressWarnings("OverridableMethodCallInConstructor")
-    public CustomLinkedList(Collection<? extends T> c) {
-        head = null;
-        tail = null;
-        size = 0;
-        addAll(c);
     }
 
     /**
@@ -253,48 +238,6 @@ public class CustomLinkedList<T> {
     public T remove(int index) {
         validateIfIndexExists(index);
         return unlinkNode(getNode(index));
-    }
-
-    /**
-     * Appends all values from a collection to the list.
-     *
-     * @param c the collection whose values should be appended
-     * @return {@code true} if the list changed; otherwise {@code false}
-     */
-    public boolean addAll(Collection<? extends T> c) {
-        return addAll(size, c);
-    }
-
-    /**
-     * Inserts all values from a collection at a specified index.
-     *
-     * @param index the insertion index
-     * @param c     the collection whose values should be inserted
-     * @return {@code true} if the list changed; otherwise {@code false}
-     * @throws IndexOutOfBoundsException if {@code index} is outside the range
-     *                                   from {@code 0} through the list size
-     */
-    @SuppressWarnings("unchecked")
-    public boolean addAll(int index, Collection<? extends T> c) {
-        if (index < 0 || index > size) {
-            throw new IndexOutOfBoundsException();
-        }
-        Object[] arr = c.toArray();
-        if (arr.length == 0) {
-            return false;
-        }
-        if (index == size) {
-            for (Object obj : arr) {
-                addLast((T) obj);
-            }
-        } else {
-            int counter = index;
-            for (Object obj : arr) {
-                add(counter, (T) obj);
-                counter++;
-            }
-        }
-        return true;
     }
 
     /**
