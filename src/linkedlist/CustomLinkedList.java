@@ -383,7 +383,7 @@ public class CustomLinkedList<T> {
             }
             node = node.getPrev();
             index--;
-        } while (node != tail);
+        } while (node != null);
 
         return -1;
     }
