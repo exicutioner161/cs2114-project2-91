@@ -46,4 +46,12 @@ public class PlayerInventory {
         inventory[4] = name;
         return true;
     }
+
+    public boolean removeHelmet() {
+        if (inventory[0] == null) {
+            return false;
+        }
+        inventory[0] = null;
+        return true;
+    }
 }
