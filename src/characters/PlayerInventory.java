@@ -54,4 +54,13 @@ public class PlayerInventory {
         inventory[0] = null;
         return true;
     }
+
+    public boolean removeChestplate() {
+        if (inventory[1] == null) {
+            return false;
+        }
+        inventory[1] = null;
+        return true;
+    }
+
 }
