@@ -70,4 +70,12 @@ public class PlayerInventory {
         inventory[2] = null;
         return true;
     }
+
+    public boolean removeBoots() {
+        if (inventory[3] == null) {
+            return false;
+        }
+        inventory[3] = null;
+        return true;
+    }
 }
