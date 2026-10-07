@@ -78,4 +78,12 @@ public class PlayerInventory {
         inventory[3] = null;
         return true;
     }
+
+    public boolean removeWeapon() {
+        if (inventory[4] == null) {
+            return false;
+        }
+        inventory[4] = null;
+        return true;
+    }
 }
