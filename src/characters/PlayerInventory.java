@@ -63,4 +63,11 @@ public class PlayerInventory {
         return true;
     }
 
+    public boolean removeLeggings() {
+        if (inventory[2] == null) {
+            return false;
+        }
+        inventory[2] = null;
+        return true;
+    }
 }
