@@ -48,42 +48,30 @@ public class PlayerInventory {
     }
 
     public boolean removeHelmet() {
-        if (inventory[0] == null) {
-            return false;
-        }
-        inventory[0] = null;
-        return true;
+        return removeItem(0);
     }
 
     public boolean removeChestplate() {
-        if (inventory[1] == null) {
-            return false;
-        }
-        inventory[1] = null;
-        return true;
+        return removeItem(1);
     }
 
     public boolean removeLeggings() {
-        if (inventory[2] == null) {
-            return false;
-        }
-        inventory[2] = null;
-        return true;
+        return removeItem(2);
     }
 
     public boolean removeBoots() {
-        if (inventory[3] == null) {
-            return false;
-        }
-        inventory[3] = null;
-        return true;
+        return removeItem(3);
     }
 
     public boolean removeWeapon() {
-        if (inventory[4] == null) {
+        return removeItem(4);
+    }
+
+    private boolean removeItem(int index) {
+        if (inventory[index] == null) {
             return false;
         }
-        inventory[4] = null;
+        inventory[index] = null;
         return true;
     }
 }
