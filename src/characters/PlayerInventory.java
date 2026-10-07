@@ -62,4 +62,13 @@ public class PlayerInventory {
         inventory[index] = null;
         return true;
     }
+
+    @Override
+    public String toString() {
+        return "Helmet: " + inventory[0]
+                + ", Chestplate: " + inventory[1]
+                + ", Leggings: " + inventory[2]
+                + ", Boots: " + inventory[3]
+                + ", Weapon: " + inventory[4];
+    }
 }
