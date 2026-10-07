@@ -8,42 +8,30 @@ public class PlayerInventory {
     }
 
     public boolean addHelmet(String name) {
-        if (name == null) {
-            return false;
-        }
-        inventory[0] = name;
-        return true;
+        return addItem(name, 0);
     }
 
     public boolean addChestplate(String name) {
-        if (name == null) {
-            return false;
-        }
-        inventory[1] = name;
-        return true;
+        return addItem(name, 1);
     }
 
     public boolean addLeggings(String name) {
-        if (name == null) {
-            return false;
-        }
-        inventory[2] = name;
-        return true;
+        return addItem(name, 2);
     }
 
     public boolean addBoots(String name) {
-        if (name == null) {
-            return false;
-        }
-        inventory[3] = name;
-        return true;
+        return addItem(name, 3);
     }
 
     public boolean addWeapon(String name) {
+        return addItem(name, 4);
+    }
+
+    private boolean addItem(String name, int index) {
         if (name == null) {
             return false;
         }
-        inventory[4] = name;
+        inventory[index] = name;
         return true;
     }
 
