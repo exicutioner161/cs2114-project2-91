@@ -483,7 +483,7 @@ public class CustomLinkedList<T> {
      */
     @Override
     public String toString() {
-        if (head == null) {
+        if (head == null || size == 0) {
             return "[]";
         }
         StringBuilder sb = new StringBuilder("[");
