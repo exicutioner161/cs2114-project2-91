@@ -5,13 +5,15 @@ import java.util.Random;
 public class GameCharacter {
     private static final double LEVEL_MULTIPLIER = 1.2;
     private static final double BASE_STAT_CEILING = 15.0;
+    private final String name;
     private final int level;
     private final double statCeiling;
     private final double aggro;
     private final double control;
     private final double midrange;
 
-    public GameCharacter(int level) {
+    public GameCharacter(String name, int level) {
+        this.name = name;
         this.level = level;
         this.statCeiling = BASE_STAT_CEILING * Math.pow(LEVEL_MULTIPLIER, level);
         Random rand = new Random();
@@ -37,5 +39,9 @@ public class GameCharacter {
 
     public int getLevel() {
         return level;
+    }
+
+    public String getName() {
+        return name;
     }
 }
