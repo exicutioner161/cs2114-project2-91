@@ -15,9 +15,9 @@ public class GameCharacter {
         this.level = level;
         this.statCeiling = BASE_STAT_CEILING * Math.pow(LEVEL_MULTIPLIER, level);
         Random rand = new Random();
-        double randomNum1 = rand.nextDouble(statCeiling);
-        double randomNum2 = rand.nextDouble(statCeiling);
-        double randomNum3 = rand.nextDouble(statCeiling);
+        double randomNum1 = rand.nextDouble();
+        double randomNum2 = rand.nextDouble();
+        double randomNum3 = rand.nextDouble();
         double total = randomNum1 + randomNum2 + randomNum3;
         aggro = randomNum1 * statCeiling / total;
         control = randomNum2 * statCeiling / total;
