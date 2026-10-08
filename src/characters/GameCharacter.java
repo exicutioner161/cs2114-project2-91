@@ -13,17 +13,16 @@ public class GameCharacter {
 
     public GameCharacter(int level) {
         this.level = level;
-        this.statCeiling = roundToTwoDecimals(BASE_STAT_CEILING * Math.pow(LEVEL_MULTIPLIER, level));
+        this.statCeiling = BASE_STAT_CEILING * Math.pow(LEVEL_MULTIPLIER, level);
         Random rand = new Random();
-        aggro = roundToTwoDecimals(rand.nextDouble(statCeiling));
-        control = roundToTwoDecimals(rand.nextDouble(statCeiling - aggro));
-        midrange = roundToTwoDecimals(statCeiling - aggro - control);
+        double randomNum1 = rand.nextDouble(statCeiling);
+        double randomNum2 = rand.nextDouble(statCeiling);
+        double randomNum3 = rand.nextDouble(statCeiling);
+        double total = randomNum1 + randomNum2 + randomNum3;
+        aggro = randomNum1 * statCeiling / total;
+        control = randomNum2 * statCeiling / total;
+        midrange = randomNum3 * statCeiling / total;
     }
-
-    private double roundToTwoDecimals(double x) {
-        return Math.round(x * 100.0) / 100.0;
-    }
-
     public double getAggro() {
         return aggro;
     }
