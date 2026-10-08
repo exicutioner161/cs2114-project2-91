@@ -6,8 +6,9 @@ public class Item {
     private double control;
     private double midrange;
     private int price;
+    private int type;
 
-    public Item(String name, double aggro, double control, double midrange, int price) {
+    public Item(String name, double aggro, double control, double midrange, int price, int type) {
         this.name = name;
         this.aggro = aggro;
         this.control = control;
@@ -53,5 +54,13 @@ public class Item {
 
     public void setPrice(int price) {
         this.price = price;
+    }
+
+    public int getType(){
+        return type;
+    }
+    
+    public void setType(int type){
+        this.type=type;
     }
 }
