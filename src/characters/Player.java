@@ -8,7 +8,7 @@ public class Player extends GameCharacter {
     // Own gold, inventory, and equipment-based stats. subclass of GameCharacter
 
     public Player(int level) {
-        super(1);
+        super("test", 1);
         Item[] inventory = new Item[5];
         gold = 0;
         level = 0;
