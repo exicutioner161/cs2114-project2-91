@@ -14,6 +14,7 @@ public class Item {
         this.control = control;
         this.midrange = midrange;
         this.price = price;
+        this.type = type;
     }
 
     public String getName() {
