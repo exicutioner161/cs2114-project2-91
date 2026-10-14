@@ -35,7 +35,7 @@ public class Shop {
                 return false;
             }
         }
-        Item[] selection = new Item[catalog + 1];
+        Item[] selection = new Item[catalog.length + 1];
         for (int i = 0; i < catalog.length; i++){
             selection[i] = catalog[i];
         }
@@ -57,7 +57,7 @@ public class Shop {
                 return false;
             }
             Item[] selection = new Item[catalog.length-1];
-            int i = 0;
+            i = 0;
             for (int j = 0; j < catalog.length; j++){
                 if (j != index){
                     selection[i] = catalog[j];
@@ -66,6 +66,7 @@ public class Shop {
             }
             catalog = selection;
         }
+        return true;
     }
     public Item findItem(String name){
         if (name == null){
