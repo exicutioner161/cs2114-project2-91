@@ -7,9 +7,14 @@ automatic match.
 
 ## Compile and run
 
-In Command Prompt or PowerShell, first navigate to the repository root:
+In **Command Prompt**, first navigate to the repository root:
 ```
 cd /d "C:\Users\brian\Desktop\stuff\code\cs2114-project2-91"
+```
+
+In **PowerShell**, use:
+```powershell
+Set-Location "C:\Users\brian\Desktop\stuff\code\cs2114-project2-91"
 ```
 
 Compile and run the game in Command Prompt:
@@ -34,6 +39,12 @@ del tests.txt
 
 java -jar lib\junit-platform-console-standalone-1.10.2.jar execute --class-path bin --scan-class-path
 ```
+
+The `bin` directory contains generated `.class` files. Recompile all source
+files after source changes so those artifacts cannot become stale. Save/load
+uses a private UTF-8 Base64 encoding for names and item names, and rejects
+malformed records, duplicate equipment slots, and out-of-range slots without
+replacing the current player state.
 
 Compile and run the game in Powershell:
 ```powershell
