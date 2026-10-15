@@ -7,18 +7,13 @@ automatic match.
 
 ## Compile and run
 
-In **Command Prompt**, first navigate to the repository root:
-```
-cd /d "C:\Users\brian\Desktop\stuff\code\cs2114-project2-91"
-```
-
-In **PowerShell**, use:
-```powershell
-Set-Location "C:\Users\brian\Desktop\stuff\code\cs2114-project2-91"
+In **Command Prompt or Powershell**, first navigate to the repository root:
+```cmd
+cd "C:\InsertFolderNameHere\KeepDoingThis\UntilYouGet\ToTheFolder\ThatStoresTheProject"
 ```
 
 Compile and run the game in Command Prompt:
-```
+```cmd
 if not exist bin mkdir bin
 dir /s /b src\*.java > sources.txt
 javac -d bin @sources.txt
@@ -27,7 +22,7 @@ java -cp bin main.GameDriver
 ```
 
 Compile and run the JUnit tests in Command Prompt:
-```
+```cmd
 if not exist bin mkdir bin
 dir /s /b src\*.java > sources.txt
 javac -d bin @sources.txt
