@@ -112,18 +112,18 @@ application classes, while future features will require additional tests.
 
 ## Next Steps
 
-1. **Team — tournament progression:** implement the eight-player
+1. **Team- tournament progression:** implement the eight-player
    double-elimination bracket and queue replacement rules.
-2. **Brian — game state:** add total wins/losses, round rewards, level
+2. **Team- game state:** add total wins/losses, round rewards, level
    progression, and the five-win/ten-loss end condition.
-3. **Team — shop:** add unlock levels, sell/equip commands, and enforce the
+3. **Team- shop:** add unlock levels, sell/equip commands, and enforce the
    final catalog rules through the same linked-list API.
-4. **Team — driver:** expand the current validated menu with tournament
+4. **Team- driver:** expand the current validated menu with tournament
    progression and complete state displays.
-5. **Team — stretch goals:** attempt adaptive opponents; defer full save/load,
+5. **Team- stretch goals:** attempt adaptive opponents; defer full save/load,
    random stores, background tournaments, and same-round loss queues unless
    the MVP is stable.
-6. **Team — tests:** add bracket order tests, queue-after-win/loss tests,
+6. **Team- tests:** add bracket order tests, queue-after-win/loss tests,
    rewards and run-ending tests, level unlock tests, and interactive bad-input
    tests for every new public method.
 
