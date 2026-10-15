@@ -32,8 +32,9 @@ java -jar lib\junit-platform-console-standalone-1.10.2.jar execute --class-path 
   `CustomLinkedList<T>` implementation.
 - `TournamentRound` calculates a bounded win probability from Aggro, Control,
   and Midrange counter relationships, then resolves a match.
-- `GameDriver` demonstrates buying a sword, adding opponents, and running one
-  match.
+- `GameDriver` provides a retrying menu for status, buying a sword, fighting,
+  and exiting.
+- `GameSave` writes a small save marker to a caller-selected path.
 
 Invalid actions return `false` or `null` without changing state. Invalid
 constructor values throw `IllegalArgumentException`, so bad input is rejected
@@ -47,9 +48,9 @@ The specification described a complete eight-character double-elimination
 tournament, queues that change after wins and losses, level-based shop unlocks,
 and a full interactive menu. This prototype intentionally implements a smaller
 vertical slice: a player can buy one catalog item, opponents can be queued, and
-one automatic fight can run. The application methods are direct Java APIs
-instead of interactive input methods because that makes the first slice easy to
-test and gives the eventual driver a stable foundation.
+one automatic fight can run. The driver now wraps this slice in a small menu
+and retries invalid input. Application methods remain direct Java APIs so the
+state transitions can be tested independently from console I/O.
 
 The specification left the probability formula open. The prototype compares
 each fighter's Aggro against the opponent's Control, Control against Midrange,
@@ -78,9 +79,9 @@ adaptive opponents are also still open.
 
 The prototype does not yet have the eight-player bracket, grand-final rules,
 win/loss run termination, round gold rewards, randomized opponent pools,
-level-unlocked gear, an interactive menu, save/load, or background
-tournaments. The current tests cover the implemented APIs, not those future
-features.
+level-unlocked gear, save/load of complete character state, or background
+tournaments. The current tests cover every public method in the implemented
+application classes, while future features will require additional tests.
 
 ## Next Steps
 
@@ -90,9 +91,9 @@ features.
    progression, and the five-win/ten-loss end condition.
 3. **Team — shop:** add unlock levels, sell/equip commands, and enforce the
    final catalog rules through the same linked-list API.
-4. **Team — driver:** replace the demonstration with a loop that validates
-   blank, nonnumeric, negative, oversized, and nonexistent menu input.
-5. **Team — stretch goals:** attempt adaptive opponents; defer save/load,
+4. **Team — driver:** expand the current validated menu with tournament
+   progression and complete state displays.
+5. **Team — stretch goals:** attempt adaptive opponents; defer full save/load,
    random stores, background tournaments, and same-round loss queues unless
    the MVP is stable.
 6. **Team — tests:** add bracket order tests, queue-after-win/loss tests,
@@ -110,12 +111,17 @@ features.
 | `src/tournament/Tournament.java` | Brian | Wrote with GenAI assistance |
 | `src/tournament/TournamentRound.java` | Brian | Revised and tested with GenAI assistance |
 | `src/main/GameDriver.java` | Brian | Wrote and tested with GenAI assistance |
+| `src/gamesaves/GameSave.java` | Brian | Revised and tested with GenAI assistance |
 | `tests/ItemTest.java` | Brian | Revised and tested with GenAI assistance |
+| `tests/GameCharacterTest.java` | Brian | Wrote and tested with GenAI assistance |
+| `tests/GameDriverTest.java` | Brian | Wrote and tested with GenAI assistance |
+| `tests/GameSaveTest.java` | Brian | Wrote and tested with GenAI assistance |
 | `tests/PlayerTest.java` | Brian | Wrote and tested with GenAI assistance |
 | `tests/ShopTest.java` | Brian | Wrote and tested with GenAI assistance |
 | `tests/TournamentTest.java` | Brian | Wrote and tested with GenAI assistance |
 
 GenAI was used to help inspect the existing skeleton, propose a small
-testable architecture, identify compile blockers, draft edge-case tests, and
-review the README. All generated changes and tests were read, adapted, and
-run by the contributor.
+testable architecture, identify compile blockers, draft edge-case tests,
+review public-method coverage, and review the README. All generated changes
+and tests were read, adapted, and run by the contributor. The completed
+prototype test suite contains 18 passing tests.
