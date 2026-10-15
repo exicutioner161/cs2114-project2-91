@@ -86,9 +86,9 @@ at the validation boundary rather than crashing later in the game.
 The specification described a complete eight-character double-elimination
 tournament, queues that change after wins and losses, level-based shop unlocks,
 and a full interactive menu. This prototype intentionally implements a smaller
-vertical slice: a player can buy one catalog item, opponents can be queued, and
+slice: a player can buy one catalog item, opponents can be queued, and
 one automatic fight can run. The driver now wraps this slice in a small menu
-and retries invalid input. Application methods remain direct Java APIs so the
+and retries invalid input. Application methods remain direct APIs so the
 state transitions can be tested independently from console I/O.
 
 The specification left the probability formula open. The prototype compares
