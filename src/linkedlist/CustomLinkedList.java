@@ -487,11 +487,15 @@ public class CustomLinkedList<T> {
             return "[]";
         }
         StringBuilder sb = new StringBuilder("[");
-        Node<T> node;
-        for (node = head; node.getNext() != head; node = node.getNext()) {
-            sb.append(node.getValue().toString()).append(", ");
+        Node<T> node = head;
+        for (int index = 0; index < size; index++) {
+            if (index > 0) {
+                sb.append(", ");
+            }
+            sb.append(node.getValue());
+            node = node.getNext();
         }
-        sb.append(node.getValue().toString()).append("]");
+        sb.append("]");
         return sb.toString();
     }
 }

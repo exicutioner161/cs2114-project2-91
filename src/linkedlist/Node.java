@@ -99,6 +99,6 @@ public class Node<T> {
      */
     @Override
     public String toString() {
-        return value.toString();
+        return String.valueOf(value);
     }
 }

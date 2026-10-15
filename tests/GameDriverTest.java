@@ -46,4 +46,14 @@ class GameDriverTest {
         }
         assertTrue(bytes.toString(StandardCharsets.UTF_8).contains("Goodbye."));
     }
+
+    @Test
+    void reportsMissingSaveWithoutCrashing() {
+        String input = "6\n4\n";
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        GameDriver.run(new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8)),
+            new PrintStream(bytes));
+        assertTrue(bytes.toString(StandardCharsets.UTF_8)
+            .contains("Unable to load progress."));
+    }
 }
