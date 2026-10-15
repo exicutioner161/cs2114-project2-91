@@ -127,7 +127,7 @@ match the original estimates where applicable:
 | `Tournament.addFighter`, `removeNextFighter` | O(1) | Append/remove front |
 | `Tournament.runMatch` | O(1) plus fight calculation | One queued opponent |
 | `ShopProgression.getShop` | O(n) | `CustomLinkedList.get(index)` scans from an end |
-| `GameSave.save`, `load` | O(i) | i is the five-slot inventory/save text |
+| `GameSave.save`, `load` | O(n) | n is the five-slot inventory/save text |
 
 The original specification estimated catalog and queue scans as O(n), fixed
 equipment as O(1), and catalog formatting as O(n). The implementation matches
