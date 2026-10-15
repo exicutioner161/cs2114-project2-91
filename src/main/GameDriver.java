@@ -1,7 +1,5 @@
 package main;
 
-import java.io.InputStream;
-import java.io.PrintStream;
 import java.util.Scanner;
 
 import characters.GameCharacter;
@@ -11,69 +9,70 @@ import tournament.Tournament;
 
 public class GameDriver {
     public static void main(String[] args) {
-        run(System.in, System.out);
+        System.out.println("Welcome to the Game!\nPress any key to start.");
+        try (Scanner input = new Scanner(System.in)) {
+            run(input);
+        }
     }
 
-    public static void run(InputStream input, PrintStream output) {
-        if (input == null || output == null) {
-            throw new IllegalArgumentException("Input and output are required");
-        }
+    public static void run(Scanner input) {
         Player player = new Player("Player", 0, 100, new characters.Item[5]);
         Shop shop = new Shop();
         Tournament tournament = new Tournament();
         tournament.addFighter(new GameCharacter("Opponent A", 0));
         tournament.addFighter(new GameCharacter("Opponent B", 0));
-        Scanner scanner = new Scanner(input);
         boolean running = true;
-        while (running && scanner.hasNextLine()) {
-            output.println("\n1. View status");
-            output.println("2. Buy sword");
-            output.println("3. Fight");
-            output.println("4. Exit");
-            output.print("Choose an option: ");
-            String rawChoice = scanner.nextLine().trim();
-            Integer choice = parseChoice(rawChoice, output);
+        while (running && input.hasNextLine()) {
+            System.out.println("\n1. View status");
+            System.out.println("2. Buy sword");
+            System.out.println("3. Fight");
+            System.out.println("4. Exit");
+            System.out.print("Choose an option: ");
+            String rawChoice = input.nextLine().trim();
+            Integer choice = parseChoice(rawChoice);
             if (choice == null) {
                 continue;
             }
             switch (choice) {
-                case 1:
-                    output.println(player.catalogText());
-                    break;
-                case 2:
-                    output.println(shop.buy(player, "Bastard Sword")
-                        ? "Sword equipped."
-                        : "Unable to buy sword.");
-                    break;
-                case 3:
+                case 1 ->
+                    System.out.println(player.catalogText());
+                case 2 -> {
+                    System.out.println(shop.buy(player, "Bastard Sword")
+                            ? "Sword equipped."
+                            : "Unable to buy sword.");
+                }
+
+                case 3 -> {
                     GameCharacter winner = tournament.runMatch(player);
-                    output.println(winner == null ? "No opponent is waiting."
-                        : "Match winner: " + winner.getName());
-                    break;
-                case 4:
+                    System.out.println(winner == null ? "No opponent is waiting."
+                            : "Match winner: " + winner.getName());
+                }
+
+                case 4 -> {
                     running = false;
-                    output.println("Goodbye.");
-                    break;
-                default:
-                    output.println("Invalid option. Enter a number from 1 to 4.");
+                    System.out.println("Goodbye.");
+                }
+
+                default ->
+                    System.out.println("Invalid option. Enter a number from 1 to 4.");
             }
         }
     }
 
-    private static Integer parseChoice(String rawChoice, PrintStream output) {
+    private static Integer parseChoice(String rawChoice) {
         if (rawChoice.isEmpty()) {
-            output.println("Invalid option. Enter a number from 1 to 4.");
+            System.out.println("Invalid option. Enter a number from 1 to 4.");
             return null;
         }
         try {
             long parsed = Long.parseLong(rawChoice);
             if (parsed < Integer.MIN_VALUE || parsed > Integer.MAX_VALUE) {
-                output.println("Invalid option. Enter a number from 1 to 4.");
+                System.out.println("Invalid option. Enter a number from 1 to 4.");
                 return null;
             }
             return (int) parsed;
         } catch (NumberFormatException exception) {
-            output.println("Invalid option. Enter a number from 1 to 4.");
+            System.out.println("Invalid option. Enter a number from 1 to 4.");
             return null;
         }
     }
