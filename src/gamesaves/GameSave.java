@@ -3,6 +3,8 @@ package gamesaves;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 import characters.Item;
 import characters.Player;
@@ -27,14 +29,14 @@ public class GameSave {
             throw new IllegalArgumentException("Save values are invalid");
         }
         StringBuilder content = new StringBuilder();
-        content.append("name=").append(name).append('\n');
+        content.append("name=").append(encode(name)).append('\n');
         content.append("level=").append(player.getLevel()).append('\n');
         content.append("gold=").append(player.getGold()).append('\n');
         for (int slot = 0; slot < player.getInventory().length; slot++) {
             Item item = player.getItem(slot);
             if (item != null) {
                 content.append("item|").append(slot).append('|')
-                    .append(item.getName()).append('|').append(item.getAggro())
+                    .append(encode(item.getName())).append('|').append(item.getAggro())
                     .append('|').append(item.getControl()).append('|')
                     .append(item.getMidrange()).append('|').append(item.getPrice())
                     .append('\n');
@@ -49,13 +51,14 @@ public class GameSave {
             throw new IllegalArgumentException("Load values are invalid");
         }
         String[] lines = Files.readString(path).split("\\R");
-        if (lines.length < 3 || !("name=" + expectedName).equals(lines[0])) {
+        if (lines.length < 3 || !("name=" + encode(expectedName)).equals(lines[0])) {
             throw new IllegalArgumentException("Save name or format is invalid");
         }
         try {
             int level = Integer.parseInt(requiredValue(lines[1], "level"));
             int gold = Integer.parseInt(requiredValue(lines[2], "gold"));
             Item[] inventory = new Item[5];
+            boolean[] occupiedSlots = new boolean[inventory.length];
             for (int i = 3; i < lines.length; i++) {
                 if (lines[i].isBlank()) {
                     continue;
@@ -65,14 +68,26 @@ public class GameSave {
                     throw new IllegalArgumentException("Save item format is invalid");
                 }
                 int slot = Integer.parseInt(fields[1]);
-                inventory[slot] = new Item(fields[2], Double.parseDouble(fields[3]),
+                if (slot < 0 || slot >= inventory.length || occupiedSlots[slot]) {
+                    throw new IllegalArgumentException("Save slot is invalid");
+                }
+                occupiedSlots[slot] = true;
+                inventory[slot] = new Item(decode(fields[2]), Double.parseDouble(fields[3]),
                     Double.parseDouble(fields[4]), Double.parseDouble(fields[5]),
                     Integer.parseInt(fields[6]), slot);
             }
             return new Player(expectedName, level, gold, inventory);
-        } catch (NumberFormatException | ArrayIndexOutOfBoundsException exception) {
+        } catch (IllegalArgumentException exception) {
             throw new IllegalArgumentException("Save values are invalid", exception);
         }
+    }
+
+    private String encode(String value) {
+        return Base64.getEncoder().encodeToString(value.getBytes(StandardCharsets.UTF_8));
+    }
+
+    private String decode(String value) {
+        return new String(Base64.getDecoder().decode(value), StandardCharsets.UTF_8);
     }
 
     private String requiredValue(String line, String key) {
