@@ -7,24 +7,44 @@ public class GameCharacter {
     private static final double BASE_STAT_CEILING = 15.0;
     private final String name;
     private final int level;
-    private final double statCeiling;
     private final double aggro;
     private final double control;
     private final double midrange;
 
     public GameCharacter(String name, int level) {
+        if (name == null || name.isBlank() || level < 0) {
+            throw new IllegalArgumentException("Name and level are invalid");
+        }
         this.name = name;
         this.level = level;
-        this.statCeiling = BASE_STAT_CEILING * Math.pow(LEVEL_MULTIPLIER, level);
-        Random rand = new Random();
-        double randomNum1 = rand.nextDouble();
-        double randomNum2 = rand.nextDouble();
-        double randomNum3 = rand.nextDouble();
-        double total = randomNum1 + randomNum2 + randomNum3;
-        aggro = randomNum1 * statCeiling / total;
-        control = randomNum2 * statCeiling / total;
-        midrange = randomNum3 * statCeiling / total;
+        double ceiling = BASE_STAT_CEILING * Math.pow(LEVEL_MULTIPLIER, level);
+        Random random = new Random(name.hashCode() * 31L + level);
+        double first = random.nextDouble();
+        double second = random.nextDouble();
+        double third = random.nextDouble();
+        double total = first + second + third;
+        aggro = first * ceiling / total;
+        control = second * ceiling / total;
+        midrange = third * ceiling / total;
     }
+
+    public GameCharacter(String name, int level, double aggro, double control,
+        double midrange) {
+        if (name == null || name.isBlank() || level < 0
+            || !validStat(aggro) || !validStat(control) || !validStat(midrange)) {
+            throw new IllegalArgumentException("Character values are invalid");
+        }
+        this.name = name;
+        this.level = level;
+        this.aggro = aggro;
+        this.control = control;
+        this.midrange = midrange;
+    }
+
+    private static boolean validStat(double stat) {
+        return !Double.isNaN(stat) && !Double.isInfinite(stat) && stat >= 0;
+    }
+
     public double getAggro() {
         return aggro;
     }

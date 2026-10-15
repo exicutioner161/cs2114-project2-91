@@ -3,20 +3,19 @@ package gamesaves;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class GameSave {
-    public void save() {
-        Path path = Paths.get("filename.txt");
-        String content = "Hello, World!\nWelcome to Java file handling.";
+    private static final String CONTENT = "Calculated Combat save\n";
 
-        try {
-            // Creates the file and writes the text
-            Files.writeString(path, content);
-            System.out.println("File created successfully!");
-        } catch (IOException e) {
-            e.printStackTrace();
+    public boolean save(Path path) throws IOException {
+        if (path == null) {
+            throw new IllegalArgumentException("Path is required");
         }
+        Files.writeString(path, CONTENT);
+        return true;
     }
 
+    public boolean save() throws IOException {
+        return save(Path.of("calculated-combat-save.txt"));
+    }
 }
