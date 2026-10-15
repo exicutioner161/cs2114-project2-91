@@ -131,13 +131,13 @@ application classes, while future features will require additional tests.
 
 | File | Contributor | Work |
 | --- | --- | --- |
-| `src/characters/Item.java` | Brian | Revised and tested with GenAI assistance |
+| `src/characters/Item.java` | Brian, Ben, Leo | Revised and tested with GenAI assistance |
 | `src/characters/GameCharacter.java` | Brian, Leo | Revised and tested with GenAI assistance |
 | `src/characters/Player.java` | Brian, Leo | Revised and tested with GenAI assistance |
 | `src/shop/Shop.java` | Brian, Ben | Revised and tested with GenAI assistance |
-| `src/tournament/Tournament.java` | Brian | Wrote with GenAI assistance |
+| `src/tournament/Tournament.java` | Brian, David | Revised with GenAI assistance |
 | `src/tournament/TournamentRound.java` | Brian | Revised and tested with GenAI assistance |
-| `src/main/GameDriver.java` | Brian | Wrote and tested with GenAI assistance |
+| `src/main/GameDriver.java` | Brian, David, Ben | Revised and tested with GenAI assistance |
 | `src/gamesaves/GameSave.java` | David, Ben | Revised and tested with GenAI assistance |
 | `tests/ItemTest.java` | David, Brian, Ben | Revised and tested with GenAI assistance |
 | `tests/GameCharacterTest.java` | Leo, Brian | Wrote and tested with GenAI assistance |
