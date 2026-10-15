@@ -9,6 +9,7 @@ import tournament.Tournament;
 
 public class GameDriver {
     public static void main(String[] args) {
+        System.out.println("Welcome to the Game!\nPress any key to start.");
         try (Scanner input = new Scanner(System.in)) {
             run(input);
         }
