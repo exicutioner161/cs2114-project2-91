@@ -1,6 +1,6 @@
 # Calculated Combat Prototype
 
-This repository contains the first running slice of Calculated Combat, a
+This is a basic prototype of Calculated Combat, a
 text-based tournament fighting game. The prototype supports a player, a
 linked-list-backed shop, equipment purchases, a fighter queue, and an
 automatic match.
