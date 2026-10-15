@@ -44,4 +44,15 @@ class TournamentTest {
         assertTrue(round.getFighterOneWinProbability() <= 1);
         assertNotNull(round.getWinner());
     }
+
+    @Test
+    void removesNextFighterInQueueOrder() {
+        GameCharacter first = new GameCharacter("First", 0);
+        GameCharacter second = new GameCharacter("Second", 0);
+        Tournament tournament = new Tournament();
+        tournament.addFighter(first);
+        tournament.addFighter(second);
+        assertEquals(first, tournament.removeNextFighter());
+        assertEquals(second, tournament.removeNextFighter());
+    }
 }

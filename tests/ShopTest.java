@@ -32,4 +32,11 @@ class ShopTest {
         assertNull(shop.findItem(null));
         assertFalse(shop.buy(null, "missing"));
     }
+
+    @Test
+    void rejectsInvalidConstruction() {
+        assertEquals(6, new Shop().size());
+        org.junit.jupiter.api.Assertions.assertThrows(IllegalArgumentException.class,
+            () -> new Shop(null));
+    }
 }

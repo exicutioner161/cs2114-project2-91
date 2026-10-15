@@ -7,7 +7,7 @@ import characters.Item;
 
 class ItemTest {
     @Test
-    void storesValidValues() {
+    void gettersReturnValidValues() {
         Item item = new Item("Sword", 10, 20, 30, 100, 4);
         assertEquals("Sword", item.getName());
         assertEquals(10, item.getAggro());
@@ -18,7 +18,7 @@ class ItemTest {
     }
 
     @Test
-    void rejectsInvalidValues() {
+    void constructorRejectsBadInput() {
         assertThrows(IllegalArgumentException.class,
             () -> new Item("", 1, 1, 1, 10, 0));
         assertThrows(IllegalArgumentException.class,
