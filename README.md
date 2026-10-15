@@ -1,24 +1,19 @@
 # Calculated Combat Prototype
 
-This repository contains the first running slice of Calculated Combat, a
+This is a basic prototype of Calculated Combat, a
 text-based tournament fighting game. The prototype supports a player, a
 linked-list-backed shop, equipment purchases, a fighter queue, and an
 automatic match.
 
 ## Compile and run
 
-In **Command Prompt**, first navigate to the repository root:
-```
-cd /d "C:\Users\brian\Desktop\stuff\code\cs2114-project2-91"
-```
-
-In **PowerShell**, use:
-```powershell
-Set-Location "C:\Users\brian\Desktop\stuff\code\cs2114-project2-91"
+In **Command Prompt or Powershell**, first navigate to the repository root:
+```cmd
+cd "C:\InsertFolderNameHere\KeepDoingThis\UntilYouGet\ToTheFolder\ThatStoresTheProject"
 ```
 
 Compile and run the game in Command Prompt:
-```
+```cmd
 if not exist bin mkdir bin
 dir /s /b src\*.java > sources.txt
 javac -d bin @sources.txt
@@ -27,7 +22,7 @@ java -cp bin main.GameDriver
 ```
 
 Compile and run the JUnit tests in Command Prompt:
-```
+```cmd
 if not exist bin mkdir bin
 dir /s /b src\*.java > sources.txt
 javac -d bin @sources.txt
@@ -91,9 +86,9 @@ at the validation boundary rather than crashing later in the game.
 The specification described a complete eight-character double-elimination
 tournament, queues that change after wins and losses, level-based shop unlocks,
 and a full interactive menu. This prototype intentionally implements a smaller
-vertical slice: a player can buy one catalog item, opponents can be queued, and
+slice: a player can buy one catalog item, opponents can be queued, and
 one automatic fight can run. The driver now wraps this slice in a small menu
-and retries invalid input. Application methods remain direct Java APIs so the
+and retries invalid input. Application methods remain direct APIs so the
 state transitions can be tested independently from console I/O.
 
 The specification left the probability formula open. The prototype compares
