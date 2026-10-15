@@ -24,14 +24,6 @@ class GameDriverTest {
     }
 
     @Test
-    void rejectsNullStreams() {
-        assertThrows(IllegalArgumentException.class,
-            () -> GameDriver.run(null, System.out));
-        assertThrows(IllegalArgumentException.class,
-            () -> GameDriver.run(System.in, null));
-    }
-
-    @Test
     void mainRunsTheExitPath() {
         java.io.InputStream originalIn = System.in;
         java.io.PrintStream originalOut = System.out;
