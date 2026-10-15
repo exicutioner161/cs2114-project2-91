@@ -7,15 +7,42 @@ automatic match.
 
 ## Compile and run
 
-From the repository root on Windows:
+In Command Prompt or Powershell, run this to navigate to the folder containing the program:
+```
+cd "C:\InsertFolderNameHere\KeepDoingThis\UntilYouGet\ToTheFolder\ThatStoresTheProject"
+```
 
+Compile and run the game in Command Prompt:
+```
+if not exist bin mkdir bin
+dir /s /b src\*.java > sources.txt
+javac -d bin @sources.txt
+del sources.txt
+java -cp bin main.GameDriver
+```
+
+Compile and run the JUnit tests in Command Prompt:
+```
+if not exist bin mkdir bin
+dir /s /b src\*.java > sources.txt
+javac -d bin @sources.txt
+del sources.txt
+
+dir /s /b tests\*.java > tests.txt
+javac -cp "lib\junit-platform-console-standalone-1.10.2.jar;bin" -d bin @tests.txt
+del tests.txt
+
+java -jar lib\junit-platform-console-standalone-1.10.2.jar execute --class-path bin --scan-class-path
+```
+
+Compile and run the game in Powershell:
 ```powershell
 $sources = Get-ChildItem -Recurse -Filter *.java src | ForEach-Object { $_.FullName }
 javac -d bin $sources
 java -cp bin main.GameDriver
 ```
 
-Compile and run the JUnit tests:
+Compile and run the JUnit tests in Powershell:
 
 ```powershell
 $tests = Get-ChildItem -Recurse -Filter *.java tests | ForEach-Object { $_.FullName }
@@ -105,23 +132,22 @@ application classes, while future features will require additional tests.
 | File | Contributor | Work |
 | --- | --- | --- |
 | `src/characters/Item.java` | Brian | Revised and tested with GenAI assistance |
-| `src/characters/GameCharacter.java` | Brian | Revised and tested with GenAI assistance |
-| `src/characters/Player.java` | Brian | Revised and tested with GenAI assistance |
-| `src/shop/Shop.java` | Brian | Revised and tested with GenAI assistance |
+| `src/characters/GameCharacter.java` | Brian, Leo | Revised and tested with GenAI assistance |
+| `src/characters/Player.java` | Brian, Leo | Revised and tested with GenAI assistance |
+| `src/shop/Shop.java` | Brian, Ben | Revised and tested with GenAI assistance |
 | `src/tournament/Tournament.java` | Brian | Wrote with GenAI assistance |
 | `src/tournament/TournamentRound.java` | Brian | Revised and tested with GenAI assistance |
 | `src/main/GameDriver.java` | Brian | Wrote and tested with GenAI assistance |
-| `src/gamesaves/GameSave.java` | Brian | Revised and tested with GenAI assistance |
-| `tests/ItemTest.java` | Brian | Revised and tested with GenAI assistance |
-| `tests/GameCharacterTest.java` | Brian | Wrote and tested with GenAI assistance |
+| `src/gamesaves/GameSave.java` | David, Ben | Revised and tested with GenAI assistance |
+| `tests/ItemTest.java` | David, Brian, Ben | Revised and tested with GenAI assistance |
+| `tests/GameCharacterTest.java` | Leo, Brian | Wrote and tested with GenAI assistance |
 | `tests/GameDriverTest.java` | Brian | Wrote and tested with GenAI assistance |
-| `tests/GameSaveTest.java` | Brian | Wrote and tested with GenAI assistance |
-| `tests/PlayerTest.java` | Brian | Wrote and tested with GenAI assistance |
-| `tests/ShopTest.java` | Brian | Wrote and tested with GenAI assistance |
-| `tests/TournamentTest.java` | Brian | Wrote and tested with GenAI assistance |
+| `tests/GameSaveTest.java` | David, Brian | Wrote and tested with GenAI assistance |
+| `tests/PlayerTest.java` | Ben, Brian | Wrote and tested with GenAI assistance |
+| `tests/ShopTest.java` | Ben, Brian, David | Wrote and tested with GenAI assistance |
+| `tests/TournamentTest.java` | Brian, Leo | Wrote and tested with GenAI assistance |
 
-GenAI was used to help inspect the existing skeleton, propose a small
-testable architecture, identify compile blockers, draft edge-case tests,
+GenAI was used to help inspect the existing codebase, identify compile blockers, draft edge-case tests,
 review public-method coverage, and review the README. All generated changes
 and tests were read, adapted, and run by the contributor. The completed
 prototype test suite contains 20 passing tests.
