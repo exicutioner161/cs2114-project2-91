@@ -87,7 +87,7 @@ The match accepts an injectable `Random` source so tests can be repeatable.
 
 ### Changes to LinkedChain
 
-The `LinkedChain<T>` was changed to `CustomLinkedList<T>`. It was changed from singly-linked to doubly-linked, with more of the functionality of a normal java.util LinkedList. Application code accesses it only through public methods such as `add`, `get`, `remove`, `removeFirst`,
+The `LinkedChain<T>` was changed to `CustomLinkedList<T>`. It was changed from singly-linked to doubly-linked, with more of the functionality of a normal `java.util.LinkedList`. Application code accesses it only through public methods such as `add`, `get`, `remove`, `removeFirst`,
 `isEmpty`, and `size`. `Shop` uses `CustomLinkedList<Item>` and `Tournament`
 uses `CustomLinkedList<GameCharacter>`; there are no type-specific copies of
 the data structure.
