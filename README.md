@@ -124,4 +124,4 @@ GenAI was used to help inspect the existing skeleton, propose a small
 testable architecture, identify compile blockers, draft edge-case tests,
 review public-method coverage, and review the README. All generated changes
 and tests were read, adapted, and run by the contributor. The completed
-prototype test suite contains 18 passing tests.
+prototype test suite contains 20 passing tests.
