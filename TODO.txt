@@ -1,0 +1,49 @@
+TODO List
+Key:
+IP - In Progress
+C - Complete
+Put the date and first name alongside the corresponding completion code
+to claim the task. Put the completion date once it's finished.
+Ex: [IP - 10/17 Brian] or [C - 10/18 Brian]
+Make sure to push/merge any changes you make to this file to the main branch.
+
+
+Double-elimination tournament
+-----------------------------
+[ ] Define bracket match results and tournament lifecycle states.
+[ ] Register exactly eight fighters and reject null, duplicate, or ninth entrants.
+[ ] Treat the player as one of the eight ordinary bracket entrants.
+[ ] Implement the opening winners-bracket round.
+[ ] Implement winners-bracket semifinals and final.
+[ ] Implement losers-bracket advancement after each first loss.
+[ ] Eliminate fighters after their second loss.
+[ ] Implement one grand final with no bracket reset.
+[ ] Expose one match or round at a time for the driver.
+[ ] Display bracket match results and the tournament champion.
+
+Testing
+-------
+[ ] Test eight-fighter registration and invalid registration.
+[ ] Test every winners-bracket transition.
+[ ] Test every losers-bracket transition.
+[ ] Test second-loss elimination.
+[ ] Test match ordering and deterministic seeded outcomes.
+[ ] Test grand-final no-reset behavior.
+[ ] Test invalid lifecycle calls and incomplete brackets.
+
+Remaining MVP work
+------------------
+[ ] Add tournament win/loss tracking.
+[ ] Award gold for tournament rounds and wins.
+[ ] Advance player levels after tournament wins.
+[ ] End the run after five wins or ten losses.
+[ ] Populate stronger opponent queues after wins.
+[ ] Preserve the queue after losses according to the specification.
+[ ] Add complete tournament state to save/load files.
+[ ] Expand the driver menu for tournament progression.
+
+Deferred stretch goals
+----------------------
+[ ] Adaptive opponents.
+[ ] Background tournaments.
+[ ] Same-round loss queues.

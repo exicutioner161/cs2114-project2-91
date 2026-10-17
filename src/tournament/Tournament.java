@@ -4,6 +4,7 @@ import characters.GameCharacter;
 import linkedlist.CustomLinkedList;
 
 public class Tournament {
+    // TODO: Add 8-person bracket (should be double-elim until the grand finals)
     private final CustomLinkedList<GameCharacter> queue;
 
     public Tournament() {
