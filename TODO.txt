@@ -1,4 +1,13 @@
 TODO List
+Key:
+IP - In Progress
+C - Complete
+Put the date and first name alongside the corresponding completion code
+to claim the task. Put the completion date once it's finished.
+Ex: [IP - 10/17 Brian] or [C - 10/18 Brian]
+Make sure to push/merge any changes you make to this file to the main branch.
+
+
 Double-elimination tournament
 -----------------------------
 [ ] Define bracket match results and tournament lifecycle states.
