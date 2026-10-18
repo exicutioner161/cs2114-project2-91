@@ -6,10 +6,10 @@ public class GameCharacter {
     private static final double LEVEL_MULTIPLIER = 1.2;
     private static final double BASE_STAT_CEILING = 15.0;
     private final String name;
-    private final int level;
-    private final double aggro;
-    private final double control;
-    private final double midrange;
+    private int level;
+    private double aggro;
+    private double control;
+    private double midrange;
 
     public GameCharacter(String name, int level) {
         if (name == null || name.isBlank() || level < 0) {
@@ -29,9 +29,9 @@ public class GameCharacter {
     }
 
     public GameCharacter(String name, int level, double aggro, double control,
-        double midrange) {
+            double midrange) {
         if (name == null || name.isBlank() || level < 0
-            || !validStat(aggro) || !validStat(control) || !validStat(midrange)) {
+                || !validStat(aggro) || !validStat(control) || !validStat(midrange)) {
             throw new IllegalArgumentException("Character values are invalid");
         }
         this.name = name;
