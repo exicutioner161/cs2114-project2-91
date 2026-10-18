@@ -61,6 +61,10 @@ public class GameCharacter {
         return level;
     }
 
+    public void incrementLevel() {
+        level++;
+    }
+
     public String getName() {
         return name;
     }
