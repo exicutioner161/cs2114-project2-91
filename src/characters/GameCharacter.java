@@ -17,15 +17,7 @@ public class GameCharacter {
         }
         this.name = name;
         this.level = level;
-        double ceiling = BASE_STAT_CEILING * Math.pow(LEVEL_MULTIPLIER, level);
-        Random random = new Random(name.hashCode() * 31L + level);
-        double first = random.nextDouble();
-        double second = random.nextDouble();
-        double third = random.nextDouble();
-        double total = first + second + third;
-        aggro = first * ceiling / total;
-        control = second * ceiling / total;
-        midrange = third * ceiling / total;
+        randomizeStats();
     }
 
     public GameCharacter(String name, int level, double aggro, double control,
@@ -39,6 +31,18 @@ public class GameCharacter {
         this.aggro = aggro;
         this.control = control;
         this.midrange = midrange;
+    }
+
+    private void randomizeStats() {
+        double ceiling = BASE_STAT_CEILING * Math.pow(LEVEL_MULTIPLIER, level);
+        Random random = new Random(name.hashCode() * 31L + level);
+        double first = random.nextDouble();
+        double second = random.nextDouble();
+        double third = random.nextDouble();
+        double total = first + second + third;
+        aggro = first * ceiling / total;
+        control = second * ceiling / total;
+        midrange = third * ceiling / total;
     }
 
     private static boolean validStat(double stat) {
