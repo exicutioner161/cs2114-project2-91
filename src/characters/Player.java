@@ -1,10 +1,13 @@
 package characters;
 
+import java.util.Random;
+
 public class Player extends GameCharacter {
+    private static final Random random = new Random();
+    private static final int MAX_LEVEL = 5;
     private static final int SLOT_COUNT = 5;
     private final Item[] inventory;
     private int gold;
-    private int level;
     private int wins;
     private int losses;
 
@@ -17,7 +20,6 @@ public class Player extends GameCharacter {
         if (gold < 0 || inventory == null || inventory.length != SLOT_COUNT) {
             throw new IllegalArgumentException("Player values are invalid");
         }
-        this.level = level;
         this.gold = gold;
         this.wins = 0;
         this.losses = 0;
@@ -60,10 +62,6 @@ public class Player extends GameCharacter {
 
     public int getGold() {
         return gold;
-    }
-
-    public int getLevel() {
-        return level;
     }
 
     public Item[] getInventory() {
@@ -111,22 +109,20 @@ public class Player extends GameCharacter {
         return true;
     }
 
-    public void awardGold(int amount) {
-        if (amount < 0 || amount > Integer.MAX_VALUE - gold) {
-            throw new IllegalArgumentException("Gold amount is invalid");
-        }
-        gold += amount;
+    public void awardGold() {
+        int base = (getLevel()) * 3;
+        gold += random.nextInt(base, base + 3);
     }
 
     public void advanceLevel() {
-        if (level == Integer.MAX_VALUE) {
+        if (getLevel() == MAX_LEVEL) {
             throw new IllegalStateException("Maximum level reached");
         }
-        level++;
+        incrementLevel();
     }
 
     public String catalogText() {
-        return "Current Gold: " + gold + "\nLevel: " + level;
+        return "Current Gold: " + gold + "\nLevel: " + getLevel();
     }
 
     private boolean validSlot(int slot) {

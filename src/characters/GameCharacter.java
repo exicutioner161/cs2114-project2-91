@@ -6,17 +6,34 @@ public class GameCharacter {
     private static final double LEVEL_MULTIPLIER = 1.2;
     private static final double BASE_STAT_CEILING = 15.0;
     private final String name;
-    private final int level;
-    private final double aggro;
-    private final double control;
-    private final double midrange;
+    private int level;
+    private double aggro;
+    private double control;
+    private double midrange;
 
     public GameCharacter(String name, int level) {
-        if (name == null || name.isBlank() || level < 0) {
+        if (name == null || name.isBlank() || level < 1) {
             throw new IllegalArgumentException("Name and level are invalid");
         }
         this.name = name;
         this.level = level;
+        randomizeStats();
+    }
+
+    public GameCharacter(String name, int level, double aggro, double control,
+            double midrange) {
+        if (name == null || name.isBlank() || level < 0
+                || !validStat(aggro) || !validStat(control) || !validStat(midrange)) {
+            throw new IllegalArgumentException("Character values are invalid");
+        }
+        this.name = name;
+        this.level = level;
+        this.aggro = aggro;
+        this.control = control;
+        this.midrange = midrange;
+    }
+
+    private void randomizeStats() {
         double ceiling = BASE_STAT_CEILING * Math.pow(LEVEL_MULTIPLIER, level);
         Random random = new Random(name.hashCode() * 31L + level);
         double first = random.nextDouble();
@@ -26,19 +43,6 @@ public class GameCharacter {
         aggro = first * ceiling / total;
         control = second * ceiling / total;
         midrange = third * ceiling / total;
-    }
-
-    public GameCharacter(String name, int level, double aggro, double control,
-        double midrange) {
-        if (name == null || name.isBlank() || level < 0
-            || !validStat(aggro) || !validStat(control) || !validStat(midrange)) {
-            throw new IllegalArgumentException("Character values are invalid");
-        }
-        this.name = name;
-        this.level = level;
-        this.aggro = aggro;
-        this.control = control;
-        this.midrange = midrange;
     }
 
     private static boolean validStat(double stat) {
@@ -59,6 +63,10 @@ public class GameCharacter {
 
     public int getLevel() {
         return level;
+    }
+
+    public void incrementLevel() {
+        level++;
     }
 
     public String getName() {
