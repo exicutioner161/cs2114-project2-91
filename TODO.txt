@@ -33,7 +33,7 @@ Testing
 
 Remaining MVP work
 ------------------
-[ ] Add tournament win/loss tracking.
+[ C - 10/18 Brian ] Add tournament win/loss tracking.
 [ ] Award gold for tournament rounds and wins.
 [ ] Advance player levels after tournament wins.
 [ ] End the run after five wins or ten losses.

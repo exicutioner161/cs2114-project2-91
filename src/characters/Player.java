@@ -5,6 +5,8 @@ public class Player extends GameCharacter {
     private final Item[] inventory;
     private int gold;
     private int level;
+    private int wins;
+    private int losses;
 
     public Player(String name, int level) {
         this(name, level, 0, new Item[SLOT_COUNT]);
@@ -17,6 +19,8 @@ public class Player extends GameCharacter {
         }
         this.level = level;
         this.gold = gold;
+        this.wins = 0;
+        this.losses = 0;
         this.inventory = new Item[SLOT_COUNT];
         for (int i = 0; i < inventory.length; i++) {
             if (inventory[i] != null) {
@@ -48,7 +52,7 @@ public class Player extends GameCharacter {
         for (Item item : inventory) {
             if (item != null) {
                 total += stat == 0 ? item.getAggro()
-                    : stat == 1 ? item.getControl() : item.getMidrange();
+                        : stat == 1 ? item.getControl() : item.getMidrange();
             }
         }
         return total;
@@ -72,7 +76,7 @@ public class Player extends GameCharacter {
 
     public boolean addItem(Item item) {
         if (item == null || !validSlot(item.getType())
-            || inventory[item.getType()] != null) {
+                || inventory[item.getType()] != null) {
             return false;
         }
         inventory[item.getType()] = item;
@@ -90,7 +94,7 @@ public class Player extends GameCharacter {
 
     public boolean buy(Item item) {
         if (item == null || !validSlot(item.getType())
-            || inventory[item.getType()] != null || item.getPrice() > gold) {
+                || inventory[item.getType()] != null || item.getPrice() > gold) {
             return false;
         }
         inventory[item.getType()] = item;
@@ -127,5 +131,25 @@ public class Player extends GameCharacter {
 
     private boolean validSlot(int slot) {
         return slot >= 0 && slot < SLOT_COUNT;
+    }
+
+    public int getWins() {
+        return wins;
+    }
+
+    public void setWins(int wins) {
+        this.wins = wins;
+    }
+
+    public void incrementWins() {
+        wins++;
+    }
+
+    public int getLosses() {
+        return losses;
+    }
+
+    public void setLosses(int losses) {
+        this.losses = losses;
     }
 }
