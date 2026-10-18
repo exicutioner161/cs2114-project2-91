@@ -12,7 +12,7 @@ public class GameCharacter {
     private double midrange;
 
     public GameCharacter(String name, int level) {
-        if (name == null || name.isBlank() || level < 0) {
+        if (name == null || name.isBlank() || level < 1) {
             throw new IllegalArgumentException("Name and level are invalid");
         }
         this.name = name;
