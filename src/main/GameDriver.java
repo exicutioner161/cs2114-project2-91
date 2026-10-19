@@ -35,12 +35,12 @@ public class GameDriver {
         if (input == null || output == null) {
             throw new IllegalArgumentException("Input and output are required");
         }
-        Player player = new Player("Player", 0, 100, new characters.Item[5]);
+        Player player = new Player("Player", 1, 100, new characters.Item[5]);
         ShopProgression progression = new ShopProgression(3);
         GameSave saves = new GameSave();
-        Tournament tournament = new Tournament();
-        tournament.addFighter(new GameCharacter("Opponent A", 0));
-        tournament.addFighter(new GameCharacter("Opponent B", 0));
+        Tournament tournament = new Tournament(player);
+        tournament.addFighter(new GameCharacter("Opponent A", 1));
+        tournament.addFighter(new GameCharacter("Opponent B", 1));
         boolean running = true;
         while (running && input.hasNextLine()) {
             output.println("\n1. View status");
@@ -61,13 +61,14 @@ public class GameDriver {
                 case 2:
                     Shop shop = progression.getShop(player.getLevel());
                     output.println(shop != null
-                        && shop.buy(player, "Level " + player.getLevel() + " Sword")
-                        ? "Sword equipped." : "Unable to buy sword.");
+                            && shop.buy(player, "Level " + player.getLevel() + " Sword")
+                                    ? "Sword equipped."
+                                    : "Unable to buy sword.");
                     break;
                 case 3:
                     GameCharacter winner = tournament.runMatch(player);
                     output.println(winner == null ? "No opponent is waiting."
-                        : "Match winner: " + winner.getName());
+                            : "Match winner: " + winner.getName());
                     break;
                 case 4:
                     running = false;
@@ -76,7 +77,7 @@ public class GameDriver {
                 case 5:
                     try {
                         saves.save("Player", player,
-                            Path.of("calculated-combat-player.save"));
+                                Path.of("calculated-combat-player.save"));
                         output.println("Progress saved.");
                     } catch (java.io.IOException exception) {
                         output.println("Unable to save progress.");
@@ -85,7 +86,7 @@ public class GameDriver {
                 case 6:
                     try {
                         player = saves.load("Player",
-                            Path.of("calculated-combat-player.save"));
+                                Path.of("calculated-combat-player.save"));
                         output.println("Progress loaded.");
                     } catch (java.io.IOException | IllegalArgumentException exception) {
                         output.println("Unable to load progress.");
