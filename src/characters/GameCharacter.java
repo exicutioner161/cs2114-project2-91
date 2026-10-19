@@ -5,7 +5,7 @@ import java.util.Random;
 public class GameCharacter {
     private static final double LEVEL_MULTIPLIER = 1.2;
     private static final double BASE_STAT_CEILING = 15.0;
-    private final String name;
+    private String name;
     private int level;
     private double aggro;
     private double control;
