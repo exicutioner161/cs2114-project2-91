@@ -1,14 +1,26 @@
 package tournament;
 
 import characters.GameCharacter;
+import characters.Player;
+import characters.RandomNamePicker;
 import linkedlist.CustomLinkedList;
 
 public class Tournament {
+    private static final RandomNamePicker nameGen = new RandomNamePicker();
     // TODO: Add 8-person bracket (should be double-elim until the grand finals)
     private final CustomLinkedList<GameCharacter> queue;
+    private final CustomLinkedList<TournamentRound> bracket;
 
-    public Tournament() {
+    public Tournament(Player player) {
         queue = new CustomLinkedList<>();
+        bracket = new CustomLinkedList<>();
+    }
+
+    public boolean fillBracket(Player player) {
+        if (player == null) {
+            return false;
+        }
+        return true;
     }
 
     public boolean addFighter(GameCharacter fighter) {
@@ -17,6 +29,11 @@ public class Tournament {
         }
         queue.add(fighter);
         return true;
+    }
+
+    public GameCharacter generateCharacter(Player player) {
+        GameCharacter character = new GameCharacter(nameGen.pickName(), player.getLevel());
+        return character;
     }
 
     public int size() {
