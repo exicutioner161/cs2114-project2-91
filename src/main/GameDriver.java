@@ -41,7 +41,7 @@ public class GameDriver {
             throw new IllegalArgumentException("Input and output are required");
         }
         Player player = new Player("Player", 1, 100, new characters.Item[5]);
-        ShopProgression progression = new ShopProgression(3);
+        ShopProgression progression = new ShopProgression(4);
         GameSave saves = new GameSave();
         Tournament tournament = createTournament(player);
         boolean running = true;
@@ -81,6 +81,7 @@ public class GameDriver {
                     }
                     output.println("Match winner: " + result.getWinner());
                     output.println("Match loser: " + result.getLoser());
+                    output.println(tournament);
                     if (tournament.isFinished()) {
                         output.println("Tournament champion: "
                                 + tournament.getChampion());

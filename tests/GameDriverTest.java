@@ -21,6 +21,8 @@ class GameDriverTest {
         assertTrue(output.contains("Invalid option"));
         assertTrue(output.contains("Goodbye."));
         assertTrue(output.contains("Match winner:"));
+        assertTrue(output.contains("TOURNAMENT BRACKET"));
+        assertTrue(output.contains("Winners Bracket"));
     }
 
     @Test
