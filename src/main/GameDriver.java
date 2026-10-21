@@ -25,13 +25,6 @@ public class GameDriver {
         runMenu(input, System.out);
     }
 
-    public static void run(InputStream in, PrintStream output) {
-        if (in == null) {
-            throw new IllegalArgumentException("Input is required");
-        }
-        runMenu(new Scanner(in), output);
-    }
-
     private static void runMenu(Scanner input, PrintStream out) {
         int tournamentWins = 0;
         int tournamentLosses = 0;
