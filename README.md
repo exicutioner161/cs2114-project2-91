@@ -81,7 +81,9 @@ java -jar lib\junit-platform-console-standalone-1.10.2.jar execute --class-path 
   and Midrange counter relationships, then resolves a match.
 - `GameDriver` provides a retrying menu for status, category-based gear buying,
   fighting, saving, loading, and exiting, records rewards and run termination,
-  and prints the full ASCII bracket after every completed battle. Buying gear
+  and prints the full ASCII bracket after every completed battle. After an
+  active fight, the bracket is shown before the driver waits for Enter so the
+  next menu does not overwrite the bracket view. Buying gear
   opens Head, Body, Legs, Feet, and Weapon submenus; each category displays
   only its offers and uses numbered item choices.
 - `GameSave` writes and validates named player progress, including equipment,
