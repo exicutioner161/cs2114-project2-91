@@ -14,7 +14,8 @@ import main.GameDriver;
 class GameDriverTest {
     @Test
     void retriesInvalidInputAndCompletesValidPath() {
-        String input = "\nletters\n-1\n999999999999999999999\n1\n2\n3\n4\n";
+        String input = "\nletters\n-1\n999999999999999999999\n1\n2\n"
+            + "\n2\n5\n1\n\n3\n\n4\n";
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         runWithConsole(input, bytes);
         String output = bytes.toString(StandardCharsets.UTF_8);
@@ -23,6 +24,27 @@ class GameDriverTest {
         assertTrue(output.contains("Match winner:"));
         assertTrue(output.contains("TOURNAMENT BRACKET"));
         assertTrue(output.contains("Winners Bracket"));
+    }
+
+    @Test
+    void buysFromCategoryAndItemSubmenus() {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        runWithConsole("2\n5\n1\n\n4\n", bytes);
+        String output = bytes.toString(StandardCharsets.UTF_8);
+        assertTrue(output.contains("Choose an equipment category:"));
+        assertTrue(output.contains("Weapon items:"));
+        assertTrue(output.contains("Item equipped."));
+        assertTrue(output.contains("Goodbye."));
+    }
+
+    @Test
+    void invalidCategoryAndItemChoicesRepromptInTheirSubmenus() {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        runWithConsole("2\n9\n5\n9\n0\n0\n\n4\n", bytes);
+        String output = bytes.toString(StandardCharsets.UTF_8);
+        assertTrue(output.contains("Invalid category."));
+        assertTrue(output.contains("Invalid item."));
+        assertTrue(output.contains("Goodbye."));
     }
 
     @Test
@@ -42,8 +64,17 @@ class GameDriverTest {
     }
 
     @Test
+    void ignoresAnInitialEmptyLineBeforeTheFirstChoice() {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        runWithConsole("\n4\n", bytes);
+        String output = bytes.toString(StandardCharsets.UTF_8);
+        assertTrue(output.contains("Goodbye."));
+        assertTrue(!output.contains("Invalid option"));
+    }
+
+    @Test
     void reportsMissingSaveWithoutCrashing() {
-        String input = "6\n4\n";
+        String input = "6\n\n4\n";
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         runWithConsole(input, bytes);
         assertTrue(bytes.toString(StandardCharsets.UTF_8)
@@ -54,13 +85,35 @@ class GameDriverTest {
     void printsBracketAfterEveryBattle() {
         StringBuilder input = new StringBuilder();
         for (int i = 0; i < 14; i++) {
-            input.append("3\n");
+            input.append("3\n\n");
         }
         input.append("4\n");
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         runWithConsole(input.toString(), bytes);
         String output = bytes.toString(StandardCharsets.UTF_8);
         assertEquals(14, countOccurrences(output, "TOURNAMENT BRACKET"));
+    }
+
+    @Test
+    void waitsAfterTheBracketBeforePrintingTheNextMenu() {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        runWithConsole("3\n\n4\n", bytes);
+        String output = bytes.toString(StandardCharsets.UTF_8);
+        int bracket = output.indexOf("TOURNAMENT BRACKET");
+        int prompt = output.indexOf("Press Enter to continue.");
+        int nextMenu = output.indexOf("\n1. View Status", prompt);
+        assertTrue(bracket >= 0);
+        assertTrue(prompt > bracket);
+        assertTrue(nextMenu > prompt);
+    }
+
+    @Test
+    void displaysPlayerProgressionCounters() {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        runWithConsole("1\n\n4\n", bytes);
+        String output = bytes.toString(StandardCharsets.UTF_8);
+        assertTrue(output.contains("Tournament Wins: 0/5"));
+        assertTrue(output.contains("Tournament Losses: 0/10"));
     }
 
     private int countOccurrences(String text, String target) {

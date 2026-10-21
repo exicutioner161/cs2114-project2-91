@@ -79,19 +79,27 @@ java -jar lib\junit-platform-console-standalone-1.10.2.jar execute --class-path 
   of the five equipment slots.
 - `TournamentRound` calculates a bounded win probability from Aggro, Control,
   and Midrange counter relationships, then resolves a match.
-- `GameDriver` provides a retrying menu for status, buying level gear, fighting,
-  saving, loading, and exiting, records rewards and run termination, and
-  prints the full ASCII bracket after every completed battle.
+- `GameDriver` provides a retrying menu for status, category-based gear buying,
+  fighting, saving, loading, and exiting, records rewards and run termination,
+  and prints the full ASCII bracket after every completed battle. After every
+  active menu action, the driver waits for Enter before showing the menu again,
+  so output remains visible. Buying gear
+  opens Head, Body, Legs, Feet, and Weapon submenus; each category displays
+  only its offers and uses numbered item choices.
 - `GameSave` writes and validates named player progress, including equipment,
-  tournament wins, and tournament losses.
+  tournament wins, tournament losses, and an optional mid-tournament bracket
+  snapshot. Loading a snapshot resumes the next match instead of rebuilding
+  the bracket.
 - `TournamentQueue` preserves waiting opponents after a loss and repopulates
   stronger opponents after a win.
 - `AdaptiveOpponentFactory`, `BackgroundTournament`, and
   `SameRoundLossQueue` implement the three stretch goals from the scope.
 
-Invalid actions return `false` or `null` without changing state. Invalid
-constructor values throw `IllegalArgumentException`, so bad input is rejected
-at the validation boundary rather than crashing later in the game.
+Invalid actions return `false` or `null` without changing state. The driver
+reprompts inside the current shop submenu for invalid category or item
+choices, and `0` returns from either submenu. Invalid constructor values throw
+`IllegalArgumentException`, so bad input is rejected at the validation
+boundary rather than crashing later in the game.
 
 ## Reflection
 
@@ -147,26 +155,30 @@ the save file is bounded by five equipment slots.
 
 The implementation resolved a first-pass counter-based probability algorithm,
 named progress serialization, level-scaled randomized store generation, the
-double-elimination bracket lifecycle, and deterministic seeded outcomes.
-The shop now uses a fixed name catalog and randomized stats/prices with
-stronger level ranges. Exact balance of stats, prices, and rewards remains a
-tuning concern.
+double-elimination bracket lifecycle, deterministic seeded outcomes, and
+mid-tournament persistence. The shop uses a fixed name catalog and randomized
+stats/prices with stronger level ranges. Combat probabilities are bounded to
+0-100%, shop offers cost 50-140 gold at level 1 and increase by level, and
+match/tournament rewards are fixed and documented by the driver tests.
 
 ### What does not work yet
 
-Mid-tournament bracket snapshots are not implemented. The save file persists
-the player progression state and restarts a fresh queue after loading. The
-implemented queue and stretch-goal services are covered by focused tests. The
-current suite includes empty, missing, malformed, invalid-input, deterministic,
-and full-bracket cases.
+The committed MVP slice does not include the deferred save-file encryption or
+randomly generated item names from the stretch-goal discussion. The current
+save format intentionally remains a readable local prototype format. The
+implemented queue, shop, bracket, persistence, and stretch-goal services are
+covered by focused tests. The current suite includes empty, missing, malformed,
+invalid-input, deterministic, resumed-tournament, and full-bracket cases.
 
 ## Next Steps
 
-1. **Brian - save state:** decide whether mid-tournament bracket snapshots are
-   required and add `GameSaveTest` coverage if they are.
-2. **Team - balance:** tune combat probabilities, shop prices, and rewards.
-3. **Team - maintenance:** keep save/load, queue progression, adaptive
+1. **Team - balance:** playtest combat probabilities, shop prices, and rewards
+   against real player strategies; adjust constants only when playtest data
+   shows a repeatable imbalance.
+2. **Team - maintenance:** keep save/load, queue progression, adaptive
    opponents, background tournaments, and same-round loss queues integrated.
+3. **Team - stretch:** decide whether encrypted saves or randomized item names
+   are worth implementing; add focused tests before committing either change.
 
 ## Attribution
 

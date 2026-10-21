@@ -1,6 +1,7 @@
 package tournament;
 
 import java.util.Random;
+import java.util.Base64;
 
 import characters.GameCharacter;
 import characters.Player;
@@ -294,6 +295,195 @@ public class Tournament {
             throw new IllegalStateException("Tournament is not finished");
         }
         return champion;
+    }
+
+    public String saveState() {
+        StringBuilder state = new StringBuilder();
+        state.append("phase=").append(phase).append('\n');
+        state.append("matchIndex=").append(matchIndex).append('\n');
+        state.append("finished=").append(finished).append('\n');
+        state.append("champion=").append(indexOf(champion)).append('\n');
+        state.append("losses=");
+        for (int i = 0; i < lossCounts.length; i++) {
+            if (i > 0) {
+                state.append(',');
+            }
+            state.append(lossCounts[i]);
+        }
+        state.append('\n');
+        appendFighters(state);
+        appendReferences(state, "winners", winners);
+        appendReferences(state, "losers", losers);
+        appendReferences(state, "phaseWinners", phaseWinners);
+        appendReferences(state, "phaseLosers", phaseLosers);
+        return state.toString();
+    }
+
+    public static Tournament restoreState(Player player, String state,
+            Random random) {
+        if (player == null || state == null || random == null) {
+            throw new IllegalArgumentException("Tournament state is invalid");
+        }
+        String[] lines = state.split("\\R");
+        try {
+            int phase = Integer.parseInt(value(lines, "phase"));
+            int matchIndex = Integer.parseInt(value(lines, "matchIndex"));
+            boolean finished = Boolean.parseBoolean(value(lines, "finished"));
+            int championIndex = Integer.parseInt(value(lines, "champion"));
+            int[] losses = parseLosses(value(lines, "losses"));
+            GameCharacter[] fighters = parseFighters(lines, player);
+            Tournament tournament = new Tournament(player, random);
+            tournament.addRestoredFighters(fighters);
+            tournament.phase = phase;
+            tournament.matchIndex = matchIndex;
+            tournament.finished = finished;
+            tournament.champion = fighterAt(fighters, championIndex);
+            copyLosses(tournament.lossCounts, losses);
+            tournament.restoreReferences(lines, fighters);
+            validateState(tournament);
+            return tournament;
+        } catch (RuntimeException exception) {
+            throw new IllegalArgumentException("Tournament state is invalid",
+                exception);
+        }
+    }
+
+    private void appendFighters(StringBuilder state) {
+        for (int i = 0; i < entrants.size(); i++) {
+            GameCharacter fighter = entrants.get(i);
+            state.append("fighter=").append(i).append('|')
+                .append(encode(fighter.getName())).append('|')
+                .append(fighter.getLevel()).append('|')
+                .append(fighter.getAggro()).append('|')
+                .append(fighter.getControl()).append('|')
+                .append(fighter.getMidrange()).append('\n');
+        }
+    }
+
+    private void appendReferences(StringBuilder state, String key,
+            CustomLinkedList<GameCharacter> fighters) {
+        state.append(key).append('=');
+        for (int i = 0; i < fighters.size(); i++) {
+            if (i > 0) {
+                state.append(',');
+            }
+            state.append(indexOf(fighters.get(i)));
+        }
+        state.append('\n');
+    }
+
+    private int indexOf(GameCharacter fighter) {
+        if (fighter == null) {
+            return -1;
+        }
+        return findFighterIndex(fighter);
+    }
+
+    private void addRestoredFighters(GameCharacter[] fighters) {
+        if (fighters.length == 0 || fighters[0] == null) {
+            throw new IllegalArgumentException("Missing player entrant");
+        }
+        for (int i = 1; i < fighters.length; i++) {
+            if (!addFighter(fighters[i])) {
+                throw new IllegalArgumentException("Duplicate entrant");
+            }
+        }
+    }
+
+    private void restoreReferences(String[] lines, GameCharacter[] fighters) {
+        restoreList(winners, value(lines, "winners"), fighters);
+        restoreList(losers, value(lines, "losers"), fighters);
+        restoreList(phaseWinners, value(lines, "phaseWinners"), fighters);
+        restoreList(phaseLosers, value(lines, "phaseLosers"), fighters);
+    }
+
+    private void restoreList(CustomLinkedList<GameCharacter> target,
+            String indexes, GameCharacter[] fighters) {
+        if (indexes.isBlank()) {
+            return;
+        }
+        for (String index : indexes.split(",")) {
+            target.add(fighterAt(fighters, Integer.parseInt(index)));
+        }
+    }
+
+    private static GameCharacter[] parseFighters(String[] lines, Player player) {
+        CustomLinkedList<GameCharacter> fighters = new CustomLinkedList<>();
+        for (String line : lines) {
+            if (!line.startsWith("fighter=")) {
+                continue;
+            }
+            String[] fields = line.substring(8).split("\\|", -1);
+            if (fields.length != 6 || Integer.parseInt(fields[0]) != fighters.size()) {
+                throw new IllegalArgumentException("Fighter record is invalid");
+            }
+            GameCharacter fighter = fighters.isEmpty() ? player
+                : new GameCharacter(decode(fields[1]), Integer.parseInt(fields[2]),
+                    Double.parseDouble(fields[3]), Double.parseDouble(fields[4]),
+                    Double.parseDouble(fields[5]));
+            fighters.add(fighter);
+        }
+        GameCharacter[] result = new GameCharacter[fighters.size()];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = fighters.get(i);
+        }
+        return result;
+    }
+
+    private static int[] parseLosses(String value) {
+        String[] values = value.split(",", -1);
+        if (values.length != MAX_ENTRANTS) {
+            throw new IllegalArgumentException("Loss records are invalid");
+        }
+        int[] result = new int[MAX_ENTRANTS];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = Integer.parseInt(values[i]);
+            if (result[i] < 0 || result[i] > MAX_LOSSES) {
+                throw new IllegalArgumentException("Loss records are invalid");
+            }
+        }
+        return result;
+    }
+
+    private static void copyLosses(int[] target, int[] source) {
+        System.arraycopy(source, 0, target, 0, target.length);
+    }
+
+    private static GameCharacter fighterAt(GameCharacter[] fighters, int index) {
+        if (index < -1 || index >= fighters.length) {
+            throw new IllegalArgumentException("Fighter reference is invalid");
+        }
+        return index == -1 ? null : fighters[index];
+    }
+
+    private static String value(String[] lines, String key) {
+        String prefix = key + "=";
+        for (String line : lines) {
+            if (line.startsWith(prefix)) {
+                return line.substring(prefix.length());
+            }
+        }
+        throw new IllegalArgumentException("Missing tournament field");
+    }
+
+    private static void validateState(Tournament tournament) {
+        if (tournament.entrants.size() != MAX_ENTRANTS
+                || tournament.phase < 0 || tournament.phase > 8
+                || tournament.matchIndex < 0
+                || (!tournament.finished && tournament.champion != null)
+                || (tournament.finished && tournament.champion == null)) {
+            throw new IllegalArgumentException("Tournament state is invalid");
+        }
+    }
+
+    private static String encode(String value) {
+        return Base64.getEncoder().encodeToString(
+            value.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+    }
+
+    private static String decode(String value) {
+        return new String(Base64.getDecoder().decode(value),
+            java.nio.charset.StandardCharsets.UTF_8);
     }
 
     @Override

@@ -1,9 +1,6 @@
 package characters;
 
-import java.util.Random;
-
 public class Player extends GameCharacter {
-    private static final Random random = new Random();
     private static final int MAX_LEVEL = 5;
     private static final int SLOT_COUNT = 5;
     private final Item[] inventory;
@@ -115,7 +112,7 @@ public class Player extends GameCharacter {
         }
         gold += amount;
     }
-    
+
     public void advanceLevel() {
         if (getLevel() == MAX_LEVEL) {
             throw new IllegalStateException("Maximum level reached");
@@ -176,6 +173,6 @@ public class Player extends GameCharacter {
             equipment.append("none");
         }
         return String.format("%s | Gold: %d | Wins: %d | Losses: %d | Gear: %s",
-            super.toString(), gold, wins, losses, equipment);
+                super.toString(), gold, wins, losses, equipment);
     }
 }

@@ -1,15 +1,18 @@
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Random;
 
 import org.junit.jupiter.api.Test;
 
 import characters.Item;
 import characters.Player;
 import gamesaves.GameSave;
+import tournament.Tournament;
 
 class GameSaveTest {
     @Test
@@ -85,6 +88,28 @@ class GameSaveTest {
                 + "item|4|U2hpZWxk|1|1|1|10\n");
             assertThrows(IllegalArgumentException.class,
                 () -> new GameSave().load("Hero", path));
+        } finally {
+            Files.deleteIfExists(path);
+        }
+    }
+
+    @Test
+    void savesAndLoadsMidTournamentState() throws Exception {
+        Path path = Files.createTempFile("calculated-combat-tournament", ".txt");
+        try {
+            Player player = new Player("Hero", 1, 75, new Item[5]);
+            Tournament tournament = new Tournament(player, new Random(7));
+            tournament.populateEntrants(player);
+            tournament.fillBracket();
+            tournament.playNextMatch();
+            GameSave save = new GameSave();
+            save.save("Hero", player, tournament, path);
+            GameSave.LoadedGame loaded = save.loadGame("Hero", path,
+                new Random(7));
+            assertNotNull(loaded.tournament());
+            assertEquals(tournament.winnersSize(), loaded.tournament().winnersSize());
+            assertEquals(tournament.losersSize(), loaded.tournament().losersSize());
+            assertEquals(tournament.toString(), loaded.tournament().toString());
         } finally {
             Files.deleteIfExists(path);
         }
