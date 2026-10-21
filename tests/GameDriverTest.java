@@ -15,7 +15,7 @@ class GameDriverTest {
     @Test
     void retriesInvalidInputAndCompletesValidPath() {
         String input = "\nletters\n-1\n999999999999999999999\n1\n2\n"
-            + "5\n1\n3\n4\n";
+            + "5\n1\n3\n\n4\n";
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         runWithConsole(input, bytes);
         String output = bytes.toString(StandardCharsets.UTF_8);
@@ -85,13 +85,26 @@ class GameDriverTest {
     void printsBracketAfterEveryBattle() {
         StringBuilder input = new StringBuilder();
         for (int i = 0; i < 14; i++) {
-            input.append("3\n");
+            input.append("3\n\n");
         }
         input.append("4\n");
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         runWithConsole(input.toString(), bytes);
         String output = bytes.toString(StandardCharsets.UTF_8);
         assertEquals(14, countOccurrences(output, "TOURNAMENT BRACKET"));
+    }
+
+    @Test
+    void waitsAfterTheBracketBeforePrintingTheNextMenu() {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        runWithConsole("3\n\n4\n", bytes);
+        String output = bytes.toString(StandardCharsets.UTF_8);
+        int bracket = output.indexOf("TOURNAMENT BRACKET");
+        int prompt = output.indexOf("Press Enter to return to the menu.");
+        int nextMenu = output.indexOf("\n1. View Status", prompt);
+        assertTrue(bracket >= 0);
+        assertTrue(prompt > bracket);
+        assertTrue(nextMenu > prompt);
     }
 
     @Test
