@@ -65,46 +65,15 @@ public class Tournament {
     }
 
     public MatchResult playNextMatch() {
-        if (phase == 0) {
-            throw new IllegalStateException("Bracket is not filled");
-        }
-        if (finished) {
-            throw new IllegalStateException("Tournament is finished");
-        }
-        GameCharacter fighter1;
-        GameCharacter fighter2;
-        if (phase == 1 || phase == 3) {
-            fighter1 = winners.get(matchIndex * 2);
-            fighter2 = winners.get(matchIndex * 2 + 1);
-        } else if (phase == 2 || phase == 4) {
-            fighter1 = losers.get(matchIndex * 2);
-            fighter2 = losers.get(matchIndex * 2 + 1);
-        } else if (phase == 5) {
-            fighter1 = winners.get(0);
-            fighter2 = winners.get(1);
-        } else if (phase == 6) {
-            fighter1 = losers.get(0);
-            fighter2 = losers.get(1);
-        } else if (phase == 7) {
-            fighter1 = losers.get(0);
-            fighter2 = losers.get(1);
-        } else if (phase == 8) {
-            fighter1 = winners.get(0);
-            fighter2 = losers.get(0);
-        } else {
-            throw new IllegalStateException("Invalid tournament phase");
-        }
-
+        validatePlayable();
+        GameCharacter[] fighters = currentFighters();
+        GameCharacter fighter1 = fighters[0];
+        GameCharacter fighter2 = fighters[1];
         GameCharacter winner = new TournamentRound(fighter1, fighter2, random)
             .getWinner();
         GameCharacter loser = winner == fighter1 ? fighter2 : fighter1;
         recordLoss(loser);
-        if (phase == 1 || phase == 3) {
-            phaseWinners.add(winner);
-            phaseLosers.add(loser);
-        } else if (phase == 2 || phase == 4) {
-            phaseWinners.add(winner);
-        }
+        recordPhaseResult(winner, loser);
         MatchResult result = new MatchResult(fighter1, fighter2, winner, phase);
         matchIndex++;
         if (phaseMatchCount() == matchIndex) {
@@ -113,54 +82,111 @@ public class Tournament {
         return result;
     }
 
+    private void validatePlayable() {
+        if (phase == 0) {
+            throw new IllegalStateException("Bracket is not filled");
+        }
+        if (finished) {
+            throw new IllegalStateException("Tournament is finished");
+        }
+    }
+
+    private GameCharacter[] currentFighters() {
+        if (phase == 1 || phase == 3) {
+            return pair(winners, matchIndex);
+        }
+        if (phase == 2 || phase == 4) {
+            return pair(losers, matchIndex);
+        }
+        if (phase == 5) {
+            return new GameCharacter[] {winners.get(0), winners.get(1)};
+        }
+        if (phase == 6 || phase == 7) {
+            return new GameCharacter[] {losers.get(0), losers.get(1)};
+        }
+        if (phase == 8) {
+            return new GameCharacter[] {winners.get(0), losers.get(0)};
+        }
+        throw new IllegalStateException("Invalid tournament phase");
+    }
+
+    private GameCharacter[] pair(CustomLinkedList<GameCharacter> fighters,
+            int index) {
+        return new GameCharacter[] {fighters.get(index * 2),
+            fighters.get(index * 2 + 1)};
+    }
+
+    private void recordPhaseResult(GameCharacter winner, GameCharacter loser) {
+        if (phase == 1 || phase == 3) {
+            phaseWinners.add(winner);
+            phaseLosers.add(loser);
+        } else if (phase == 2 || phase == 4) {
+            phaseWinners.add(winner);
+        }
+    }
+
     private void advancePhase(GameCharacter finalWinner,
             GameCharacter finalLoser) {
-        if (phase == 1) {
-            transitionWinnersAndLosers(openingWinners(), openingLosers());
-        } else if (phase == 2) {
-            losers.clear();
-            addAll(losers, phaseWinners);
-            clearPhaseData();
-            phase = 3;
-            matchIndex = 0;
-        } else if (phase == 3) {
-            CustomLinkedList<GameCharacter> nextLosers =
-                merge(phaseLosers, losers);
-            transitionWinnersAndLosers(phaseWinners, nextLosers);
-        } else if (phase == 4) {
-            losers.clear();
-            addAll(losers, phaseWinners);
-            clearPhaseData();
-            phase = 5;
-            matchIndex = 0;
-        } else if (phase == 5) {
-            winners.clear();
-            winners.add(finalWinner);
-            losers.add(finalLoser);
-            matchIndex = 0;
-            phase = 6;
-            clearPhaseData();
-        } else if (phase == 6) {
-            GameCharacter survivor = finalWinner;
-            GameCharacter remainingLoser = losers.get(2);
-            losers.clear();
-            losers.add(survivor);
-            losers.add(remainingLoser);
-            matchIndex = 0;
-            phase = 7;
-        } else if (phase == 7) {
-            GameCharacter winnersChampion = winners.get(0);
-            winners.clear();
-            winners.add(winnersChampion);
-            losers.clear();
-            losers.add(finalWinner);
-            matchIndex = 0;
-            phase = 8;
-        } else {
-            champion = finalWinner;
-            finished = true;
-            matchIndex = 0;
+        switch (phase) {
+        case 1 -> transitionWinnersAndLosers(openingWinners(), openingLosers());
+        case 2 -> advanceToWinnersSemifinals();
+        case 3 -> transitionWinnersAndLosers(phaseWinners, merge(phaseLosers, losers));
+        case 4 -> advanceToWinnersFinal();
+        case 5 -> advanceToLosersRound(finalWinner, finalLoser);
+        case 6 -> advanceToLosersFinal(finalWinner);
+        case 7 -> advanceToGrandFinal(finalWinner);
+        default -> finish(finalWinner);
         }
+    }
+
+    private void advanceToWinnersSemifinals() {
+        losers.clear();
+        addAll(losers, phaseWinners);
+        clearPhaseData();
+        phase = 3;
+        matchIndex = 0;
+    }
+
+    private void advanceToWinnersFinal() {
+        losers.clear();
+        addAll(losers, phaseWinners);
+        clearPhaseData();
+        phase = 5;
+        matchIndex = 0;
+    }
+
+    private void advanceToLosersRound(GameCharacter winner, GameCharacter loser) {
+        winners.clear();
+        winners.add(winner);
+        losers.add(loser);
+        matchIndex = 0;
+        phase = 6;
+        clearPhaseData();
+    }
+
+    private void advanceToLosersFinal(GameCharacter survivor) {
+        GameCharacter remainingLoser = losers.get(2);
+        losers.clear();
+        losers.add(survivor);
+        losers.add(remainingLoser);
+        matchIndex = 0;
+        phase = 7;
+    }
+
+    private void advanceToGrandFinal(GameCharacter finalWinner) {
+        GameCharacter winnersChampion = winners.get(0);
+        winners.clear();
+        winners.add(winnersChampion);
+        losers.clear();
+        losers.add(finalWinner);
+        matchIndex = 0;
+        phase = 8;
+    }
+
+    private void finish(GameCharacter finalWinner) {
+        champion = finalWinner;
+        finished = true;
+        matchIndex = 0;
     }
 
     private CustomLinkedList<GameCharacter> phaseWinners =
@@ -326,26 +352,27 @@ public class Tournament {
         }
         String[] lines = state.split("\\R");
         try {
-            int phase = Integer.parseInt(value(lines, "phase"));
-            int matchIndex = Integer.parseInt(value(lines, "matchIndex"));
-            boolean finished = Boolean.parseBoolean(value(lines, "finished"));
-            int championIndex = Integer.parseInt(value(lines, "champion"));
-            int[] losses = parseLosses(value(lines, "losses"));
-            GameCharacter[] fighters = parseFighters(lines, player);
-            Tournament tournament = new Tournament(player, random);
-            tournament.addRestoredFighters(fighters);
-            tournament.phase = phase;
-            tournament.matchIndex = matchIndex;
-            tournament.finished = finished;
-            tournament.champion = fighterAt(fighters, championIndex);
-            copyLosses(tournament.lossCounts, losses);
-            tournament.restoreReferences(lines, fighters);
-            validateState(tournament);
-            return tournament;
+            return restoreParsedState(lines, player, random);
         } catch (RuntimeException exception) {
             throw new IllegalArgumentException("Tournament state is invalid",
                 exception);
         }
+    }
+
+    private static Tournament restoreParsedState(String[] lines, Player player,
+            Random random) {
+        Tournament tournament = new Tournament(player, random);
+        GameCharacter[] fighters = parseFighters(lines, player);
+        tournament.addRestoredFighters(fighters);
+        tournament.phase = Integer.parseInt(value(lines, "phase"));
+        tournament.matchIndex = Integer.parseInt(value(lines, "matchIndex"));
+        tournament.finished = Boolean.parseBoolean(value(lines, "finished"));
+        tournament.champion = fighterAt(fighters,
+                Integer.parseInt(value(lines, "champion")));
+        copyLosses(tournament.lossCounts, parseLosses(value(lines, "losses")));
+        tournament.restoreReferences(lines, fighters);
+        validateState(tournament);
+        return tournament;
     }
 
     private void appendFighters(StringBuilder state) {
@@ -410,19 +437,35 @@ public class Tournament {
     private static GameCharacter[] parseFighters(String[] lines, Player player) {
         CustomLinkedList<GameCharacter> fighters = new CustomLinkedList<>();
         for (String line : lines) {
-            if (!line.startsWith("fighter=")) {
-                continue;
-            }
-            String[] fields = line.substring(8).split("\\|", -1);
-            if (fields.length != 6 || Integer.parseInt(fields[0]) != fighters.size()) {
-                throw new IllegalArgumentException("Fighter record is invalid");
-            }
-            GameCharacter fighter = fighters.isEmpty() ? player
-                : new GameCharacter(decode(fields[1]), Integer.parseInt(fields[2]),
-                    Double.parseDouble(fields[3]), Double.parseDouble(fields[4]),
-                    Double.parseDouble(fields[5]));
-            fighters.add(fighter);
+            addParsedFighter(fighters, line, player);
         }
+        return toArray(fighters);
+    }
+
+    private static void addParsedFighter(CustomLinkedList<GameCharacter> fighters,
+            String line, Player player) {
+        if (!line.startsWith("fighter=")) {
+            return;
+        }
+        String[] fields = line.substring(8).split("\\|", -1);
+        validateFighterFields(fields, fighters.size());
+        fighters.add(createFighter(fields, fighters.isEmpty(), player));
+    }
+
+    private static void validateFighterFields(String[] fields, int index) {
+        if (fields.length != 6 || Integer.parseInt(fields[0]) != index) {
+            throw new IllegalArgumentException("Fighter record is invalid");
+        }
+    }
+
+    private static GameCharacter createFighter(String[] fields, boolean player,
+            Player savedPlayer) {
+        return player ? savedPlayer : new GameCharacter(decode(fields[1]),
+            Integer.parseInt(fields[2]), Double.parseDouble(fields[3]),
+            Double.parseDouble(fields[4]), Double.parseDouble(fields[5]));
+    }
+
+    private static GameCharacter[] toArray(CustomLinkedList<GameCharacter> fighters) {
         GameCharacter[] result = new GameCharacter[fighters.size()];
         for (int i = 0; i < result.length; i++) {
             result[i] = fighters.get(i);
