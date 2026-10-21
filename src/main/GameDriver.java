@@ -1,6 +1,5 @@
 package main;
 
-import java.io.PrintStream;
 import java.nio.file.Path;
 import java.util.Scanner;
 
