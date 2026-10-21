@@ -1,5 +1,7 @@
 package tournament;
 
+import java.util.Random;
+
 import characters.GameCharacter;
 import characters.Player;
 import characters.RandomNamePicker;
@@ -17,19 +19,28 @@ public class Tournament {
     private final CustomLinkedList<GameCharacter> winners;
     private final CustomLinkedList<GameCharacter> losers;
     private final int[] lossCounts;
+    private final Random random;
     private int phase;
     private int matchIndex;
     private boolean finished;
     private GameCharacter champion;
 
     public Tournament(Player player) {
+        this(player, new Random());
+    }
+
+    public Tournament(Player player, Random random) {
         if (player == null) {
             throw new IllegalArgumentException("Player cannot be null");
+        }
+        if (random == null) {
+            throw new IllegalArgumentException("Random source is required");
         }
         entrants = new CustomLinkedList<>();
         winners = new CustomLinkedList<>();
         losers = new CustomLinkedList<>();
         lossCounts = new int[MAX_ENTRANTS];
+        this.random = random;
         addFighter(player);
     }
 
@@ -83,7 +94,8 @@ public class Tournament {
             throw new IllegalStateException("Invalid tournament phase");
         }
 
-        GameCharacter winner = new TournamentRound(fighter1, fighter2).getWinner();
+        GameCharacter winner = new TournamentRound(fighter1, fighter2, random)
+            .getWinner();
         GameCharacter loser = winner == fighter1 ? fighter2 : fighter1;
         recordLoss(loser);
         if (phase == 1 || phase == 3) {

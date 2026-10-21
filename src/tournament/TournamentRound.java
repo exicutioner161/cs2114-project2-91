@@ -17,13 +17,21 @@ public class TournamentRound {
     private GameCharacter winner;
 
     public TournamentRound(GameCharacter fighter1, GameCharacter fighter2) {
+        this(fighter1, fighter2, new Random());
+    }
+
+    public TournamentRound(GameCharacter fighter1, GameCharacter fighter2,
+            Random random) {
         if (fighter1 == null || fighter2 == null || fighter1 == fighter2){
             throw new IllegalArgumentException("Invalid fighters");
+        }
+        if (random == null) {
+            throw new IllegalArgumentException("Random source is required");
         }
         this.fighter1 = fighter1;
         this.fighter2 = fighter2;
         this.fighterOneWinPercent = BASE_WIN_PERCENT;
-        this.random = new Random();
+        this.random = random;
     }
 
     public GameCharacter getWinner() {
