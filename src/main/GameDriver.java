@@ -2,7 +2,6 @@ package main;
 
 import java.nio.file.Path;
 import java.util.Scanner;
-
 import characters.Item;
 import characters.Player;
 import gamesaves.GameSave;
@@ -13,7 +12,7 @@ import tournament.MatchResult;
 
 public class GameDriver {
     public static void main(String[] args) {
-        System.out.println("Welcome to the Game!");
+        System.out.println("Welcome to Calculated Combat!");
         try (Scanner input = new Scanner(System.in)) {
             run(input);
         }
@@ -166,7 +165,8 @@ public class GameDriver {
                     new java.util.Random());
             state.player = loaded.player();
             state.tournament = loaded.tournament() == null
-                    ? createTournament(state.player) : loaded.tournament();
+                    ? createTournament(state.player)
+                    : loaded.tournament();
             System.out.println("Progress loaded.");
         } catch (java.io.IOException | IllegalArgumentException exception) {
             System.out.println("Unable to load progress.");
