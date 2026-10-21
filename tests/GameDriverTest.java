@@ -15,7 +15,7 @@ class GameDriverTest {
     @Test
     void retriesInvalidInputAndCompletesValidPath() {
         String input = "\nletters\n-1\n999999999999999999999\n1\n2\n"
-            + "5\n1\n3\n\n4\n";
+            + "\n2\n5\n1\n\n3\n\n4\n";
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         runWithConsole(input, bytes);
         String output = bytes.toString(StandardCharsets.UTF_8);
@@ -29,7 +29,7 @@ class GameDriverTest {
     @Test
     void buysFromCategoryAndItemSubmenus() {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        runWithConsole("2\n5\n1\n4\n", bytes);
+        runWithConsole("2\n5\n1\n\n4\n", bytes);
         String output = bytes.toString(StandardCharsets.UTF_8);
         assertTrue(output.contains("Choose an equipment category:"));
         assertTrue(output.contains("Weapon items:"));
@@ -40,7 +40,7 @@ class GameDriverTest {
     @Test
     void invalidCategoryAndItemChoicesRepromptInTheirSubmenus() {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        runWithConsole("2\n9\n5\n9\n0\n0\n4\n", bytes);
+        runWithConsole("2\n9\n5\n9\n0\n0\n\n4\n", bytes);
         String output = bytes.toString(StandardCharsets.UTF_8);
         assertTrue(output.contains("Invalid category."));
         assertTrue(output.contains("Invalid item."));
@@ -74,7 +74,7 @@ class GameDriverTest {
 
     @Test
     void reportsMissingSaveWithoutCrashing() {
-        String input = "6\n4\n";
+        String input = "6\n\n4\n";
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         runWithConsole(input, bytes);
         assertTrue(bytes.toString(StandardCharsets.UTF_8)
@@ -100,7 +100,7 @@ class GameDriverTest {
         runWithConsole("3\n\n4\n", bytes);
         String output = bytes.toString(StandardCharsets.UTF_8);
         int bracket = output.indexOf("TOURNAMENT BRACKET");
-        int prompt = output.indexOf("Press Enter to return to the menu.");
+        int prompt = output.indexOf("Press Enter to continue.");
         int nextMenu = output.indexOf("\n1. View Status", prompt);
         assertTrue(bracket >= 0);
         assertTrue(prompt > bracket);
@@ -110,7 +110,7 @@ class GameDriverTest {
     @Test
     void displaysPlayerProgressionCounters() {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        runWithConsole("1\n4\n", bytes);
+        runWithConsole("1\n\n4\n", bytes);
         String output = bytes.toString(StandardCharsets.UTF_8);
         assertTrue(output.contains("Tournament Wins: 0/5"));
         assertTrue(output.contains("Tournament Losses: 0/10"));
