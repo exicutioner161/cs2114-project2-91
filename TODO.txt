@@ -10,40 +10,40 @@ Make sure to push/merge any changes you make to this file to the main branch.
 
 Double-elimination tournament
 -----------------------------
-[ ] Define bracket match results and tournament lifecycle states.
-[ ] Register exactly eight fighters and reject null, duplicate, or ninth entrants.
-[ ] Treat the player as one of the eight ordinary bracket entrants.
-[ ] Implement the opening winners-bracket round.
-[ ] Implement winners-bracket semifinals and final.
-[ ] Implement losers-bracket advancement after each first loss.
-[ ] Eliminate fighters after their second loss.
-[ ] Implement one grand final with no bracket reset.
-[ ] Expose one match or round at a time for the driver.
-[ ] Display bracket match results and the tournament champion.
+[C - 10/21 Brian] Define bracket match results and tournament lifecycle states.
+[C - 10/21 Brian] Register exactly eight fighters and reject null, duplicate, or ninth entrants.
+[C - 10/21 Brian] Treat the player as one of the eight ordinary bracket entrants.
+[C - 10/21 Brian] Implement the opening winners-bracket round.
+[C - 10/21 Brian] Implement winners-bracket semifinals and final.
+[C - 10/21 Brian] Implement losers-bracket advancement after each first loss.
+[C - 10/21 Brian] Eliminate fighters after their second loss.
+[C - 10/21 Brian] Implement one grand final with no bracket reset.
+[C - 10/21 Brian] Expose one match or round at a time for the driver.
+[C - 10/21 Brian] Display bracket match results and the tournament champion.
 
 Testing
 -------
-[ ] Test eight-fighter registration and invalid registration.
-[ ] Test every winners-bracket transition.
-[ ] Test every losers-bracket transition.
-[ ] Test second-loss elimination.
-[ ] Test match ordering and deterministic seeded outcomes.
-[ ] Test grand-final no-reset behavior.
-[ ] Test invalid lifecycle calls and incomplete brackets.
+[C - 10/21 Brian] Test eight-fighter registration and invalid registration.
+[C - 10/21 Brian] Test every winners-bracket transition.
+[C - 10/21 Brian] Test every losers-bracket transition.
+[C - 10/21 Brian] Test second-loss elimination.
+[IP - 10/21 Brian] Test match ordering and deterministic seeded outcomes.
+[C - 10/21 Brian] Test grand-final no-reset behavior.
+[C - 10/21 Brian] Test invalid lifecycle calls and incomplete brackets.
 
 Remaining MVP work
 ------------------
-[ C - 10/18 Brian ] Add tournament win/loss tracking.
-[ ] Award gold for tournament rounds and wins.
-[ ] Advance player levels after tournament wins.
-[ ] End the run after five wins or ten losses.
-[ ] Populate stronger opponent queues after wins.
-[ ] Preserve the queue after losses according to the specification.
-[ ] Add complete tournament state to save/load files.
-[ ] Expand the driver menu for tournament progression.
+[C - 10/21 Brian] Add tournament win/loss tracking.
+[C - 10/21 Brian] Award gold for tournament rounds and wins.
+[C - 10/21 Brian] Advance player levels after tournament wins.
+[C - 10/21 Brian] End the run after five wins or ten losses.
+[C - 10/21 Brian] Populate stronger opponent queues after wins.
+[IP - 10/21 Brian] Preserve the queue after losses according to the specification.
+[C - 10/21 Brian] Add player progression state to save/load files.
+[C - 10/21 Brian] Expand the driver menu for tournament progression.
 
 Deferred stretch goals
 ----------------------
-[ ] Adaptive opponents.
-[ ] Background tournaments.
-[ ] Same-round loss queues.
+[IP - 10/21 Brian] Adaptive opponents (deferred).
+[IP - 10/21 Brian] Background tournaments (deferred).
+[IP - 10/21 Brian] Same-round loss queues (deferred).

@@ -43,9 +43,7 @@ public class GameDriver {
         Player player = new Player("Player", 1, 100, new characters.Item[5]);
         ShopProgression progression = new ShopProgression(3);
         GameSave saves = new GameSave();
-        Tournament tournament = new Tournament(player);
-        tournament.addFighter(new GameCharacter("Opponent A", 1));
-        tournament.addFighter(new GameCharacter("Opponent B", 1));
+        Tournament tournament = createTournament(player);
         boolean running = true;
         while (running && input.hasNextLine()) {
             output.println("\n1. View status");
@@ -73,14 +71,36 @@ public class GameDriver {
                                     : "Unable to buy sword.");
                     break;
                 case 3:
-                    MatchResult result = tournament.playNextMatch();
-                    if (result != null) {
-                        System.out.println("Match completed!");
-                        System.out.println("Winner: " + result.getWinner());
-                        System.out.println("Loser: " + result.getLoser());
+                    if (tournament.isFinished()) {
+                        output.println("Tournament is complete.");
+                        break;
                     }
-                    else {
-                        System.out.println("No matches available.");
+                    MatchResult result = tournament.playNextMatch();
+                    if (result.getWinner() == player) {
+                        player.awardGold(5);
+                    }
+                    output.println("Match winner: " + result.getWinner());
+                    output.println("Match loser: " + result.getLoser());
+                    if (tournament.isFinished()) {
+                        output.println("Tournament champion: "
+                                + tournament.getChampion());
+                        if (tournament.getChampion() == player) {
+                            player.incrementWins();
+                            player.awardGold(10);
+                            if (player.getLevel() < 5) {
+                                player.advanceLevel();
+                            }
+                            tournament = createTournament(player);
+                            output.println("Tournament win recorded.");
+                        } else {
+                            player.incrementLosses();
+                            output.println("Tournament loss recorded.");
+                        }
+                        if (player.getWins() >= MAX_WINS
+                                || player.getLosses() >= MAX_LOSSES) {
+                            output.println("Run complete.");
+                            running = false;
+                        }
                     }
                     break;
                 case 4:
@@ -100,6 +120,7 @@ public class GameDriver {
                     try {
                         player = saves.load("Player",
                                 Path.of("calculated-combat-player.save"));
+                        tournament = createTournament(player);
                         output.println("Progress loaded.");
                     } catch (java.io.IOException | IllegalArgumentException exception) {
                         output.println("Unable to load progress.");
@@ -128,5 +149,12 @@ public class GameDriver {
             output.println("Invalid option. Enter a number from 1 to 6.");
             return null;
         }
+    }
+
+    private static Tournament createTournament(Player player) {
+        Tournament tournament = new Tournament(player);
+        tournament.populateEntrants(player);
+        tournament.fillBracket();
+        return tournament;
     }
 }
