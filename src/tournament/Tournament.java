@@ -283,4 +283,46 @@ public class Tournament {
         }
         return champion;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder bracket = new StringBuilder();
+        bracket.append("=== TOURNAMENT BRACKET ===\n");
+        bracket.append("Phase: ").append(phaseName()).append('\n');
+        bracket.append("Winners Bracket\n");
+        bracket.append("  [").append(fighterName(winners, 0)).append("]--+\n");
+        bracket.append("                         +-- ")
+            .append(fighterName(winners, 1)).append('\n');
+        bracket.append("  [").append(fighterName(winners, 2)).append("]--+\n");
+        bracket.append("                         +-- ")
+            .append(fighterName(winners, 3)).append('\n');
+        bracket.append("Losers Bracket\n");
+        for (int i = 0; i < losers.size(); i++) {
+            bracket.append("  [").append(losers.get(i)).append("]\n");
+        }
+        bracket.append(finished ? "Champion: " + champion : "Champion: pending");
+        return bracket.toString();
+    }
+
+    private String fighterName(CustomLinkedList<GameCharacter> fighters,
+            int index) {
+        return index < fighters.size() ? fighters.get(index).getName() : "pending";
+    }
+
+    private String phaseName() {
+        if (finished) {
+            return "Complete";
+        }
+        return switch (phase) {
+            case 0 -> "Registration";
+            case 1 -> "Opening winners round";
+            case 2 -> "Opening losers round";
+            case 3 -> "Winners semifinals";
+            case 4 -> "Losers semifinals";
+            case 5 -> "Winners final";
+            case 6, 7 -> "Losers final";
+            case 8 -> "Grand final";
+            default -> "Unknown";
+        };
+    }
 }

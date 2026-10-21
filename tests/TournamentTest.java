@@ -194,6 +194,18 @@ class TournamentTest {
         assertThrows(IllegalStateException.class,
             () -> tournament.playNextMatch());
     }
+
+    @Test
+    void toStringDisplaysAsciiBracketState() {
+        registerSevenOpponents();
+        String text = tournament.toString();
+        assertTrue(text.contains("TOURNAMENT BRACKET"));
+        assertTrue(text.contains("Winners Bracket"));
+        assertTrue(text.contains("Losers Bracket"));
+        assertTrue(text.contains("--+"));
+        assertTrue(text.contains("Champion: pending"));
+    }
+
     private void registerSevenOpponents() {
         for (int i = 0; i < 7; i++) {
             tournament.addFighter(

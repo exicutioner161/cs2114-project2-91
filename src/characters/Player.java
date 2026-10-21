@@ -160,4 +160,22 @@ public class Player extends GameCharacter {
     public void incrementLosses() {
         losses++;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder equipment = new StringBuilder();
+        for (int slot = 0; slot < inventory.length; slot++) {
+            if (inventory[slot] != null) {
+                if (equipment.length() > 0) {
+                    equipment.append(", ");
+                }
+                equipment.append(inventory[slot].getName());
+            }
+        }
+        if (equipment.length() == 0) {
+            equipment.append("none");
+        }
+        return String.format("%s | Gold: %d | Wins: %d | Losses: %d | Gear: %s",
+            super.toString(), gold, wins, losses, equipment);
+    }
 }

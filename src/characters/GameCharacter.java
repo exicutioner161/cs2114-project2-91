@@ -72,4 +72,10 @@ public class GameCharacter {
     public String getName() {
         return name;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s (Lv.%d, A:%.1f C:%.1f M:%.1f)",
+            name, level, aggro, control, midrange);
+    }
 }
