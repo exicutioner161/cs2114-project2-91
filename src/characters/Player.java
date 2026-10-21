@@ -109,11 +109,12 @@ public class Player extends GameCharacter {
         return true;
     }
 
-    public void awardGold() {
-        int base = (getLevel()) * 3;
-        gold += random.nextInt(base, base + 3);
+    public void awardGold(int amount) {
+        if (amount > 0){
+        gold += amount;
+        }
     }
-
+    
     public void advanceLevel() {
         if (getLevel() == MAX_LEVEL) {
             throw new IllegalStateException("Maximum level reached");

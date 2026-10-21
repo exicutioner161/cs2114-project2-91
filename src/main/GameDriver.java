@@ -11,6 +11,7 @@ import gamesaves.GameSave;
 import shop.Shop;
 import shop.ShopProgression;
 import tournament.Tournament;
+import tournament.MatchResult;
 
 public class GameDriver {
     public static void main(String[] args) {
@@ -32,6 +33,10 @@ public class GameDriver {
     }
 
     private static void runMenu(Scanner input, PrintStream output) {
+        int tournamentWins = 0;
+        int tournamentLosses = 0;
+        final int MAX_WINS = 5;
+        final int MAX_LOSSES = 10;
         if (input == null || output == null) {
             throw new IllegalArgumentException("Input and output are required");
         }
@@ -57,6 +62,8 @@ public class GameDriver {
             switch (choice) {
                 case 1:
                     output.println(player.catalogText());
+                    output.println("Tournament Wins: "+ tournamentWins +"/5");
+                    output.println("Tournament Losses: "+tournamentLosses+"/10");
                     break;
                 case 2:
                     Shop shop = progression.getShop(player.getLevel());
@@ -66,9 +73,15 @@ public class GameDriver {
                                     : "Unable to buy sword.");
                     break;
                 case 3:
-                    GameCharacter winner = tournament.runMatch(player);
-                    output.println(winner == null ? "No opponent is waiting."
-                            : "Match winner: " + winner.getName());
+                    MatchResult result = tournament.playNextMatch();
+                    if (result != null) {
+                        System.out.println("Match completed!");
+                        System.out.println("Winner: " + result.getWinner());
+                        System.out.println("Loser: " + result.getLoser());
+                    }
+                    else {
+                        System.out.println("No matches available.");
+                    }
                     break;
                 case 4:
                     running = false;

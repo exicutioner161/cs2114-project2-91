@@ -14,8 +14,12 @@ public class TournamentRound {
     private double fighterOneWinPercent;
     private GameCharacter fighter1;
     private GameCharacter fighter2;
+    private GameCharacter winner;
 
     public TournamentRound(GameCharacter fighter1, GameCharacter fighter2) {
+        if (fighter1 == null || fighter2 == null || fighter1 == fighter2){
+            throw new IllegalArgumentException("Invalid fighters");
+        }
         this.fighter1 = fighter1;
         this.fighter2 = fighter2;
         this.fighterOneWinPercent = BASE_WIN_PERCENT;
@@ -23,6 +27,9 @@ public class TournamentRound {
     }
 
     public GameCharacter getWinner() {
+        if (winner != null){
+            return winner;
+        }
         double fOneAggVsCont = calculateFighterAdvantage(fighter1.getAggro(), fighter2.getControl());
         double fOneContVsMidr = calculateFighterAdvantage(fighter1.getControl(), fighter2.getMidrange());
         double fOneMidrVsAgg = calculateFighterAdvantage(fighter1.getMidrange(), fighter2.getAggro());
@@ -31,15 +38,17 @@ public class TournamentRound {
         double fTwoMidrVsAgg = calculateFighterAdvantage(fighter2.getMidrange(), fighter1.getAggro());
         double totalFighterOneAdv = fOneAggVsCont + fOneContVsMidr + fOneMidrVsAgg - fTwoAggVsCont - fTwoContVsMidr
                 - fTwoMidrVsAgg;
-        fighterOneWinPercent -= totalFighterOneAdv;
+        fighterOneWinPercent += totalFighterOneAdv;
+        fighterOneWinPercent = Math.max(0,Math.min(100, fighterOneWinPercent));
         if (fighterOneWinPercent < 0) {
             fighterOneWinPercent = 0;
         }
         if (random.nextDouble() * ONE_HUNDRED < fighterOneWinPercent) {
-            return fighter1;
+            winner = fighter1;
         } else {
-            return fighter2;
+            winner = fighter2;
         }
+        return winner;
     }
 
     private double calculateFighterAdvantage(double fighterOneStat, double fighterTwoStat) {
@@ -56,9 +65,8 @@ public class TournamentRound {
     private double getHighAdv(double fighterOneStat, double fighterTwoStat) {
         double fighterOneAdv = 0;
         double statDiff = fighterOneStat - fighterTwoStat;
-        for (int i = 0; i < statDiff; i++) {
-            fighterOneAdv += HIGH_ADVANTAGE_INCREMENT;
-        }
+        fighterOneAdv += statDiff*HIGH_ADVANTAGE_INCREMENT;
+        
         return getMedAdv(fighterOneStat, fighterTwoStat, fighterOneAdv, statDiff);
     }
 
