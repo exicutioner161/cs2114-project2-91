@@ -105,6 +105,9 @@ public class GameDriver {
                                 running = false;
                             }
                         }
+                        if (running) {
+                            pauseAfterFight(input);
+                        }
                     }
                 }
                 case 4 -> {
@@ -168,6 +171,13 @@ public class GameDriver {
         } catch (NumberFormatException exception) {
             System.out.println("Invalid option. Enter a number from 1 to 7.");
             return null;
+        }
+    }
+
+    private static void pauseAfterFight(Scanner input) {
+        System.out.println("Press Enter to return to the menu.");
+        if (input.hasNextLine()) {
+            input.nextLine();
         }
     }
 
