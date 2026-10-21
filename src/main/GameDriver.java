@@ -111,7 +111,7 @@ public class GameDriver {
                 }
                 case 5 -> {
                     try {
-                        saves.save("Player", player,
+                        saves.save("Player", player, tournament,
                                 Path.of("calculated-combat-player.save"));
                         System.out.println("Progress saved.");
                     } catch (java.io.IOException exception) {
@@ -120,9 +120,12 @@ public class GameDriver {
                 }
                 case 6 -> {
                     try {
-                        player = saves.load("Player",
-                                Path.of("calculated-combat-player.save"));
-                        tournament = createTournament(player);
+                        GameSave.LoadedGame loaded = saves.loadGame("Player",
+                                Path.of("calculated-combat-player.save"),
+                                new java.util.Random());
+                        player = loaded.player();
+                        tournament = loaded.tournament() == null
+                                ? createTournament(player) : loaded.tournament();
                         System.out.println("Progress loaded.");
                     } catch (java.io.IOException | IllegalArgumentException exception) {
                         System.out.println("Unable to load progress.");

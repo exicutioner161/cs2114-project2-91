@@ -5,9 +5,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Random;
 
 import characters.Item;
 import characters.Player;
+import tournament.Tournament;
 
 public class GameSave {
     private static final String CONTENT = "Calculated Combat save\n";
@@ -25,6 +27,11 @@ public class GameSave {
     }
 
     public boolean save(String name, Player player, Path path) throws IOException {
+        return save(name, player, null, path);
+    }
+
+    public boolean save(String name, Player player, Tournament tournament,
+            Path path) throws IOException {
         if (name == null || name.isBlank() || player == null || path == null) {
             throw new IllegalArgumentException("Save values are invalid");
         }
@@ -34,6 +41,10 @@ public class GameSave {
         content.append("gold=").append(player.getGold()).append('\n');
         content.append("wins=").append(player.getWins()).append('\n');
         content.append("losses=").append(player.getLosses()).append('\n');
+        if (tournament != null) {
+            content.append("tournament=")
+                .append(encode(tournament.saveState())).append('\n');
+        }
         for (int slot = 0; slot < player.getInventory().length; slot++) {
             Item item = player.getItem(slot);
             if (item != null) {
@@ -79,10 +90,14 @@ public class GameSave {
                 if (lines[i].isBlank()) {
                     continue;
                 }
+                if (lines[i].startsWith("tournament=")) {
+                    continue;
+                }
                 String[] fields = lines[i].split("\\|", -1);
                 if (fields.length != 7 || !"item".equals(fields[0])) {
                     throw new IllegalArgumentException("Save item format is invalid");
                 }
+
                 int slot = Integer.parseInt(fields[1]);
                 if (slot < 0 || slot >= inventory.length || occupiedSlots[slot]) {
                     throw new IllegalArgumentException("Save slot is invalid");
@@ -99,6 +114,30 @@ public class GameSave {
         } catch (IllegalArgumentException exception) {
             throw new IllegalArgumentException("Save values are invalid", exception);
         }
+    }
+
+    public LoadedGame loadGame(String expectedName, Path path, Random random)
+            throws IOException {
+        if (random == null) {
+            throw new IllegalArgumentException("Random source is required");
+        }
+        Player player = load(expectedName, path);
+        String[] lines = Files.readString(path).split("\\R");
+        String encodedState = null;
+        for (String line : lines) {
+            if (line.startsWith("tournament=")) {
+                encodedState = line.substring("tournament=".length());
+                break;
+            }
+        }
+        if (encodedState == null) {
+            return new LoadedGame(player, null);
+        }
+        return new LoadedGame(player,
+            Tournament.restoreState(player, decode(encodedState), random));
+    }
+
+    public record LoadedGame(Player player, Tournament tournament) {
     }
 
     private String encode(String value) {
