@@ -65,6 +65,8 @@ Shop and display updates
 bracket view before returning to the main menu.
 [C - 10/21 Brian] Require confirmation after every active menu action before
 printing the main menu again.
+[C - 10/21 Brian] Refactor oversized application methods into focused helpers
+of 15 or fewer implementation lines.
 
 Deferred follow-up
 ------------------
