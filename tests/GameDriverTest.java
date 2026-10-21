@@ -1,4 +1,3 @@
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -15,8 +14,9 @@ import main.GameDriver;
 class GameDriverTest {
     @Test
     void retriesInvalidInputAndCompletesValidPath() {
+        String input = "\nletters\n-1\n999999999999999999999\n1\n2\n3\n4\n";
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        GameDriver.run(new Scanner(System.in));
+        runWithConsole(input, bytes);
         String output = bytes.toString(StandardCharsets.UTF_8);
         assertTrue(output.contains("Invalid option"));
         assertTrue(output.contains("Goodbye."));
@@ -43,8 +43,9 @@ class GameDriverTest {
 
     @Test
     void reportsMissingSaveWithoutCrashing() {
+        String input = "6\n4\n";
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        GameDriver.run(new Scanner(System.in));
+        runWithConsole(input, bytes);
         assertTrue(bytes.toString(StandardCharsets.UTF_8)
                 .contains("Unable to load progress."));
     }
@@ -57,7 +58,7 @@ class GameDriverTest {
         }
         input.append("4\n");
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        GameDriver.run(new Scanner(System.in));
+        runWithConsole(input.toString(), bytes);
         String output = bytes.toString(StandardCharsets.UTF_8);
         assertEquals(14, countOccurrences(output, "TOURNAMENT BRACKET"));
     }
@@ -70,5 +71,19 @@ class GameDriverTest {
             index += target.length();
         }
         return count;
+    }
+
+    private void runWithConsole(String input, ByteArrayOutputStream output) {
+        java.io.InputStream originalIn = System.in;
+        java.io.PrintStream originalOut = System.out;
+        try {
+            System.setIn(new ByteArrayInputStream(
+                input.getBytes(StandardCharsets.UTF_8)));
+            System.setOut(new PrintStream(output));
+            GameDriver.run(new Scanner(System.in));
+        } finally {
+            System.setIn(originalIn);
+            System.setOut(originalOut);
+        }
     }
 }
