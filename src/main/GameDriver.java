@@ -25,6 +25,13 @@ public class GameDriver {
         runMenu(input, System.out);
     }
 
+    public static void run(InputStream input, PrintStream output) {
+        if (input == null || output == null) {
+            throw new IllegalArgumentException("Input and output are required");
+        }
+        runMenu(new Scanner(input), output);
+    }
+
     private static void runMenu(Scanner input, PrintStream out) {
         int tournamentWins = 0;
         int tournamentLosses = 0;
@@ -38,6 +45,7 @@ public class GameDriver {
         GameSave saves = new GameSave();
         Tournament tournament = createTournament(player);
         boolean running = true;
+
         while (running && input.hasNextLine()) {
             out.println("\n1. View status");
             out.println("2. Buy level gear");
