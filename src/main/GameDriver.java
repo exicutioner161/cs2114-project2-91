@@ -46,10 +46,17 @@ public class GameDriver {
         GameSave saves = new GameSave();
         Tournament tournament = createTournament(player);
         boolean running = true;
+        boolean firstChoice = true;
 
         while (running && input.hasNextLine()) {
             printMenu();
-            Integer choice = parseChoice(input.nextLine().trim());
+            String rawChoice = input.nextLine().trim();
+            if (firstChoice && rawChoice.isEmpty()) {
+                firstChoice = false;
+                continue;
+            }
+            firstChoice = false;
+            Integer choice = parseChoice(rawChoice);
             if (choice == null) {
                 continue;
             }
@@ -144,7 +151,7 @@ public class GameDriver {
                     }
                 }
                 default -> {
-                    System.out.println("Invalid option. Enter a number from 1 to 6.");
+                    System.out.println("Invalid option. Enter a number from 1 to 7.");
                 }
             }
         }
@@ -152,18 +159,18 @@ public class GameDriver {
 
     private static Integer parseChoice(String rawChoice) {
         if (rawChoice.isEmpty()) {
-            System.out.println("Invalid option. Enter a number from 1 to 6.");
+            System.out.println("Invalid option. Enter a number from 1 to 7.");
             return null;
         }
         try {
             long parsed = Long.parseLong(rawChoice);
             if (parsed < Integer.MIN_VALUE || parsed > Integer.MAX_VALUE) {
-                System.out.println("Invalid option. Enter a number from 1 to 6.");
+                System.out.println("Invalid option. Enter a number from 1 to 7.");
                 return null;
             }
             return (int) parsed;
         } catch (NumberFormatException exception) {
-            System.out.println("Invalid option. Enter a number from 1 to 6.");
+            System.out.println("Invalid option. Enter a number from 1 to 7.");
             return null;
         }
     }
