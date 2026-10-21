@@ -110,9 +110,10 @@ public class Player extends GameCharacter {
     }
 
     public void awardGold(int amount) {
-        if (amount > 0){
-        gold += amount;
+        if (amount < 0) {
+            throw new IllegalArgumentException("Gold award cannot be negative");
         }
+        gold += amount;
     }
     
     public void advanceLevel() {

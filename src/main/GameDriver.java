@@ -44,8 +44,8 @@ public class GameDriver {
         ShopProgression progression = new ShopProgression(3);
         GameSave saves = new GameSave();
         Tournament tournament = new Tournament(player);
-        tournament.addFighter(new GameCharacter("Opponent A", 1));
-        tournament.addFighter(new GameCharacter("Opponent B", 1));
+        tournament.populateEntrants(player);
+        tournament.fillBracket();
         boolean running = true;
         while (running && input.hasNextLine()) {
             output.println("\n1. View status");
@@ -73,14 +73,16 @@ public class GameDriver {
                                     : "Unable to buy sword.");
                     break;
                 case 3:
-                    MatchResult result = tournament.playNextMatch();
-                    if (result != null) {
-                        System.out.println("Match completed!");
-                        System.out.println("Winner: " + result.getWinner());
-                        System.out.println("Loser: " + result.getLoser());
+                    if (tournament.isFinished()) {
+                        output.println("Tournament is complete.");
+                        break;
                     }
-                    else {
-                        System.out.println("No matches available.");
+                    MatchResult result = tournament.playNextMatch();
+                    output.println("Match winner: " + result.getWinner());
+                    output.println("Match loser: " + result.getLoser());
+                    if (tournament.isFinished()) {
+                        output.println("Tournament champion: "
+                                + tournament.getChampion());
                     }
                     break;
                 case 4:
