@@ -35,28 +35,26 @@ public class TournamentRound {
     }
 
     public GameCharacter getWinner() {
-        if (winner != null){
+        if (winner != null) {
             return winner;
         }
-        double fOneAggVsCont = calculateFighterAdvantage(fighter1.getAggro(), fighter2.getControl());
-        double fOneContVsMidr = calculateFighterAdvantage(fighter1.getControl(), fighter2.getMidrange());
-        double fOneMidrVsAgg = calculateFighterAdvantage(fighter1.getMidrange(), fighter2.getAggro());
-        double fTwoAggVsCont = calculateFighterAdvantage(fighter2.getAggro(), fighter1.getControl());
-        double fTwoContVsMidr = calculateFighterAdvantage(fighter2.getControl(), fighter1.getMidrange());
-        double fTwoMidrVsAgg = calculateFighterAdvantage(fighter2.getMidrange(), fighter1.getAggro());
-        double totalFighterOneAdv = fOneAggVsCont + fOneContVsMidr + fOneMidrVsAgg - fTwoAggVsCont - fTwoContVsMidr
-                - fTwoMidrVsAgg;
-        fighterOneWinPercent += totalFighterOneAdv;
-        fighterOneWinPercent = Math.max(0,Math.min(100, fighterOneWinPercent));
-        if (fighterOneWinPercent < 0) {
-            fighterOneWinPercent = 0;
-        }
-        if (random.nextDouble() * ONE_HUNDRED < fighterOneWinPercent) {
-            winner = fighter1;
-        } else {
-            winner = fighter2;
-        }
+        fighterOneWinPercent = calculateWinPercent();
+        winner = random.nextDouble() * ONE_HUNDRED < fighterOneWinPercent
+            ? fighter1 : fighter2;
         return winner;
+    }
+
+    private double calculateWinPercent() {
+        double advantage = fighterAdvantage(fighter1, fighter2)
+            - fighterAdvantage(fighter2, fighter1);
+        return Math.max(0, Math.min(100, BASE_WIN_PERCENT + advantage));
+    }
+
+    private double fighterAdvantage(GameCharacter fighter,
+            GameCharacter opponent) {
+        return calculateFighterAdvantage(fighter.getAggro(), opponent.getControl())
+            + calculateFighterAdvantage(fighter.getControl(), opponent.getMidrange())
+            + calculateFighterAdvantage(fighter.getMidrange(), opponent.getAggro());
     }
 
     private double calculateFighterAdvantage(double fighterOneStat, double fighterTwoStat) {

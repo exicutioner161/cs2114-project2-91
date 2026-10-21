@@ -36,123 +36,160 @@ public class GameDriver {
     }
 
     private static void runMenu(Scanner input) {
-        final int MAX_WINS = 5;
-        final int MAX_LOSSES = 10;
         if (input == null) {
             throw new IllegalArgumentException("Input required");
         }
-        Player player = new Player("Player", 1, 100, new Item[5]);
-        ShopProgression progression = new ShopProgression(4);
-        GameSave saves = new GameSave();
-        Tournament tournament = createTournament(player);
+        GameState state = new GameState();
         boolean running = true;
         boolean firstChoice = true;
 
         while (running && input.hasNextLine()) {
             printMenu();
-            String rawChoice = input.nextLine().trim();
-            if (firstChoice && rawChoice.isEmpty()) {
-                firstChoice = false;
-                continue;
-            }
+            Integer choice = readChoice(input, firstChoice);
             firstChoice = false;
-            Integer choice = parseChoice(rawChoice);
             if (choice == null) {
                 continue;
             }
-            switch (choice) {
-                case 1 ->
-                    System.out.println(player.catalogText() + "\nTournament Wins: "
-                            + player.getWins() + "/5"
-                            + "\nTournament Losses: " + player.getLosses() + "/10");
-                case 2 -> {
-                    Shop shop = progression.getShop(player.getLevel());
-                    if (shop == null) {
-                        System.out.println("No shop is unlocked for this level.");
-                        break;
-                    }
-                    buyGear(input, shop, player);
-                }
-                case 3 -> {
-                    if (tournament.isFinished()) {
-                        System.out.println("Tournament is complete.");
-                    } else {
-                        MatchResult result = tournament.playNextMatch();
-                        if (result.getWinner() == player) {
-                            player.awardGold(5);
-                        }
-                        System.out.println("Match winner: " + result.getWinner());
-                        System.out.println("Match loser: " + result.getLoser());
-                        System.out.println(tournament);
-                        if (tournament.isFinished()) {
-                            System.out.println("Tournament champion: "
-                                    + tournament.getChampion());
-                            if (tournament.getChampion() == player) {
-                                player.incrementWins();
-                                player.awardGold(10);
-                                if (player.getLevel() < 5) {
-                                    player.advanceLevel();
-                                }
-                                tournament = createTournament(player);
-                                System.out.println("Tournament win recorded.");
-                            } else {
-                                player.incrementLosses();
-                                System.out.println("Tournament loss recorded.");
-                            }
-                            if (player.getWins() >= MAX_WINS
-                                    || player.getLosses() >= MAX_LOSSES) {
-                                System.out.println("Run complete.");
-                                running = false;
-                            }
-                        }
-                    }
-                }
-                case 4 -> {
-                    running = false;
-                    System.out.println("Goodbye.");
-                }
-                case 5 -> {
-                    try {
-                        saves.save("Player", player, tournament,
-                                Path.of("calculated-combat-player.save"));
-                        System.out.println("Progress saved.");
-                    } catch (java.io.IOException exception) {
-                        System.out.println("Unable to save progress.");
-                    }
-                }
-                case 6 -> {
-                    try {
-                        GameSave.LoadedGame loaded = saves.loadGame("Player",
-                                Path.of("calculated-combat-player.save"),
-                                new java.util.Random());
-                        player = loaded.player();
-                        tournament = loaded.tournament() == null
-                                ? createTournament(player) : loaded.tournament();
-                        System.out.println("Progress loaded.");
-                    } catch (java.io.IOException | IllegalArgumentException exception) {
-                        System.out.println("Unable to load progress.");
-                    }
-                }
-                case 7 -> {
-                    System.out.print("Enter equipment slot (0-4) to sell: ");
-                    String rawSlot = input.hasNextLine() ? input.nextLine().trim() : "";
-                    try {
-                        int slot = Integer.parseInt(rawSlot);
-                        System.out.println(player.sell(slot)
-                                ? "Item sold."
-                                : "Unable to sell item.");
-                    } catch (NumberFormatException exception) {
-                        System.out.println("Invalid equipment slot.");
-                    }
-                }
-                default -> {
-                    System.out.println("Invalid option. Enter a number from 1 to 7.");
-                }
-            }
-            if (running) {
-                pauseAfterAction(input);
-            }
+            running = handleChoice(input, state, choice);
         }
+    }
+
+    private static Integer readChoice(Scanner input, boolean firstChoice) {
+        String rawChoice = input.nextLine().trim();
+        if (firstChoice && rawChoice.isEmpty()) {
+            return null;
+        }
+        return parseChoice(rawChoice);
+    }
+
+    private static boolean handleChoice(Scanner input, GameState state,
+            int choice) {
+        switch (choice) {
+            case 1 -> showStatus(state.player);
+            case 2 -> buyGearFromShop(input, state);
+            case 3 -> playFight(input, state);
+            case 4 -> {
+                System.out.println("Goodbye.");
+                return false;
+            }
+            case 5 -> saveProgress(state);
+            case 6 -> loadProgress(state);
+            case 7 -> sellGear(input, state.player);
+            default -> System.out.println("Invalid option. Enter a number from 1 to 7.");
+        }
+        pauseAfterAction(input);
+        return state.running;
+    }
+
+    private static void showStatus(Player player) {
+        System.out.println(player.catalogText() + "\nTournament Wins: "
+                + player.getWins() + "/5"
+                + "\nTournament Losses: " + player.getLosses() + "/10");
+    }
+
+    private static void buyGearFromShop(Scanner input, GameState state) {
+        Shop shop = state.progression.getShop(state.player.getLevel());
+        if (shop == null) {
+            System.out.println("No shop is unlocked for this level.");
+            return;
+        }
+        buyGear(input, shop, state.player);
+    }
+
+    private static void playFight(Scanner input, GameState state) {
+        if (state.tournament.isFinished()) {
+            System.out.println("Tournament is complete.");
+            return;
+        }
+        MatchResult result = state.tournament.playNextMatch();
+        awardMatchGold(result, state.player);
+        printMatchResult(result, state.tournament);
+        if (state.tournament.isFinished()) {
+            finishTournament(state);
+        }
+    }
+
+    private static void awardMatchGold(MatchResult result, Player player) {
+        if (result.getWinner() == player) {
+            player.awardGold(5);
+        }
+    }
+
+    private static void printMatchResult(MatchResult result, Tournament tournament) {
+        System.out.println("Match winner: " + result.getWinner());
+        System.out.println("Match loser: " + result.getLoser());
+        System.out.println(tournament);
+    }
+
+    private static void finishTournament(GameState state) {
+        System.out.println("Tournament champion: " + state.tournament.getChampion());
+        if (state.tournament.getChampion() == state.player) {
+            recordTournamentWin(state);
+        } else {
+            state.player.incrementLosses();
+            System.out.println("Tournament loss recorded.");
+        }
+        if (runIsComplete(state.player)) {
+            System.out.println("Run complete.");
+            state.running = false;
+        }
+    }
+
+    private static void recordTournamentWin(GameState state) {
+        state.player.incrementWins();
+        state.player.awardGold(10);
+        if (state.player.getLevel() < 5) {
+            state.player.advanceLevel();
+        }
+        state.tournament = createTournament(state.player);
+        System.out.println("Tournament win recorded.");
+    }
+
+    private static boolean runIsComplete(Player player) {
+        return player.getWins() >= 5 || player.getLosses() >= 10;
+    }
+
+    private static void saveProgress(GameState state) {
+        try {
+            state.saves.save("Player", state.player, state.tournament,
+                    Path.of("calculated-combat-player.save"));
+            System.out.println("Progress saved.");
+        } catch (java.io.IOException exception) {
+            System.out.println("Unable to save progress.");
+        }
+    }
+
+    private static void loadProgress(GameState state) {
+        try {
+            GameSave.LoadedGame loaded = state.saves.loadGame("Player",
+                    Path.of("calculated-combat-player.save"),
+                    new java.util.Random());
+            state.player = loaded.player();
+            state.tournament = loaded.tournament() == null
+                    ? createTournament(state.player) : loaded.tournament();
+            System.out.println("Progress loaded.");
+        } catch (java.io.IOException | IllegalArgumentException exception) {
+            System.out.println("Unable to load progress.");
+        }
+    }
+
+    private static void sellGear(Scanner input, Player player) {
+        System.out.print("Enter equipment slot (0-4) to sell: ");
+        String rawSlot = input.hasNextLine() ? input.nextLine().trim() : "";
+        try {
+            int slot = Integer.parseInt(rawSlot);
+            System.out.println(player.sell(slot) ? "Item sold." : "Unable to sell item.");
+        } catch (NumberFormatException exception) {
+            System.out.println("Invalid equipment slot.");
+        }
+    }
+
+    private static class GameState {
+        private Player player = new Player("Player", 1, 100, new Item[5]);
+        private final ShopProgression progression = new ShopProgression(4);
+        private final GameSave saves = new GameSave();
+        private Tournament tournament = createTournament(player);
+        private boolean running = true;
     }
 
     private static Integer parseChoice(String rawChoice) {

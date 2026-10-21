@@ -86,6 +86,10 @@ java -jar lib\junit-platform-console-standalone-1.10.2.jar execute --class-path 
   so output remains visible. Buying gear
   opens Head, Body, Legs, Feet, and Weapon submenus; each category displays
   only its offers and uses numbered item choices.
+- The main application workflows are decomposed into focused methods of no
+  more than 15 implementation lines where practical, including menu dispatch,
+  save parsing, tournament phase transitions, and combat probability
+  calculation.
 - `GameSave` writes and validates named player progress, including equipment,
   tournament wins, tournament losses, and an optional mid-tournament bracket
   snapshot. Loading a snapshot resumes the next match instead of rebuilding
