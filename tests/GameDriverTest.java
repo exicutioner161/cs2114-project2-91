@@ -64,6 +64,15 @@ class GameDriverTest {
         assertEquals(14, countOccurrences(output, "TOURNAMENT BRACKET"));
     }
 
+    @Test
+    void displaysPlayerProgressionCounters() {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        runWithConsole("1\n4\n", bytes);
+        String output = bytes.toString(StandardCharsets.UTF_8);
+        assertTrue(output.contains("Tournament Wins: 0/5"));
+        assertTrue(output.contains("Tournament Losses: 0/10"));
+    }
+
     private int countOccurrences(String text, String target) {
         int count = 0;
         int index = 0;

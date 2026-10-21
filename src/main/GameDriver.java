@@ -36,8 +36,6 @@ public class GameDriver {
     }
 
     private static void runMenu(Scanner input) {
-        int tournamentWins = 0;
-        int tournamentLosses = 0;
         final int MAX_WINS = 5;
         final int MAX_LOSSES = 10;
         if (input == null) {
@@ -57,8 +55,9 @@ public class GameDriver {
             }
             switch (choice) {
                 case 1 ->
-                    System.out.println(player.catalogText() + "\nTournament Wins: " + tournamentWins + "/5"
-                            + "\nTournament Losses: " + tournamentLosses + "/10");
+                    System.out.println(player.catalogText() + "\nTournament Wins: "
+                            + player.getWins() + "/5"
+                            + "\nTournament Losses: " + player.getLosses() + "/10");
                 case 2 -> {
                     Shop shop = progression.getShop(player.getLevel());
                     if (shop == null) {
@@ -75,33 +74,34 @@ public class GameDriver {
                 case 3 -> {
                     if (tournament.isFinished()) {
                         System.out.println("Tournament is complete.");
-                    }
-                    MatchResult result = tournament.playNextMatch();
-                    if (result.getWinner() == player) {
-                        player.awardGold(5);
-                    }
-                    System.out.println("Match winner: " + result.getWinner());
-                    System.out.println("Match loser: " + result.getLoser());
-                    System.out.println(tournament);
-                    if (tournament.isFinished()) {
-                        System.out.println("Tournament champion: "
-                                + tournament.getChampion());
-                        if (tournament.getChampion() == player) {
-                            player.incrementWins();
-                            player.awardGold(10);
-                            if (player.getLevel() < 5) {
-                                player.advanceLevel();
-                            }
-                            tournament = createTournament(player);
-                            System.out.println("Tournament win recorded.");
-                        } else {
-                            player.incrementLosses();
-                            System.out.println("Tournament loss recorded.");
+                    } else {
+                        MatchResult result = tournament.playNextMatch();
+                        if (result.getWinner() == player) {
+                            player.awardGold(5);
                         }
-                        if (player.getWins() >= MAX_WINS
-                                || player.getLosses() >= MAX_LOSSES) {
-                            System.out.println("Run complete.");
-                            running = false;
+                        System.out.println("Match winner: " + result.getWinner());
+                        System.out.println("Match loser: " + result.getLoser());
+                        System.out.println(tournament);
+                        if (tournament.isFinished()) {
+                            System.out.println("Tournament champion: "
+                                    + tournament.getChampion());
+                            if (tournament.getChampion() == player) {
+                                player.incrementWins();
+                                player.awardGold(10);
+                                if (player.getLevel() < 5) {
+                                    player.advanceLevel();
+                                }
+                                tournament = createTournament(player);
+                                System.out.println("Tournament win recorded.");
+                            } else {
+                                player.incrementLosses();
+                                System.out.println("Tournament loss recorded.");
+                            }
+                            if (player.getWins() >= MAX_WINS
+                                    || player.getLosses() >= MAX_LOSSES) {
+                                System.out.println("Run complete.");
+                                running = false;
+                            }
                         }
                     }
                 }
