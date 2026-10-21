@@ -1,4 +1,5 @@
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
@@ -49,5 +50,30 @@ class GameDriverTest {
             new PrintStream(bytes));
         assertTrue(bytes.toString(StandardCharsets.UTF_8)
             .contains("Unable to load progress."));
+    }
+
+    @Test
+    void printsBracketAfterEveryBattle() {
+        StringBuilder input = new StringBuilder();
+        for (int i = 0; i < 14; i++) {
+            input.append("3\n");
+        }
+        input.append("4\n");
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        GameDriver.run(new ByteArrayInputStream(
+            input.toString().getBytes(StandardCharsets.UTF_8)),
+            new PrintStream(bytes));
+        String output = bytes.toString(StandardCharsets.UTF_8);
+        assertEquals(14, countOccurrences(output, "TOURNAMENT BRACKET"));
+    }
+
+    private int countOccurrences(String text, String target) {
+        int count = 0;
+        int index = 0;
+        while ((index = text.indexOf(target, index)) >= 0) {
+            count++;
+            index += target.length();
+        }
+        return count;
     }
 }
