@@ -1,15 +1,20 @@
 # Calculated Combat Prototype
 
-This is a basic prototype of Calculated Combat, a
-text-based tournament fighting game. The prototype supports a player, a
-linked-list-backed shop, equipment purchases, a fighter queue, and an
-automatic match.
+This is a working MVP slice of Calculated Combat, a text-based tournament
+fighting game. It supports equipment purchases, level-scaled shops, named
+save/load, and an eight-fighter double-elimination tournament that runs one
+match at a time.
 
 ## Compile and run
 
-In **Command Prompt or Powershell**, first navigate to the repository root:
+In **Command Prompt**, first navigate to the repository root:
 ```cmd
-cd "C:\InsertFolderNameHere\KeepDoingThis\UntilYouGet\ToTheFolder\ThatStoresTheProject"
+cd /d "C:\Users\brian\Desktop\stuff\code\cs2114-project2-91"
+```
+
+In **PowerShell**, use:
+```powershell
+Set-Location "C:\Users\brian\Desktop\stuff\code\cs2114-project2-91"
 ```
 
 Compile and run the game in Command Prompt:
@@ -65,15 +70,17 @@ java -jar lib\junit-platform-console-standalone-1.10.2.jar execute --class-path 
 - `Player` owns gold and five equipment slots.
 - `Shop` stores `Item` offers in `CustomLinkedList<Item>`, including duplicate
   offers with different prices.
-- `Tournament` stores `GameCharacter` opponents in the same generic
-  `CustomLinkedList<T>` implementation.
+- `Tournament` stores `GameCharacter` entrants in the same generic
+  `CustomLinkedList<T>` implementation and runs the winners and losers
+  brackets through the public list API.
 - `ShopProgression` stores level-specific `Shop` objects in that same generic
   `CustomLinkedList<T>`, so three application element types use one chain.
 - `TournamentRound` calculates a bounded win probability from Aggro, Control,
   and Midrange counter relationships, then resolves a match.
 - `GameDriver` provides a retrying menu for status, buying level gear, fighting,
-  saving, loading, and exiting.
-- `GameSave` writes and validates named player progress, including equipment.
+  saving, loading, and exiting, and records rewards and run termination.
+- `GameSave` writes and validates named player progress, including equipment,
+  tournament wins, and tournament losses.
 
 Invalid actions return `false` or `null` without changing state. Invalid
 constructor values throw `IllegalArgumentException`, so bad input is rejected
@@ -84,14 +91,14 @@ at the validation boundary rather than crashing later in the game.
 ### Changes from the specification
 
 The specification described a complete eight-character double-elimination
-tournament, queues that change after wins and losses, level-based shop unlocks,
-and a full interactive menu. This prototype intentionally implements a smaller
-slice: a player can buy one catalog item, opponents can be queued, and
-one automatic fight can run. The driver now wraps this slice in a small menu
-and retries invalid input. Application methods remain direct APIs so the
-state transitions can be tested independently from console I/O.
+tournament, changing queues, level-based shop unlocks, and a full interactive
+menu. The implementation now has an explicit eight-fighter bracket with
+winner/loser transitions, a single no-reset grand final, one-match-at-a-time
+driver execution, rewards, level advancement, and five-win/ten-loss
+termination. Validation remains at application boundaries so state
+transitions can be tested independently from console I/O.
 
-The specification left the probability formula open. The prototype compares
+The specification left the probability formula open. The implementation compares
 each fighter's Aggro against the opponent's Control, Control against Midrange,
 and Midrange against Aggro, combines those differences, and maps the result
 through a logistic function to keep the probability between zero and one.
@@ -131,40 +138,36 @@ the save file is bounded by five equipment slots.
 
 ### Unknowns
 
-The prototype resolved a first-pass counter-based probability algorithm and
-made it testable with a seeded random source. It also resolved named progress
-serialization and level-scaled randomized store generation. The exact balance
-of stats, prices, gold rewards, queue progression, and bracket advancement
-remains open until the full game loop exists. The complete double-elimination
-bracket and adaptive opponents are still open.
+The implementation resolved a first-pass counter-based probability algorithm,
+named progress serialization, level-scaled randomized store generation, and
+the double-elimination bracket lifecycle. Exact balance of stats, prices, and
+rewards remains a tuning concern. Deterministic seeded tournament outcomes
+remain open because `TournamentRound` still owns its random source.
 
 ### What does not work yet
 
-The prototype does not yet have the eight-player bracket, grand-final rules,
-win/loss run termination, round gold rewards, randomized opponent pools, or
-background tournaments. Save/load currently covers the player name, level,
-gold, and five equipment slots; it is not a complete tournament snapshot.
-The current tests cover every public method in the implemented application
-classes, including empty and missing removal cases.
+Adaptive opponents, background tournaments, same-round loss queues, and a
+mid-tournament bracket snapshot are not implemented. The save file persists
+the player progression state and restarts a fresh queue after loading. The
+loss-queue rule from the larger specification still needs a dedicated queue
+object. The current tests cover the public application methods implemented in
+the MVP and include empty, missing, malformed, and invalid-input cases.
 
 ## Next Steps
 
-1. **Team - tournament progression:** implement the eight-player
-   double-elimination bracket and queue replacement rules.
-2. **Team - game state:** add total wins/losses, round rewards, level
-   progression, and the five-win/ten-loss end condition.
-3. **Team - shop:** connect the committed level-scaled `ShopProgression`
-   stretch goal to unlock rules and enforce the final catalog rules through
-   the same linked-list API.
-4. **Team - driver:** expand the current validated menu with tournament
-   progression and complete state displays.
-5. **Team - committed stretch goals:** save/load and random level-scaled
-   stores are implemented and will be extended with complete tournament state.
-6. **Team - dropped/deferred stretch goals:** adaptive opponents, background
-   tournaments, and same-round loss queues are deferred.
-7. **Team - tests:** add `TournamentBracketTest` for bracket order and
-   queue-after-win/loss behavior, `ProgressionTest` for rewards and run-ending
-   rules, and `DriverInputTest` for every new menu command.
+1. **Brian - queue rules:** preserve the unjoined queue after a tournament loss
+   and replace it with stronger generated opponents after a tournament win.
+2. **Brian - deterministic testing:** inject or expose a seeded match random
+   source and add exact match-order assertions.
+3. **Brian - save state:** decide whether mid-tournament bracket snapshots are
+   required and add `GameSaveTest` coverage if they are.
+4. **Team - committed stretch goals:** keep named save/load and random
+   level-scaled stores maintained as the committed stretch goals.
+5. **Team - deferred stretch goals:** adaptive opponents, background
+   tournaments, and same-round loss queues remain deferred unless the team
+   re-scopes them.
+6. **Brian - tests:** add queue, deterministic outcome, and mid-tournament
+   save tests for the remaining work.
 
 ## Attribution
 
@@ -175,7 +178,7 @@ classes, including empty and missing removal cases.
 | `src/characters/Player.java` | Brian, Leo | Revised and tested with GenAI assistance |
 | `src/shop/Shop.java` | Brian, Ben | Revised and tested with GenAI assistance |
 | `src/shop/ShopProgression.java` | Brian | Wrote and tested with GenAI assistance |
-| `src/tournament/Tournament.java` | Brian, David | Revised with GenAI assistance |
+| `src/tournament/Tournament.java` | Brian, David | Revised and tested with GenAI assistance |
 | `src/tournament/TournamentRound.java` | Brian | Revised and tested with GenAI assistance |
 | `src/main/GameDriver.java` | Brian, David, Ben | Revised and tested with GenAI assistance |
 | `src/gamesaves/GameSave.java` | David, Ben | Revised and tested with GenAI assistance |
@@ -193,4 +196,4 @@ draft edge-case tests, review public-method coverage, propose the save/load and
 scaled-shop designs, and review the README. The team selected the two
 committed stretch goals after discussion; implementation details and tests
 were then adapted and run by Brian. The completed prototype test suite
-contains 25 passing tests.
+contains 38 passing tests.
