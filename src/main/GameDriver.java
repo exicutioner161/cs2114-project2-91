@@ -30,6 +30,7 @@ public class GameDriver {
                 + "\n4. Exit"
                 + "\n5. Save progress"
                 + "\n6. Load progress"
+                + "\n7. Sell gear"
                 + "\nChoose an option: ";
         System.out.println(menu);
     }
@@ -60,10 +61,16 @@ public class GameDriver {
                             + "\nTournament Losses: " + tournamentLosses + "/10");
                 case 2 -> {
                     Shop shop = progression.getShop(player.getLevel());
-                    System.out.println(shop != null
-                            && shop.buy(player, "Level " + player.getLevel() + " Sword")
-                                    ? "Sword equipped."
-                                    : "Unable to buy sword.");
+                    if (shop == null) {
+                        System.out.println("No shop is unlocked for this level.");
+                        break;
+                    }
+                    System.out.println(shop.catalogText());
+                    System.out.print("Enter the exact item name to buy: ");
+                    String itemName = input.hasNextLine() ? input.nextLine().trim() : "";
+                    System.out.println(shop.buy(player, itemName)
+                            ? "Item equipped."
+                            : "Unable to buy item.");
                 }
                 case 3 -> {
                     if (tournament.isFinished()) {
@@ -119,6 +126,18 @@ public class GameDriver {
                         System.out.println("Progress loaded.");
                     } catch (java.io.IOException | IllegalArgumentException exception) {
                         System.out.println("Unable to load progress.");
+                    }
+                }
+                case 7 -> {
+                    System.out.print("Enter equipment slot (0-4) to sell: ");
+                    String rawSlot = input.hasNextLine() ? input.nextLine().trim() : "";
+                    try {
+                        int slot = Integer.parseInt(rawSlot);
+                        System.out.println(player.sell(slot)
+                                ? "Item sold."
+                                : "Unable to sell item.");
+                    } catch (NumberFormatException exception) {
+                        System.out.println("Invalid equipment slot.");
                     }
                 }
                 default -> {

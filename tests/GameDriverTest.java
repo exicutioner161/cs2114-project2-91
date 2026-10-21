@@ -14,7 +14,8 @@ import main.GameDriver;
 class GameDriverTest {
     @Test
     void retriesInvalidInputAndCompletesValidPath() {
-        String input = "\nletters\n-1\n999999999999999999999\n1\n2\n3\n4\n";
+        String input = "\nletters\n-1\n999999999999999999999\n1\n2\n"
+            + "Level 1 Blade of Dawn\n3\n4\n";
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         runWithConsole(input, bytes);
         String output = bytes.toString(StandardCharsets.UTF_8);

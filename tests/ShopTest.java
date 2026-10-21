@@ -1,6 +1,7 @@
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -38,5 +39,22 @@ class ShopTest {
         assertEquals(6, new Shop().size());
         org.junit.jupiter.api.Assertions.assertThrows(IllegalArgumentException.class,
             () -> new Shop(null));
+    }
+
+    @Test
+    void listsAndRetrievesCatalogItems() {
+        Shop shop = new Shop(new Item[] {
+            new Item("Sword", 1, 2, 3, 10, 4),
+            new Item("Sword", 2, 3, 4, 20, 4)
+        });
+        assertEquals("Sword", shop.getItem(0).getName());
+        assertTrue(shop.catalogText().contains("Price: 10"));
+        assertTrue(shop.catalogText().contains("Price: 20"));
+    }
+
+    @Test
+    void rejectsInvalidCatalogIndex() {
+        Shop shop = new Shop(new Item[0]);
+        assertThrows(IndexOutOfBoundsException.class, () -> shop.getItem(0));
     }
 }

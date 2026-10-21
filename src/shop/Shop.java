@@ -31,6 +31,28 @@ public class Shop {
         return catalog.size();
     }
 
+    public Item getItem(int index) {
+        if (index < 0 || index >= catalog.size()) {
+            throw new IndexOutOfBoundsException("Shop item index is invalid");
+        }
+        return catalog.get(index);
+    }
+
+    public String catalogText() {
+        StringBuilder text = new StringBuilder();
+        for (int i = 0; i < catalog.size(); i++) {
+            Item item = catalog.get(i);
+            text.append(i + 1).append(". ").append(item.getName())
+                .append(" | Slot: ").append(slotName(item.getType()))
+                .append(" | A/C/M: ").append(item.getAggro()).append("/")
+                .append(item.getControl()).append("/")
+                .append(item.getMidrange())
+                .append(" | Price: ").append(item.getPrice())
+                .append('\n');
+        }
+        return text.toString();
+    }
+
     public boolean addItem(Item item) {
         if (item == null) {
             return false;
@@ -71,5 +93,16 @@ public class Shop {
         }
         Item item = findItem(name);
         return item != null && player.buy(item);
+    }
+
+    private String slotName(int slot) {
+        return switch (slot) {
+            case 0 -> "Head";
+            case 1 -> "Body";
+            case 2 -> "Legs";
+            case 3 -> "Feet";
+            case 4 -> "Weapon";
+            default -> "Unknown";
+        };
     }
 }
