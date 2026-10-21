@@ -105,9 +105,6 @@ public class GameDriver {
                                 running = false;
                             }
                         }
-                        if (running) {
-                            pauseAfterFight(input);
-                        }
                     }
                 }
                 case 4 -> {
@@ -152,6 +149,9 @@ public class GameDriver {
                     System.out.println("Invalid option. Enter a number from 1 to 7.");
                 }
             }
+            if (running) {
+                pauseAfterAction(input);
+            }
         }
     }
 
@@ -174,8 +174,8 @@ public class GameDriver {
         }
     }
 
-    private static void pauseAfterFight(Scanner input) {
-        System.out.println("Press Enter to return to the menu.");
+    private static void pauseAfterAction(Scanner input) {
+        System.out.println("Press Enter to continue.");
         if (input.hasNextLine()) {
             input.nextLine();
         }
