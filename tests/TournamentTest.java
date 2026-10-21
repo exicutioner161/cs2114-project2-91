@@ -173,7 +173,10 @@ class TournamentTest {
         while (!tournament.isFinished()) {
             MatchResult result = tournament.playNextMatch();
             assertNotSame(result.getWinner(), result.getLoser());
-            assertTrue(tournament.getLossCount(result.getLoser()) <= 2);
+            assertTrue(tournament.getLossCount(result.getLoser()) <= 2,
+                result.getLoser().getName() + " lost "
+                    + tournament.getLossCount(result.getLoser()) + " times in phase "
+                    + result.getPhase());
             matches++;
             assertTrue(matches <= 14);
         }

@@ -136,6 +136,9 @@ public class Player extends GameCharacter {
     }
 
     public void setWins(int wins) {
+        if (wins < 0) {
+            throw new IllegalArgumentException("Wins cannot be negative");
+        }
         this.wins = wins;
     }
 
@@ -148,6 +151,13 @@ public class Player extends GameCharacter {
     }
 
     public void setLosses(int losses) {
+        if (losses < 0) {
+            throw new IllegalArgumentException("Losses cannot be negative");
+        }
         this.losses = losses;
+    }
+
+    public void incrementLosses() {
+        losses++;
     }
 }

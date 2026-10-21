@@ -8,6 +8,7 @@ public class MatchResult {
     private final GameCharacter fighter2;
     private final GameCharacter winner;
     private final GameCharacter loser;
+    private final int phase;
 
     public MatchResult(GameCharacter fighter1, GameCharacter fighter2,
             GameCharacter winner, int phase) {
@@ -19,6 +20,7 @@ public class MatchResult {
         } else {
             loser = fighter1;
         }
+        this.phase = phase;
     }
 
     public GameCharacter getWinner() {
@@ -35,5 +37,9 @@ public class MatchResult {
 
     public GameCharacter getFighter2() {
         return fighter2;
+    }
+
+    public int getPhase() {
+        return phase;
     }
 }

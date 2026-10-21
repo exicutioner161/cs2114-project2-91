@@ -75,7 +75,7 @@ public class Tournament {
             fighter2 = losers.get(1);
         } else if (phase == 7) {
             fighter1 = losers.get(0);
-            fighter2 = winners.get(1);
+            fighter2 = losers.get(1);
         } else if (phase == 8) {
             fighter1 = winners.get(0);
             fighter2 = losers.get(0);

@@ -32,6 +32,8 @@ public class GameSave {
         content.append("name=").append(encode(name)).append('\n');
         content.append("level=").append(player.getLevel()).append('\n');
         content.append("gold=").append(player.getGold()).append('\n');
+        content.append("wins=").append(player.getWins()).append('\n');
+        content.append("losses=").append(player.getLosses()).append('\n');
         for (int slot = 0; slot < player.getInventory().length; slot++) {
             Item item = player.getItem(slot);
             if (item != null) {
@@ -57,9 +59,23 @@ public class GameSave {
         try {
             int level = Integer.parseInt(requiredValue(lines[1], "level"));
             int gold = Integer.parseInt(requiredValue(lines[2], "gold"));
+            int lineIndex = 3;
+            int wins = 0;
+            int losses = 0;
+            if (lineIndex < lines.length && lines[lineIndex].startsWith("wins=")) {
+                wins = Integer.parseInt(requiredValue(lines[lineIndex], "wins"));
+                lineIndex++;
+            }
+            if (lineIndex < lines.length && lines[lineIndex].startsWith("losses=")) {
+                losses = Integer.parseInt(requiredValue(lines[lineIndex], "losses"));
+                lineIndex++;
+            }
+            if (wins < 0 || losses < 0) {
+                throw new IllegalArgumentException("Save counters are invalid");
+            }
             Item[] inventory = new Item[5];
             boolean[] occupiedSlots = new boolean[inventory.length];
-            for (int i = 3; i < lines.length; i++) {
+            for (int i = lineIndex; i < lines.length; i++) {
                 if (lines[i].isBlank()) {
                     continue;
                 }
@@ -76,7 +92,10 @@ public class GameSave {
                     Double.parseDouble(fields[4]), Double.parseDouble(fields[5]),
                     Integer.parseInt(fields[6]), slot);
             }
-            return new Player(expectedName, level, gold, inventory);
+            Player player = new Player(expectedName, level, gold, inventory);
+            player.setWins(wins);
+            player.setLosses(losses);
+            return player;
         } catch (IllegalArgumentException exception) {
             throw new IllegalArgumentException("Save values are invalid", exception);
         }

@@ -46,11 +46,15 @@ class GameSaveTest {
         try {
             Player original = new Player("Hero|One\n", 2, 75, new Item[5]);
             original.addItem(new Item("Sword|One\n", 3, 1, 0, 40, 4));
+            original.setWins(2);
+            original.setLosses(3);
             GameSave save = new GameSave();
             assertTrue(save.save("Hero|One\n", original, path));
             Player restored = save.load("Hero|One\n", path);
             assertEquals(2, restored.getLevel());
             assertEquals(75, restored.getGold());
+            assertEquals(2, restored.getWins());
+            assertEquals(3, restored.getLosses());
             assertEquals("Sword|One\n", restored.getItem(4).getName());
         } finally {
             Files.deleteIfExists(path);
