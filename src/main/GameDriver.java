@@ -71,12 +71,7 @@ public class GameDriver {
                         System.out.println("No shop is unlocked for this level.");
                         break;
                     }
-                    System.out.println(shop.catalogText());
-                    System.out.print("Enter the exact item name to buy: ");
-                    String itemName = input.hasNextLine() ? input.nextLine().trim() : "";
-                    System.out.println(shop.buy(player, itemName)
-                            ? "Item equipped."
-                            : "Unable to buy item.");
+                    buyGear(input, shop, player);
                 }
                 case 3 -> {
                     if (tournament.isFinished()) {
@@ -162,6 +157,7 @@ public class GameDriver {
             System.out.println("Invalid option. Enter a number from 1 to 7.");
             return null;
         }
+
         try {
             long parsed = Long.parseLong(rawChoice);
             if (parsed < Integer.MIN_VALUE || parsed > Integer.MAX_VALUE) {
@@ -173,6 +169,106 @@ public class GameDriver {
             System.out.println("Invalid option. Enter a number from 1 to 7.");
             return null;
         }
+    }
+
+    private static void buyGear(Scanner input, Shop shop, Player player) {
+        while (input.hasNextLine()) {
+            printCategoryMenu();
+            Integer category = parseBoundedChoice(input.nextLine().trim(), 0, 5,
+                    "category");
+            if (category == null) {
+                continue;
+            }
+            if (category == 0) {
+                return;
+            }
+            buyCategoryItem(input, shop, player, category - 1);
+            return;
+        }
+    }
+
+    private static void printCategoryMenu() {
+        System.out.println("\nChoose an equipment category:"
+                + "\n1. Head"
+                + "\n2. Body"
+                + "\n3. Legs"
+                + "\n4. Feet"
+                + "\n5. Weapon"
+                + "\n0. Return to main menu");
+        System.out.print("Choose a category: ");
+    }
+
+    private static void buyCategoryItem(Scanner input, Shop shop, Player player,
+            int slot) {
+        while (input.hasNextLine()) {
+            int itemCount = printCategoryItems(shop, slot);
+            Integer itemChoice = parseBoundedChoice(input.nextLine().trim(), 0,
+                    itemCount, "item");
+            if (itemChoice == null) {
+                continue;
+            }
+            if (itemChoice == 0) {
+                return;
+            }
+            Item item = itemAtCategoryIndex(shop, slot, itemChoice - 1);
+            System.out.println(player.buy(item)
+                    ? "Item equipped."
+                    : "Unable to buy item.");
+            return;
+        }
+    }
+
+    private static int printCategoryItems(Shop shop, int slot) {
+        int choice = 1;
+        System.out.println("\n" + categoryName(slot) + " items:");
+        for (int i = 0; i < shop.size(); i++) {
+            Item item = shop.getItem(i);
+            if (item.getType() == slot) {
+                System.out.println(choice++ + ". " + item.getName()
+                        + " | A/C/M: " + item.getAggro() + "/"
+                        + item.getControl() + "/" + item.getMidrange()
+                        + " | Price: " + item.getPrice());
+            }
+        }
+        System.out.println("0. Return to category menu");
+        System.out.print("Choose an item: ");
+        return choice - 1;
+    }
+
+    private static Item itemAtCategoryIndex(Shop shop, int slot, int categoryIndex) {
+        int currentIndex = 0;
+        for (int i = 0; i < shop.size(); i++) {
+            Item item = shop.getItem(i);
+            if (item.getType() == slot) {
+                if (currentIndex == categoryIndex) {
+                    return item;
+                }
+                currentIndex++;
+            }
+        }
+        throw new IllegalArgumentException("Category item index is invalid");
+    }
+
+    private static String categoryName(int slot) {
+        return switch (slot) {
+            case 0 -> "Head";
+            case 1 -> "Body";
+            case 2 -> "Legs";
+            case 3 -> "Feet";
+            case 4 -> "Weapon";
+            default -> "Unknown";
+        };
+    }
+
+    private static Integer parseBoundedChoice(String rawChoice, int minimum,
+            int maximum, String choiceType) {
+        Integer choice = parseChoice(rawChoice);
+        if (choice == null || choice < minimum || choice > maximum) {
+            System.out.println("Invalid " + choiceType
+                    + ". Please choose a valid option.");
+            return null;
+        }
+        return choice;
     }
 
     private static Tournament createTournament(Player player) {
