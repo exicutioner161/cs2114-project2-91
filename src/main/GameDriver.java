@@ -2,7 +2,6 @@ package main;
 
 import java.nio.file.Path;
 import java.util.Scanner;
-
 import characters.Item;
 import characters.Player;
 import gamesaves.GameSave;
