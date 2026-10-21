@@ -79,9 +79,11 @@ java -jar lib\junit-platform-console-standalone-1.10.2.jar execute --class-path 
   of the five equipment slots.
 - `TournamentRound` calculates a bounded win probability from Aggro, Control,
   and Midrange counter relationships, then resolves a match.
-- `GameDriver` provides a retrying menu for status, buying level gear, fighting,
-  saving, loading, and exiting, records rewards and run termination, and
-  prints the full ASCII bracket after every completed battle.
+- `GameDriver` provides a retrying menu for status, category-based gear buying,
+  fighting, saving, loading, and exiting, records rewards and run termination,
+  and prints the full ASCII bracket after every completed battle. Buying gear
+  opens Head, Body, Legs, Feet, and Weapon submenus; each category displays
+  only its offers and uses numbered item choices.
 - `GameSave` writes and validates named player progress, including equipment,
   tournament wins, tournament losses, and an optional mid-tournament bracket
   snapshot. Loading a snapshot resumes the next match instead of rebuilding
@@ -91,9 +93,11 @@ java -jar lib\junit-platform-console-standalone-1.10.2.jar execute --class-path 
 - `AdaptiveOpponentFactory`, `BackgroundTournament`, and
   `SameRoundLossQueue` implement the three stretch goals from the scope.
 
-Invalid actions return `false` or `null` without changing state. Invalid
-constructor values throw `IllegalArgumentException`, so bad input is rejected
-at the validation boundary rather than crashing later in the game.
+Invalid actions return `false` or `null` without changing state. The driver
+reprompts inside the current shop submenu for invalid category or item
+choices, and `0` returns from either submenu. Invalid constructor values throw
+`IllegalArgumentException`, so bad input is rejected at the validation
+boundary rather than crashing later in the game.
 
 ## Reflection
 

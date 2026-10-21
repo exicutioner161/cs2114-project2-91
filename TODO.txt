@@ -59,6 +59,8 @@ Shop and display updates
 [C - 10/21 Brian] Sell equipped gear and clear its slot.
 [C - 10/21 Brian] Save and restore an active tournament without rebuilding it.
 [C - 10/21 Brian] Test valid, missing, malformed, and resumed tournament saves.
+[C - 10/21 Brian] Split buying into category and item submenus.
+[C - 10/21 Brian] Reprompt invalid shop submenu choices without changing state.
 
 Deferred follow-up
 ------------------
