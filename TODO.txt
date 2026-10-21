@@ -55,3 +55,13 @@ Shop and display updates
 [C - 10/21 Brian] Generate five offers for each armor and weapon slot.
 [C - 10/21 Brian] Use a fixed unique item-name list across every level and slot.
 [C - 10/21 Brian] Scale randomized item stats and prices with shop level.
+[C - 10/21 Brian] Display the complete shop catalog and support buying by name.
+[C - 10/21 Brian] Sell equipped gear and clear its slot.
+[C - 10/21 Brian] Save and restore an active tournament without rebuilding it.
+[C - 10/21 Brian] Test valid, missing, malformed, and resumed tournament saves.
+
+Deferred follow-up
+------------------
+[C - 10/21 Brian] Review and document current combat, shop, and reward bounds.
+[C - 10/21 Brian] Record encrypted saves and randomized item names as deferred
+stretch goals rather than unfinished MVP requirements.
