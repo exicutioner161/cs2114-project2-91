@@ -121,6 +121,8 @@ public class Tournament {
             phase = 5;
             matchIndex = 0;
         } else if (phase == 5) {
+            winners.clear();
+            winners.add(finalWinner);
             losers.add(finalLoser);
             matchIndex = 0;
             phase = 6;
@@ -138,7 +140,7 @@ public class Tournament {
             winners.clear();
             winners.add(winnersChampion);
             losers.clear();
-            losers.add(finalLoser);
+            losers.add(finalWinner);
             matchIndex = 0;
             phase = 8;
         } else {
