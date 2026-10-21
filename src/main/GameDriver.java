@@ -44,7 +44,7 @@ public class GameDriver {
             System.out.println("4. Exit");
             System.out.println("5. Save progress");
             System.out.println("6. Load progress");
-            System.out.print("Choose an option: ");
+            System.out.println("Choose an option: ");
             Integer choice = parseChoice(input.nextLine().trim());
             if (choice == null) {
                 continue;
