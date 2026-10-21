@@ -1,6 +1,5 @@
 package main;
 
-import java.io.InputStream;
 import java.io.PrintStream;
 import java.nio.file.Path;
 import java.util.Scanner;
@@ -23,13 +22,6 @@ public class GameDriver {
 
     public static void run(Scanner input) {
         runMenu(input, System.out);
-    }
-
-    public static void run(InputStream input, PrintStream output) {
-        if (input == null || output == null) {
-            throw new IllegalArgumentException("Input and output are required");
-        }
-        runMenu(new Scanner(input), output);
     }
 
     private static void runMenu(Scanner input, PrintStream out) {

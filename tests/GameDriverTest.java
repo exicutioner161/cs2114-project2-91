@@ -5,6 +5,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Scanner;
 
 import org.junit.jupiter.api.Test;
 
@@ -15,8 +16,7 @@ class GameDriverTest {
     void retriesInvalidInputAndCompletesValidPath() {
         String input = "\nletters\n-1\n999999999999999999999\n1\n2\n3\n4\n";
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        GameDriver.run(new ByteArrayInputStream(
-            input.getBytes(StandardCharsets.UTF_8)), new PrintStream(bytes));
+        runWithConsole(input, bytes);
         String output = bytes.toString(StandardCharsets.UTF_8);
         assertTrue(output.contains("Invalid option"));
         assertTrue(output.contains("Goodbye."));
@@ -45,8 +45,7 @@ class GameDriverTest {
     void reportsMissingSaveWithoutCrashing() {
         String input = "6\n4\n";
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        GameDriver.run(new ByteArrayInputStream(
-            input.getBytes(StandardCharsets.UTF_8)), new PrintStream(bytes));
+        runWithConsole(input, bytes);
         assertTrue(bytes.toString(StandardCharsets.UTF_8)
                 .contains("Unable to load progress."));
     }
@@ -59,9 +58,7 @@ class GameDriverTest {
         }
         input.append("4\n");
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        GameDriver.run(new ByteArrayInputStream(
-            input.toString().getBytes(StandardCharsets.UTF_8)),
-            new PrintStream(bytes));
+        runWithConsole(input.toString(), bytes);
         String output = bytes.toString(StandardCharsets.UTF_8);
         assertEquals(14, countOccurrences(output, "TOURNAMENT BRACKET"));
     }
@@ -74,5 +71,19 @@ class GameDriverTest {
             index += target.length();
         }
         return count;
+    }
+
+    private void runWithConsole(String input, ByteArrayOutputStream output) {
+        java.io.InputStream originalIn = System.in;
+        java.io.PrintStream originalOut = System.out;
+        try {
+            System.setIn(new ByteArrayInputStream(
+                input.getBytes(StandardCharsets.UTF_8)));
+            System.setOut(new PrintStream(output));
+            GameDriver.run(new Scanner(System.in));
+        } finally {
+            System.setIn(originalIn);
+            System.setOut(originalOut);
+        }
     }
 }
