@@ -23,6 +23,17 @@ public class GameDriver {
         runMenu(input);
     }
 
+    private static void printMenu() {
+        String menu = "\n1. View Status"
+                + "\n2. Buy gear"
+                + "\n3. Fight"
+                + "\n4. Exit"
+                + "\n5. Save progress"
+                + "\n6. Load progress"
+                + "\nChoose an option: ";
+        System.out.println(menu);
+    }
+
     private static void runMenu(Scanner input) {
         int tournamentWins = 0;
         int tournamentLosses = 0;
@@ -38,23 +49,15 @@ public class GameDriver {
         boolean running = true;
 
         while (running && input.hasNextLine()) {
-            System.out.println("\n1. View status");
-            System.out.println("2. Buy level gear");
-            System.out.println("3. Fight");
-            System.out.println("4. Exit");
-            System.out.println("5. Save progress");
-            System.out.println("6. Load progress");
-            System.out.println("Choose an option: ");
+            printMenu();
             Integer choice = parseChoice(input.nextLine().trim());
             if (choice == null) {
                 continue;
             }
             switch (choice) {
-                case 1 -> {
-                    System.out.println(player.catalogText());
-                    System.out.println("Tournament Wins: " + tournamentWins + "/5");
-                    System.out.println("Tournament Losses: " + tournamentLosses + "/10");
-                }
+                case 1 ->
+                    System.out.println(player.catalogText() + "\nTournament Wins: " + tournamentWins + "/5"
+                            + "\nTournament Losses: " + tournamentLosses + "/10");
                 case 2 -> {
                     Shop shop = progression.getShop(player.getLevel());
                     System.out.println(shop != null
