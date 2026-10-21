@@ -47,3 +47,11 @@ Deferred stretch goals
 [C - 10/21 Brian] Adaptive opponents.
 [C - 10/21 Brian] Background tournaments.
 [C - 10/21 Brian] Same-round loss queues.
+
+Shop and display updates
+------------------------
+[C - 10/21 Brian] Print the ASCII tournament bracket after every battle.
+[C - 10/21 Brian] Create four shops for playable levels 1 through 4.
+[C - 10/21 Brian] Generate five offers for each armor and weapon slot.
+[C - 10/21 Brian] Use a fixed unique item-name list across every level and slot.
+[C - 10/21 Brian] Scale randomized item stats and prices with shop level.

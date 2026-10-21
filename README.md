@@ -1,9 +1,9 @@
 # Calculated Combat Prototype
 
 This is a working MVP slice of Calculated Combat, a text-based tournament
-fighting game. It supports equipment purchases, level-scaled shops, named
-save/load, and an eight-fighter double-elimination tournament that runs one
-match at a time.
+fighting game. It supports equipment purchases, four level-scaled shops,
+named save/load, and an eight-fighter double-elimination tournament that runs
+one match at a time and prints its bracket after every battle.
 
 ## Compile and run
 
@@ -75,10 +75,13 @@ java -jar lib\junit-platform-console-standalone-1.10.2.jar execute --class-path 
   brackets through the public list API.
 - `ShopProgression` stores level-specific `Shop` objects in that same generic
   `CustomLinkedList<T>`, so three application element types use one chain.
+  Levels 1 through 4 each contain 25 offers: five unique named items in each
+  of the five equipment slots.
 - `TournamentRound` calculates a bounded win probability from Aggro, Control,
   and Midrange counter relationships, then resolves a match.
 - `GameDriver` provides a retrying menu for status, buying level gear, fighting,
-  saving, loading, and exiting, and records rewards and run termination.
+  saving, loading, and exiting, records rewards and run termination, and
+  prints the full ASCII bracket after every completed battle.
 - `GameSave` writes and validates named player progress, including equipment,
   tournament wins, and tournament losses.
 - `TournamentQueue` preserves waiting opponents after a loss and repopulates
@@ -145,7 +148,9 @@ the save file is bounded by five equipment slots.
 The implementation resolved a first-pass counter-based probability algorithm,
 named progress serialization, level-scaled randomized store generation, the
 double-elimination bracket lifecycle, and deterministic seeded outcomes.
-Exact balance of stats, prices, and rewards remains a tuning concern.
+The shop now uses a fixed name catalog and randomized stats/prices with
+stronger level ranges. Exact balance of stats, prices, and rewards remains a
+tuning concern.
 
 ### What does not work yet
 
@@ -196,4 +201,4 @@ draft edge-case tests, review public-method coverage, propose the save/load and
 scaled-shop designs, and review the README. The team selected the two
 committed stretch goals after discussion; implementation details and tests
 were then adapted and run by Brian. The completed prototype test suite
-contains 49 passing tests.
+contains 51 passing tests.
