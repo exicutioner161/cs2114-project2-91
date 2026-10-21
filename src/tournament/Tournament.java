@@ -109,6 +109,7 @@ public class Tournament {
             addAll(losers, phaseWinners);
             clearPhaseData();
             phase = 3;
+            matchIndex = 0;
         } else if (phase == 3) {
             CustomLinkedList<GameCharacter> nextLosers =
                 merge(phaseLosers, losers);
@@ -118,6 +119,7 @@ public class Tournament {
             addAll(losers, phaseWinners);
             clearPhaseData();
             phase = 5;
+            matchIndex = 0;
         } else if (phase == 5) {
             losers.add(finalLoser);
             matchIndex = 0;

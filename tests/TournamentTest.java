@@ -164,6 +164,33 @@ class TournamentTest {
         assertEquals(2, tournament.losersSize());
         assertEquals(6, tournament.winnersSize()+tournament.losersSize());
     }
+
+    @Test
+    void completesAllDoubleEliminationPhasesWithoutReset() {
+        registerSevenOpponents();
+        tournament.fillBracket();
+        int matches = 0;
+        while (!tournament.isFinished()) {
+            MatchResult result = tournament.playNextMatch();
+            assertNotSame(result.getWinner(), result.getLoser());
+            assertTrue(tournament.getLossCount(result.getLoser()) <= 2);
+            matches++;
+            assertTrue(matches <= 14);
+        }
+        assertEquals(14, matches);
+        assertNotNull(tournament.getChampion());
+    }
+
+    @Test
+    void rejectsPlayingAfterTournamentFinishes() {
+        registerSevenOpponents();
+        tournament.fillBracket();
+        while (!tournament.isFinished()) {
+            tournament.playNextMatch();
+        }
+        assertThrows(IllegalStateException.class,
+            () -> tournament.playNextMatch());
+    }
     private void registerSevenOpponents() {
         for (int i = 0; i < 7; i++) {
             tournament.addFighter(
