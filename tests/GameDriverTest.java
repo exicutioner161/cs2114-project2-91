@@ -43,6 +43,15 @@ class GameDriverTest {
     }
 
     @Test
+    void ignoresAnInitialEmptyLineBeforeTheFirstChoice() {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        runWithConsole("\n4\n", bytes);
+        String output = bytes.toString(StandardCharsets.UTF_8);
+        assertTrue(output.contains("Goodbye."));
+        assertTrue(!output.contains("Invalid option"));
+    }
+
+    @Test
     void reportsMissingSaveWithoutCrashing() {
         String input = "6\n4\n";
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
