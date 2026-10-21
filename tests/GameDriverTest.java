@@ -15,7 +15,7 @@ class GameDriverTest {
     @Test
     void retriesInvalidInputAndCompletesValidPath() {
         String input = "\nletters\n-1\n999999999999999999999\n1\n2\n"
-            + "Level 1 Blade of Dawn\n3\n4\n";
+            + "5\n1\n3\n4\n";
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         runWithConsole(input, bytes);
         String output = bytes.toString(StandardCharsets.UTF_8);
@@ -24,6 +24,27 @@ class GameDriverTest {
         assertTrue(output.contains("Match winner:"));
         assertTrue(output.contains("TOURNAMENT BRACKET"));
         assertTrue(output.contains("Winners Bracket"));
+    }
+
+    @Test
+    void buysFromCategoryAndItemSubmenus() {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        runWithConsole("2\n5\n1\n4\n", bytes);
+        String output = bytes.toString(StandardCharsets.UTF_8);
+        assertTrue(output.contains("Choose an equipment category:"));
+        assertTrue(output.contains("Weapon items:"));
+        assertTrue(output.contains("Item equipped."));
+        assertTrue(output.contains("Goodbye."));
+    }
+
+    @Test
+    void invalidCategoryAndItemChoicesRepromptInTheirSubmenus() {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        runWithConsole("2\n9\n5\n9\n0\n0\n4\n", bytes);
+        String output = bytes.toString(StandardCharsets.UTF_8);
+        assertTrue(output.contains("Invalid category."));
+        assertTrue(output.contains("Invalid item."));
+        assertTrue(output.contains("Goodbye."));
     }
 
     @Test
