@@ -63,6 +63,8 @@ Shop and display updates
 [C - 10/21 Brian] Reprompt invalid shop submenu choices without changing state.
 [C - 10/21 Brian] Pause after active fights until the player confirms the
 bracket view before returning to the main menu.
+[C - 10/21 Brian] Require confirmation after every active menu action before
+printing the main menu again.
 
 Deferred follow-up
 ------------------
