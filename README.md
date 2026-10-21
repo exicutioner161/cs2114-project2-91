@@ -81,6 +81,10 @@ java -jar lib\junit-platform-console-standalone-1.10.2.jar execute --class-path 
   saving, loading, and exiting, and records rewards and run termination.
 - `GameSave` writes and validates named player progress, including equipment,
   tournament wins, and tournament losses.
+- `TournamentQueue` preserves waiting opponents after a loss and repopulates
+  stronger opponents after a win.
+- `AdaptiveOpponentFactory`, `BackgroundTournament`, and
+  `SameRoundLossQueue` implement the three stretch goals from the scope.
 
 Invalid actions return `false` or `null` without changing state. Invalid
 constructor values throw `IllegalArgumentException`, so bad input is rejected
@@ -139,35 +143,25 @@ the save file is bounded by five equipment slots.
 ### Unknowns
 
 The implementation resolved a first-pass counter-based probability algorithm,
-named progress serialization, level-scaled randomized store generation, and
-the double-elimination bracket lifecycle. Exact balance of stats, prices, and
-rewards remains a tuning concern. Deterministic seeded tournament outcomes
-remain open because `TournamentRound` still owns its random source.
+named progress serialization, level-scaled randomized store generation, the
+double-elimination bracket lifecycle, and deterministic seeded outcomes.
+Exact balance of stats, prices, and rewards remains a tuning concern.
 
 ### What does not work yet
 
-Adaptive opponents, background tournaments, same-round loss queues, and a
-mid-tournament bracket snapshot are not implemented. The save file persists
+Mid-tournament bracket snapshots are not implemented. The save file persists
 the player progression state and restarts a fresh queue after loading. The
-loss-queue rule from the larger specification still needs a dedicated queue
-object. The current tests cover the public application methods implemented in
-the MVP and include empty, missing, malformed, and invalid-input cases.
+implemented queue and stretch-goal services are covered by focused tests. The
+current suite includes empty, missing, malformed, invalid-input, deterministic,
+and full-bracket cases.
 
 ## Next Steps
 
-1. **Brian - queue rules:** preserve the unjoined queue after a tournament loss
-   and replace it with stronger generated opponents after a tournament win.
-2. **Brian - deterministic testing:** inject or expose a seeded match random
-   source and add exact match-order assertions.
-3. **Brian - save state:** decide whether mid-tournament bracket snapshots are
+1. **Brian - save state:** decide whether mid-tournament bracket snapshots are
    required and add `GameSaveTest` coverage if they are.
-4. **Team - committed stretch goals:** keep named save/load and random
-   level-scaled stores maintained as the committed stretch goals.
-5. **Team - deferred stretch goals:** adaptive opponents, background
-   tournaments, and same-round loss queues remain deferred unless the team
-   re-scopes them.
-6. **Brian - tests:** add queue, deterministic outcome, and mid-tournament
-   save tests for the remaining work.
+2. **Team - balance:** tune combat probabilities, shop prices, and rewards.
+3. **Team - maintenance:** keep save/load, queue progression, adaptive
+   opponents, background tournaments, and same-round loss queues integrated.
 
 ## Attribution
 
@@ -179,6 +173,10 @@ the MVP and include empty, missing, malformed, and invalid-input cases.
 | `src/shop/Shop.java` | Brian, Ben | Revised and tested with GenAI assistance |
 | `src/shop/ShopProgression.java` | Brian | Wrote and tested with GenAI assistance |
 | `src/tournament/Tournament.java` | Brian, David | Revised and tested with GenAI assistance |
+| `src/tournament/TournamentQueue.java` | Brian | Wrote and tested with GenAI assistance |
+| `src/tournament/AdaptiveOpponentFactory.java` | Brian | Wrote and tested with GenAI assistance |
+| `src/tournament/BackgroundTournament.java` | Brian | Wrote and tested with GenAI assistance |
+| `src/tournament/SameRoundLossQueue.java` | Brian | Wrote and tested with GenAI assistance |
 | `src/tournament/TournamentRound.java` | Brian | Revised and tested with GenAI assistance |
 | `src/main/GameDriver.java` | Brian, David, Ben | Revised and tested with GenAI assistance |
 | `src/gamesaves/GameSave.java` | David, Ben | Revised and tested with GenAI assistance |
@@ -190,10 +188,12 @@ the MVP and include empty, missing, malformed, and invalid-input cases.
 | `tests/PlayerTest.java` | Ben, Brian | Wrote and tested with GenAI assistance |
 | `tests/ShopTest.java` | Ben, Brian, David | Wrote and tested with GenAI assistance |
 | `tests/TournamentTest.java` | Brian, Leo | Wrote and tested with GenAI assistance |
+| `tests/TournamentQueueTest.java` | Brian | Wrote and tested with GenAI assistance |
+| `tests/StretchGoalTest.java` | Brian | Wrote and tested with GenAI assistance |
 
 GenAI was used to help inspect the existing codebase, identify compile blockers,
 draft edge-case tests, review public-method coverage, propose the save/load and
 scaled-shop designs, and review the README. The team selected the two
 committed stretch goals after discussion; implementation details and tests
 were then adapted and run by Brian. The completed prototype test suite
-contains 38 passing tests.
+contains 49 passing tests.
