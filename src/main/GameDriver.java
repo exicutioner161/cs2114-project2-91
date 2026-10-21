@@ -25,64 +25,58 @@ public class GameDriver {
         runMenu(input, System.out);
     }
 
-    public static void run(InputStream input, PrintStream output) {
-        if (input == null) {
-            throw new IllegalArgumentException("Input is required");
-        }
-        runMenu(new Scanner(input), output);
-    }
-
-    private static void runMenu(Scanner input, PrintStream output) {
+    private static void runMenu(Scanner input, PrintStream out) {
         int tournamentWins = 0;
         int tournamentLosses = 0;
         final int MAX_WINS = 5;
         final int MAX_LOSSES = 10;
-        if (input == null || output == null) {
+        if (input == null || out == null) {
             throw new IllegalArgumentException("Input and output are required");
         }
         Player player = new Player("Player", 1, 100, new characters.Item[5]);
-        ShopProgression progression = new ShopProgression(3);
+        ShopProgression progression = new ShopProgression(4);
         GameSave saves = new GameSave();
         Tournament tournament = createTournament(player);
         boolean running = true;
         while (running && input.hasNextLine()) {
-            output.println("\n1. View status");
-            output.println("2. Buy level gear");
-            output.println("3. Fight");
-            output.println("4. Exit");
-            output.println("5. Save progress");
-            output.println("6. Load progress");
-            output.print("Choose an option: ");
-            Integer choice = parseChoice(input.nextLine().trim(), output);
+            out.println("\n1. View status");
+            out.println("2. Buy level gear");
+            out.println("3. Fight");
+            out.println("4. Exit");
+            out.println("5. Save progress");
+            out.println("6. Load progress");
+            out.print("Choose an option: ");
+            Integer choice = parseChoice(input.nextLine().trim(), out);
             if (choice == null) {
                 continue;
             }
             switch (choice) {
                 case 1:
-                    output.println(player.catalogText());
-                    output.println("Tournament Wins: "+ tournamentWins +"/5");
-                    output.println("Tournament Losses: "+tournamentLosses+"/10");
+                    out.println(player.catalogText());
+                    out.println("Tournament Wins: " + tournamentWins + "/5");
+                    out.println("Tournament Losses: " + tournamentLosses + "/10");
                     break;
                 case 2:
                     Shop shop = progression.getShop(player.getLevel());
-                    output.println(shop != null
+                    out.println(shop != null
                             && shop.buy(player, "Level " + player.getLevel() + " Sword")
                                     ? "Sword equipped."
                                     : "Unable to buy sword.");
                     break;
                 case 3:
                     if (tournament.isFinished()) {
-                        output.println("Tournament is complete.");
+                        out.println("Tournament is complete.");
                         break;
                     }
                     MatchResult result = tournament.playNextMatch();
                     if (result.getWinner() == player) {
                         player.awardGold(5);
                     }
-                    output.println("Match winner: " + result.getWinner());
-                    output.println("Match loser: " + result.getLoser());
+                    out.println("Match winner: " + result.getWinner());
+                    out.println("Match loser: " + result.getLoser());
+                    out.println(tournament);
                     if (tournament.isFinished()) {
-                        output.println("Tournament champion: "
+                        out.println("Tournament champion: "
                                 + tournament.getChampion());
                         if (tournament.getChampion() == player) {
                             player.incrementWins();
@@ -91,29 +85,29 @@ public class GameDriver {
                                 player.advanceLevel();
                             }
                             tournament = createTournament(player);
-                            output.println("Tournament win recorded.");
+                            out.println("Tournament win recorded.");
                         } else {
                             player.incrementLosses();
-                            output.println("Tournament loss recorded.");
+                            out.println("Tournament loss recorded.");
                         }
                         if (player.getWins() >= MAX_WINS
                                 || player.getLosses() >= MAX_LOSSES) {
-                            output.println("Run complete.");
+                            out.println("Run complete.");
                             running = false;
                         }
                     }
                     break;
                 case 4:
                     running = false;
-                    output.println("Goodbye.");
+                    out.println("Goodbye.");
                     break;
                 case 5:
                     try {
                         saves.save("Player", player,
                                 Path.of("calculated-combat-player.save"));
-                        output.println("Progress saved.");
+                        out.println("Progress saved.");
                     } catch (java.io.IOException exception) {
-                        output.println("Unable to save progress.");
+                        out.println("Unable to save progress.");
                     }
                     break;
                 case 6:
@@ -121,13 +115,13 @@ public class GameDriver {
                         player = saves.load("Player",
                                 Path.of("calculated-combat-player.save"));
                         tournament = createTournament(player);
-                        output.println("Progress loaded.");
+                        out.println("Progress loaded.");
                     } catch (java.io.IOException | IllegalArgumentException exception) {
-                        output.println("Unable to load progress.");
+                        out.println("Unable to load progress.");
                     }
                     break;
                 default:
-                    output.println("Invalid option. Enter a number from 1 to 6.");
+                    out.println("Invalid option. Enter a number from 1 to 6.");
                     break;
             }
         }

@@ -58,4 +58,16 @@ class PlayerTest {
         assertThrows(IllegalArgumentException.class,
             () -> new Player("Hero", 0, 1, new Item[2]));
     }
+
+    @Test
+    void toStringSummarizesProgressAndGear() {
+        Player player = new Player("Hero", 1, 10, new Item[5]);
+        player.addItem(new Item("Sword", 1, 1, 1, 5, 4));
+        player.incrementWins();
+        String text = player.toString();
+        assertTrue(text.contains("Hero"));
+        assertTrue(text.contains("Gold: 10"));
+        assertTrue(text.contains("Wins: 1"));
+        assertTrue(text.contains("Sword"));
+    }
 }

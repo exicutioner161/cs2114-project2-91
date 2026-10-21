@@ -6,14 +6,29 @@ import characters.Item;
 import linkedlist.CustomLinkedList;
 
 public class ShopProgression {
+    private static final int FIRST_LEVEL = 1;
+    private static final int ITEMS_PER_SLOT = 5;
+    private static final String[][] ITEM_NAMES = {
+        {"Helm of Dawn", "Helm of Stone", "Helm of Embers",
+            "Helm of Gale", "Helm of Tides"},
+        {"Guard of Dawn", "Guard of Stone", "Guard of Embers",
+            "Guard of Gale", "Guard of Tides"},
+        {"Greaves of Dawn", "Greaves of Stone", "Greaves of Embers",
+            "Greaves of Gale", "Greaves of Tides"},
+        {"Boots of Dawn", "Boots of Stone", "Boots of Embers",
+            "Boots of Gale", "Boots of Tides"},
+        {"Blade of Dawn", "Blade of Stone", "Blade of Embers",
+            "Blade of Gale", "Blade of Tides"}
+    };
+
     private final CustomLinkedList<Shop> shops;
 
-    public ShopProgression(int highestLevel, Random random) {
-        if (highestLevel < 0 || random == null) {
+    public ShopProgression(int levelCount, Random random) {
+        if (levelCount < FIRST_LEVEL || random == null) {
             throw new IllegalArgumentException("Shop progression values are invalid");
         }
         shops = new CustomLinkedList<>();
-        for (int level = 0; level <= highestLevel; level++) {
+        for (int level = FIRST_LEVEL; level <= levelCount; level++) {
             shops.add(createShop(level, random));
         }
     }
@@ -23,10 +38,10 @@ public class ShopProgression {
     }
 
     public Shop getShop(int level) {
-        if (level < 0 || level >= shops.size()) {
+        if (level < FIRST_LEVEL || level > shops.size()) {
             return null;
         }
-        return shops.get(level);
+        return shops.get(level - FIRST_LEVEL);
     }
 
     public int size() {
@@ -34,12 +49,21 @@ public class ShopProgression {
     }
 
     private Shop createShop(int level, Random random) {
-        int bonus = level * 2 + random.nextInt(4);
-        return new Shop(new Item[] {
-            new Item("Level " + level + " Helmet", 2 + bonus, 1 + level,
-                1 + level, 40 + level * 10, 0),
-            new Item("Level " + level + " Sword", 3 + bonus, 1 + level,
-                1, 50 + level * 15, 4)
-        });
+        Item[] items = new Item[ITEM_NAMES.length * ITEMS_PER_SLOT];
+        int itemIndex = 0;
+        for (int slot = 0; slot < ITEM_NAMES.length; slot++) {
+            for (int nameIndex = 0; nameIndex < ITEMS_PER_SLOT; nameIndex++) {
+                int strength = level * 3 + random.nextInt(4);
+                int price = level * 25 + 25 + random.nextInt(16);
+                items[itemIndex++] = new Item(
+                    "Level " + level + " " + ITEM_NAMES[slot][nameIndex],
+                    strength + random.nextInt(4),
+                    strength + random.nextInt(4),
+                    strength + random.nextInt(4),
+                    price,
+                    slot);
+            }
+        }
+        return new Shop(items);
     }
 }

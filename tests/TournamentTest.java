@@ -3,6 +3,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import java.util.Random;
 
 import characters.GameCharacter;
 import characters.Player;
@@ -194,6 +195,29 @@ class TournamentTest {
         assertThrows(IllegalStateException.class,
             () -> tournament.playNextMatch());
     }
+
+    @Test
+    void toStringDisplaysAsciiBracketState() {
+        registerSevenOpponents();
+        String text = tournament.toString();
+        assertTrue(text.contains("TOURNAMENT BRACKET"));
+        assertTrue(text.contains("Winners Bracket"));
+        assertTrue(text.contains("Losers Bracket"));
+        assertTrue(text.contains("--+"));
+        assertTrue(text.contains("Champion: pending"));
+    }
+
+    @Test
+    void seededTournamentConstructorProducesRepeatableMatch() {
+        GameCharacter first = new GameCharacter("First", 1, 5, 1, 1);
+        GameCharacter second = new GameCharacter("Second", 1, 1, 5, 1);
+        assertEquals(
+            new tournament.TournamentRound(first, second, new Random(7))
+                .getWinner().getName(),
+            new tournament.TournamentRound(first, second, new Random(7))
+                .getWinner().getName());
+    }
+
     private void registerSevenOpponents() {
         for (int i = 0; i < 7; i++) {
             tournament.addFighter(

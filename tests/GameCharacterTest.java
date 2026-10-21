@@ -1,5 +1,6 @@
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
@@ -27,5 +28,14 @@ class GameCharacterTest {
             () -> new GameCharacter("Hero", -1));
         assertThrows(IllegalArgumentException.class,
             () -> new GameCharacter("Hero", 0, -1, 1, 1));
+    }
+
+    @Test
+    void toStringSummarizesCharacter() {
+        GameCharacter character = new GameCharacter("Arena", 2, 1, 2, 3);
+        String text = character.toString();
+        assertTrue(text.contains("Arena"));
+        assertTrue(text.contains("Lv.2"));
+        assertTrue(text.contains("A:1.0"));
     }
 }

@@ -1,10 +1,12 @@
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Scanner;
 
 import org.junit.jupiter.api.Test;
 
@@ -13,14 +15,14 @@ import main.GameDriver;
 class GameDriverTest {
     @Test
     void retriesInvalidInputAndCompletesValidPath() {
-        String input = "\nletters\n-1\n999999999999999999999\n1\n2\n3\n4\n";
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        GameDriver.run(new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8)),
-            new PrintStream(bytes));
+        GameDriver.run(new Scanner(System.in));
         String output = bytes.toString(StandardCharsets.UTF_8);
         assertTrue(output.contains("Invalid option"));
         assertTrue(output.contains("Goodbye."));
         assertTrue(output.contains("Match winner:"));
+        assertTrue(output.contains("TOURNAMENT BRACKET"));
+        assertTrue(output.contains("Winners Bracket"));
     }
 
     @Test
@@ -41,11 +43,32 @@ class GameDriverTest {
 
     @Test
     void reportsMissingSaveWithoutCrashing() {
-        String input = "6\n4\n";
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        GameDriver.run(new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8)),
-            new PrintStream(bytes));
+        GameDriver.run(new Scanner(System.in));
         assertTrue(bytes.toString(StandardCharsets.UTF_8)
-            .contains("Unable to load progress."));
+                .contains("Unable to load progress."));
+    }
+
+    @Test
+    void printsBracketAfterEveryBattle() {
+        StringBuilder input = new StringBuilder();
+        for (int i = 0; i < 14; i++) {
+            input.append("3\n");
+        }
+        input.append("4\n");
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        GameDriver.run(new Scanner(System.in));
+        String output = bytes.toString(StandardCharsets.UTF_8);
+        assertEquals(14, countOccurrences(output, "TOURNAMENT BRACKET"));
+    }
+
+    private int countOccurrences(String text, String target) {
+        int count = 0;
+        int index = 0;
+        while ((index = text.indexOf(target, index)) >= 0) {
+            count++;
+            index += target.length();
+        }
+        return count;
     }
 }
