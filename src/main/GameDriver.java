@@ -4,7 +4,6 @@ import java.io.PrintStream;
 import java.nio.file.Path;
 import java.util.Scanner;
 
-import characters.GameCharacter;
 import characters.Player;
 import gamesaves.GameSave;
 import shop.Shop;
