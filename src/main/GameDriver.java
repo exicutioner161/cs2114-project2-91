@@ -3,6 +3,7 @@ package main;
 import java.nio.file.Path;
 import java.util.Scanner;
 
+import characters.Item;
 import characters.Player;
 import gamesaves.GameSave;
 import shop.Shop;
@@ -30,7 +31,7 @@ public class GameDriver {
         if (input == null) {
             throw new IllegalArgumentException("Input required");
         }
-        Player player = new Player("Player", 1, 100, new characters.Item[5]);
+        Player player = new Player("Player", 1, 100, new Item[5]);
         ShopProgression progression = new ShopProgression(4);
         GameSave saves = new GameSave();
         Tournament tournament = createTournament(player);
