@@ -12,7 +12,7 @@ public class Player extends GameCharacter {
     /**
      * Creates a player with no gold or equipment.
      *
-     * @param name player name
+     * @param name  player name
      * @param level starting level
      */
     public Player(String name, int level) {
@@ -22,9 +22,9 @@ public class Player extends GameCharacter {
     /**
      * Creates a player with saved progress.
      *
-     * @param name player name
-     * @param level player level
-     * @param gold starting gold
+     * @param name      player name
+     * @param level     player level
+     * @param gold      starting gold
      * @param inventory five-slot equipment array
      * @throws IllegalArgumentException if values or slot assignments are invalid
      */
@@ -180,9 +180,24 @@ public class Player extends GameCharacter {
         incrementLevel();
     }
 
+    private String inventoryStringHelper(int index) {
+        return inventory[index] == null ? "None" : inventory[index].toString();
+    }
+
+    public String formattedInventoryString() {
+        String helm = inventoryStringHelper(0);
+        String chestplate = inventoryStringHelper(1);
+        String leggings = inventoryStringHelper(2);
+        String boots = inventoryStringHelper(3);
+        String weapon = inventoryStringHelper(4);
+        return "Head: " + helm + " | Chest: " + chestplate + " | Legs: " + leggings + " | Feet: " + boots
+                + " | Weapon: "
+                + weapon;
+    }
+
     /** @return a display of current gold and level */
     public String catalogText() {
-        return "Current Gold: " + gold + "\nLevel: " + getLevel();
+        return "Current Gold: " + gold + "\nLevel: " + getLevel() + "\nItems: " + formattedInventoryString();
     }
 
     /** Checks whether a slot index belongs to the five-slot inventory. */

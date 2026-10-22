@@ -12,18 +12,18 @@ public class Item {
     /**
      * Creates an equipment offer.
      *
-     * @param name display name
-     * @param aggro Aggro statistic
-     * @param control Control statistic
+     * @param name     display name
+     * @param aggro    Aggro statistic
+     * @param control  Control statistic
      * @param midrange Midrange statistic
-     * @param price purchase price
-     * @param type equipment slot from 0 through 4
+     * @param price    purchase price
+     * @param type     equipment slot from 0 through 4
      * @throws IllegalArgumentException if any value is invalid
      */
     public Item(String name, double aggro, double control, double midrange,
-        int price, int type) {
+            int price, int type) {
         if (name == null || name.isBlank() || price < 0 || type < 0 || type > 4
-            || !validStat(aggro) || !validStat(control) || !validStat(midrange)) {
+                || !validStat(aggro) || !validStat(control) || !validStat(midrange)) {
             throw new IllegalArgumentException("Item values are invalid");
         }
         this.name = name;
@@ -67,5 +67,13 @@ public class Item {
     /** @return the equipment slot index */
     public int getType() {
         return type;
+    }
+
+    @Override
+    /**
+     * @return the name and stats of the item
+     */
+    public String toString() {
+        return name + ", " + "A/C/M" + aggro + "/" + control + "/" + midrange;
     }
 }
