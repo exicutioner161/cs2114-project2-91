@@ -60,12 +60,12 @@ public class Shop {
         for (int i = 0; i < catalog.size(); i++) {
             Item item = catalog.get(i);
             text.append(i + 1).append(". ").append(item.getName())
-                .append(" | Slot: ").append(slotName(item.getType()))
-                .append(" | A/C/M: ").append(item.getAggro()).append("/")
-                .append(item.getControl()).append("/")
-                .append(item.getMidrange())
-                .append(" | Price: ").append(item.getPrice())
-                .append('\n');
+                    .append(" | Slot: ").append(slotName(item.getType()))
+                    .append(" | A/C/M: ").append(item.getAggro()).append("/")
+                    .append(item.getControl()).append("/")
+                    .append(item.getMidrange())
+                    .append(" | Price: ").append(item.getPrice())
+                    .append('\n');
         }
         return text.toString();
     }
@@ -126,7 +126,7 @@ public class Shop {
      * Attempts to sell a named offer to a player.
      *
      * @param player purchasing player
-     * @param name offer name
+     * @param name   offer name
      * @return whether the purchase succeeded
      */
     public boolean buy(Player player, String name) {

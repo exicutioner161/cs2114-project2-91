@@ -16,8 +16,8 @@ public class MatchResult {
      *
      * @param fighter1 first participant
      * @param fighter2 second participant
-     * @param winner winning participant
-     * @param phase tournament phase in which the match occurred
+     * @param winner   winning participant
+     * @param phase    tournament phase in which the match occurred
      */
     public MatchResult(GameCharacter fighter1, GameCharacter fighter2,
             GameCharacter winner, int phase) {

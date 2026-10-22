@@ -15,7 +15,7 @@ public class GameCharacter {
     /**
      * Creates a fighter with deterministic statistics derived from name and level.
      *
-     * @param name fighter name
+     * @param name  fighter name
      * @param level fighter level
      * @throws IllegalArgumentException if name or level is invalid
      */
@@ -31,10 +31,10 @@ public class GameCharacter {
     /**
      * Creates a fighter with explicit statistics.
      *
-     * @param name fighter name
-     * @param level fighter level
-     * @param aggro Aggro statistic
-     * @param control Control statistic
+     * @param name     fighter name
+     * @param level    fighter level
+     * @param aggro    Aggro statistic
+     * @param control  Control statistic
      * @param midrange Midrange statistic
      * @throws IllegalArgumentException if any value is invalid
      */
@@ -103,6 +103,6 @@ public class GameCharacter {
     @Override
     public String toString() {
         return String.format("%s (Lv.%d, A:%.1f C:%.1f M:%.1f)",
-            name, level, aggro, control, midrange);
+                name, level, aggro, control, midrange);
     }
 }

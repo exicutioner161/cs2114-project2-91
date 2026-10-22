@@ -11,7 +11,7 @@ public class AdaptiveOpponentFactory {
      * Creates an opponent whose styles counter the player's styles.
      *
      * @param player player to counter
-     * @param name opponent name
+     * @param name   opponent name
      * @return the adaptive opponent
      * @throws IllegalArgumentException if either argument is invalid
      */
@@ -20,7 +20,7 @@ public class AdaptiveOpponentFactory {
             throw new IllegalArgumentException("Opponent values are invalid");
         }
         return new GameCharacter(name, player.getLevel(),
-            player.getControl() + 1, player.getMidrange() + 1,
-            player.getAggro() + 1);
+                player.getControl() + 1, player.getMidrange() + 1,
+                player.getAggro() + 1);
     }
 }

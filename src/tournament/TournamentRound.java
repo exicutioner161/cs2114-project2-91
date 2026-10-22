@@ -32,12 +32,12 @@ public class TournamentRound {
      *
      * @param fighter1 first fighter
      * @param fighter2 second fighter
-     * @param random source for the result
+     * @param random   source for the result
      * @throws IllegalArgumentException if a fighter or random source is invalid
      */
     public TournamentRound(GameCharacter fighter1, GameCharacter fighter2,
             Random random) {
-        if (fighter1 == null || fighter2 == null || fighter1 == fighter2){
+        if (fighter1 == null || fighter2 == null || fighter1 == fighter2) {
             throw new IllegalArgumentException("Invalid fighters");
         }
         if (random == null) {
@@ -60,14 +60,15 @@ public class TournamentRound {
         }
         fighterOneWinPercent = calculateWinPercent();
         winner = random.nextDouble() * ONE_HUNDRED < fighterOneWinPercent
-            ? fighter1 : fighter2;
+                ? fighter1
+                : fighter2;
         return winner;
     }
 
     /** Combines both fighters' style advantages into a bounded probability. */
     private double calculateWinPercent() {
         double advantage = fighterAdvantage(fighter1, fighter2)
-            - fighterAdvantage(fighter2, fighter1);
+                - fighterAdvantage(fighter2, fighter1);
         return Math.max(0, Math.min(100, BASE_WIN_PERCENT + advantage));
     }
 
@@ -75,8 +76,8 @@ public class TournamentRound {
     private double fighterAdvantage(GameCharacter fighter,
             GameCharacter opponent) {
         return calculateFighterAdvantage(fighter.getAggro(), opponent.getControl())
-            + calculateFighterAdvantage(fighter.getControl(), opponent.getMidrange())
-            + calculateFighterAdvantage(fighter.getMidrange(), opponent.getAggro());
+                + calculateFighterAdvantage(fighter.getControl(), opponent.getMidrange())
+                + calculateFighterAdvantage(fighter.getMidrange(), opponent.getAggro());
     }
 
     /** Converts a pair of stats into a one-sided advantage score. */
@@ -95,8 +96,8 @@ public class TournamentRound {
     private double getHighAdv(double fighterOneStat, double fighterTwoStat) {
         double fighterOneAdv = 0;
         double statDiff = fighterOneStat - fighterTwoStat;
-        fighterOneAdv += statDiff*HIGH_ADVANTAGE_INCREMENT;
-        
+        fighterOneAdv += statDiff * HIGH_ADVANTAGE_INCREMENT;
+
         return getMedAdv(fighterOneStat, fighterTwoStat, fighterOneAdv, statDiff);
     }
 
