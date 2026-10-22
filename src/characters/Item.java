@@ -74,6 +74,6 @@ public class Item {
      * @return the name and stats of the item
      */
     public String toString() {
-        return name + ", " + "A/C/M" + aggro + "/" + control + "/" + midrange;
+        return name + ", " + "A/C/M " + aggro + "/" + control + "/" + midrange;
     }
 }
