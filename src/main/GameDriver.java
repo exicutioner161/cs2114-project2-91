@@ -20,6 +20,7 @@ public class GameDriver {
     private static final int MAX_LEVEL = 5;
     private static final int MATCH_REWARD = 15;
     private static final int TOURNAMENT_REWARD = 30;
+
     /** Starts an interactive game using standard input and output. */
     public static void main(String[] args) {
         System.out.println("Welcome to Calculated Combat!");
@@ -60,7 +61,7 @@ public class GameDriver {
         boolean running = true;
         boolean firstChoice = true;
 
-        while (running && input.hasNextLine()) {
+        while (running) {
             printMenu();
             Integer choice = readChoice(input, firstChoice);
             firstChoice = false;
@@ -74,7 +75,7 @@ public class GameDriver {
     /** Reads and parses one top-level menu choice. */
     private static Integer readChoice(Scanner input, boolean firstChoice) {
         String rawChoice = input.nextLine().trim();
-        while (firstChoice && rawChoice.isEmpty() && input.hasNextLine()) {
+        while (firstChoice && rawChoice.isEmpty()) {
             rawChoice = input.nextLine().trim();
         }
         return parseChoice(rawChoice);
@@ -178,9 +179,8 @@ public class GameDriver {
     private static void prepareStrongerQueue(GameState state) {
         state.queue.repopulateAfterWin(state.player, 14);
         state.queue.add(new AdaptiveOpponentFactory().create(state.player,
-            "Adaptive Opponent"));
-        CustomLinkedList<GameCharacter> champions =
-            new BackgroundTournament().simulatePool(state.player, 1);
+                "Adaptive Opponent"));
+        CustomLinkedList<GameCharacter> champions = new BackgroundTournament().simulatePool(state.player, 1);
         if (champions.size() > 0 && champions.get(0) != state.player) {
             state.queue.add(champions.get(0));
         }
@@ -221,12 +221,16 @@ public class GameDriver {
     /** Reads a slot and attempts to sell its equipped item. */
     private static void sellGear(Scanner input, Player player) {
         System.out.print("Enter equipment slot (0-4) to sell: ");
-        String rawSlot = input.hasNextLine() ? input.nextLine().trim() : "";
-        try {
-            int slot = Integer.parseInt(rawSlot);
-            System.out.println(player.sell(slot) ? "Item sold." : "Unable to sell item.");
-        } catch (NumberFormatException exception) {
-            System.out.println("Invalid equipment slot.");
+        String rawSlot;
+        while (true) {
+            rawSlot = input.nextLine().trim();
+            try {
+                int slot = Integer.parseInt(rawSlot);
+                System.out.println(player.sell(slot) ? "Item sold." : "Unable to sell item.");
+                break;
+            } catch (NumberFormatException exception) {
+                System.out.println("Invalid equipment slot.");
+            }
         }
     }
 
@@ -266,7 +270,7 @@ public class GameDriver {
 
     /** Runs the equipment-category selection loop. */
     private static void buyGear(Scanner input, Shop shop, Player player) {
-        while (input.hasNextLine()) {
+        while (true) {
             printCategoryMenu();
             Integer category = parseBoundedChoice(input.nextLine().trim(), 0, 5,
                     "category");
@@ -296,7 +300,7 @@ public class GameDriver {
     /** Runs the numbered item selection loop for one equipment slot. */
     private static void buyCategoryItem(Scanner input, Shop shop, Player player,
             int slot) {
-        while (input.hasNextLine()) {
+        while (true) {
             int itemCount = printCategoryItems(shop, slot);
             Integer itemChoice = parseBoundedChoice(input.nextLine().trim(), 0,
                     itemCount, "item");
