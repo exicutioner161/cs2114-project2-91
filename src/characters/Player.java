@@ -62,6 +62,7 @@ public class Player extends GameCharacter {
         return statTotal(2);
     }
 
+    /** Totals one combat statistic across equipped items. */
     private double statTotal(int stat) {
         double total = 0;
         for (Item item : inventory) {
@@ -184,6 +185,7 @@ public class Player extends GameCharacter {
         return "Current Gold: " + gold + "\nLevel: " + getLevel();
     }
 
+    /** Checks whether a slot index belongs to the five-slot inventory. */
     private boolean validSlot(int slot) {
         return slot >= 0 && slot < SLOT_COUNT;
     }

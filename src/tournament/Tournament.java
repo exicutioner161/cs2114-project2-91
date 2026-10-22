@@ -112,6 +112,7 @@ public class Tournament {
         return result;
     }
 
+    /** Ensures the bracket can accept another match. */
     private void validatePlayable() {
         if (phase == 0) {
             throw new IllegalStateException("Bracket is not filled");
@@ -121,6 +122,7 @@ public class Tournament {
         }
     }
 
+    /** Selects the two fighters scheduled for the current phase and match. */
     private GameCharacter[] currentFighters() {
         if (phase == 1 || phase == 3) {
             return pair(winners, matchIndex);
@@ -140,12 +142,14 @@ public class Tournament {
         throw new IllegalStateException("Invalid tournament phase");
     }
 
+    /** Returns an adjacent pair from a bracket list. */
     private GameCharacter[] pair(CustomLinkedList<GameCharacter> fighters,
             int index) {
         return new GameCharacter[] {fighters.get(index * 2),
             fighters.get(index * 2 + 1)};
     }
 
+    /** Stores a match result in the phase-local transition lists. */
     private void recordPhaseResult(GameCharacter winner, GameCharacter loser) {
         if (phase == 1 || phase == 3) {
             phaseWinners.add(winner);
@@ -155,6 +159,7 @@ public class Tournament {
         }
     }
 
+    /** Dispatches the completed phase to its next bracket transition. */
     private void advancePhase(GameCharacter finalWinner,
             GameCharacter finalLoser) {
         switch (phase) {
@@ -169,6 +174,7 @@ public class Tournament {
         }
     }
 
+    /** Moves opening losers into the first losers round. */
     private void advanceToWinnersSemifinals() {
         losers.clear();
         addAll(losers, phaseWinners);
@@ -177,6 +183,7 @@ public class Tournament {
         matchIndex = 0;
     }
 
+    /** Moves the semifinal losers into the next losers round. */
     private void advanceToWinnersFinal() {
         losers.clear();
         addAll(losers, phaseWinners);
@@ -185,6 +192,7 @@ public class Tournament {
         matchIndex = 0;
     }
 
+    /** Seeds the first losers final after the winners final. */
     private void advanceToLosersRound(GameCharacter winner, GameCharacter loser) {
         winners.clear();
         winners.add(winner);
@@ -194,6 +202,7 @@ public class Tournament {
         clearPhaseData();
     }
 
+    /** Keeps the surviving losers-bracket fighters for the final. */
     private void advanceToLosersFinal(GameCharacter survivor) {
         GameCharacter remainingLoser = losers.get(2);
         losers.clear();
@@ -203,6 +212,7 @@ public class Tournament {
         phase = 7;
     }
 
+    /** Places the losers champion into the single grand final. */
     private void advanceToGrandFinal(GameCharacter finalWinner) {
         GameCharacter winnersChampion = winners.get(0);
         winners.clear();
@@ -213,6 +223,7 @@ public class Tournament {
         phase = 8;
     }
 
+    /** Records the final winner and closes the tournament. */
     private void finish(GameCharacter finalWinner) {
         champion = finalWinner;
         finished = true;
@@ -224,14 +235,17 @@ public class Tournament {
     private CustomLinkedList<GameCharacter> phaseLosers =
         new CustomLinkedList<>();
 
+    /** Returns the winners collected during the opening round. */
     private CustomLinkedList<GameCharacter> openingWinners() {
         return phaseWinners;
     }
 
+    /** Returns the losers collected during the opening round. */
     private CustomLinkedList<GameCharacter> openingLosers() {
         return phaseLosers;
     }
 
+    /** Replaces active bracket lists and advances the phase number. */
     private void transitionWinnersAndLosers(
             CustomLinkedList<GameCharacter> nextWinners,
             CustomLinkedList<GameCharacter> nextLosers) {
@@ -244,11 +258,13 @@ public class Tournament {
         matchIndex = 0;
     }
 
+    /** Clears temporary result lists after a phase transition. */
     private void clearPhaseData() {
         phaseWinners.clear();
         phaseLosers.clear();
     }
 
+    /** Combines two fighter lists without duplicate identities. */
     private CustomLinkedList<GameCharacter> merge(
             CustomLinkedList<GameCharacter> first,
             CustomLinkedList<GameCharacter> second) {
@@ -258,11 +274,13 @@ public class Tournament {
         return merged;
     }
 
+    /** Returns the number of matches required by the current phase. */
     private int phaseMatchCount() {
         return phase == 1 ? 4 : phase == 2 || phase == 3 || phase == 4
                 ? 2 : 1;
     }
 
+    /** Increments the registered loss count for a fighter. */
     private void recordLoss(GameCharacter fighter) {
         int index = findFighterIndex(fighter);
         if (index < 0) {
@@ -271,6 +289,7 @@ public class Tournament {
         lossCounts[index]++;
     }
 
+    /** Finds a registered fighter by object identity. */
     private int findFighterIndex(GameCharacter fighter) {
         for (int i = 0; i < entrants.size(); i++) {
             if (entrants.get(i) == fighter) {
@@ -280,6 +299,7 @@ public class Tournament {
         return -1;
     }
 
+    /** Checks whether a list already contains the exact fighter object. */
     private boolean containsIdentity(CustomLinkedList<GameCharacter> list,
             GameCharacter fighter) {
         for (int i = 0; i < list.size(); i++) {
@@ -290,12 +310,14 @@ public class Tournament {
         return false;
     }
 
+    /** Replaces one bracket list with another list's unique fighters. */
     private void copy(CustomLinkedList<GameCharacter> target,
             CustomLinkedList<GameCharacter> source) {
         target.clear();
         addAll(target, source);
     }
 
+    /** Appends source fighters that are not already present by identity. */
     private void addAll(CustomLinkedList<GameCharacter> target,
             CustomLinkedList<GameCharacter> source) {
         for (int i = 0; i < source.size(); i++) {
@@ -429,6 +451,7 @@ public class Tournament {
         }
     }
 
+    /** Builds a tournament from already decoded snapshot fields. */
     private static Tournament restoreParsedState(String[] lines, Player player,
             Random random) {
         Tournament tournament = new Tournament(player, random);
@@ -445,6 +468,7 @@ public class Tournament {
         return tournament;
     }
 
+    /** Serializes all registered fighters into the snapshot. */
     private void appendFighters(StringBuilder state) {
         for (int i = 0; i < entrants.size(); i++) {
             GameCharacter fighter = entrants.get(i);
@@ -457,6 +481,7 @@ public class Tournament {
         }
     }
 
+    /** Serializes a bracket list as entrant indexes. */
     private void appendReferences(StringBuilder state, String key,
             CustomLinkedList<GameCharacter> fighters) {
         state.append(key).append('=');
@@ -469,6 +494,7 @@ public class Tournament {
         state.append('\n');
     }
 
+    /** Converts a fighter identity into its entrant index. */
     private int indexOf(GameCharacter fighter) {
         if (fighter == null) {
             return -1;
@@ -476,6 +502,7 @@ public class Tournament {
         return findFighterIndex(fighter);
     }
 
+    /** Registers fighters parsed from a saved snapshot. */
     private void addRestoredFighters(GameCharacter[] fighters) {
         if (fighters.length == 0 || fighters[0] == null) {
             throw new IllegalArgumentException("Missing player entrant");
@@ -487,6 +514,7 @@ public class Tournament {
         }
     }
 
+    /** Restores all bracket lists from serialized entrant indexes. */
     private void restoreReferences(String[] lines, GameCharacter[] fighters) {
         restoreList(winners, value(lines, "winners"), fighters);
         restoreList(losers, value(lines, "losers"), fighters);
@@ -494,6 +522,7 @@ public class Tournament {
         restoreList(phaseLosers, value(lines, "phaseLosers"), fighters);
     }
 
+    /** Restores one bracket list from comma-separated fighter indexes. */
     private void restoreList(CustomLinkedList<GameCharacter> target,
             String indexes, GameCharacter[] fighters) {
         if (indexes.isBlank()) {
@@ -504,6 +533,7 @@ public class Tournament {
         }
     }
 
+    /** Parses serialized fighter records in entrant order. */
     private static GameCharacter[] parseFighters(String[] lines, Player player) {
         CustomLinkedList<GameCharacter> fighters = new CustomLinkedList<>();
         for (String line : lines) {
@@ -512,6 +542,7 @@ public class Tournament {
         return toArray(fighters);
     }
 
+    /** Adds one parsed fighter record when a line contains one. */
     private static void addParsedFighter(CustomLinkedList<GameCharacter> fighters,
             String line, Player player) {
         if (!line.startsWith("fighter=")) {
@@ -522,12 +553,14 @@ public class Tournament {
         fighters.add(createFighter(fields, fighters.isEmpty(), player));
     }
 
+    /** Validates the field count and sequential entrant index. */
     private static void validateFighterFields(String[] fields, int index) {
         if (fields.length != 6 || Integer.parseInt(fields[0]) != index) {
             throw new IllegalArgumentException("Fighter record is invalid");
         }
     }
 
+    /** Creates either the saved player or a restored opponent. */
     private static GameCharacter createFighter(String[] fields, boolean player,
             Player savedPlayer) {
         return player ? savedPlayer : new GameCharacter(decode(fields[1]),
@@ -535,6 +568,7 @@ public class Tournament {
             Double.parseDouble(fields[4]), Double.parseDouble(fields[5]));
     }
 
+    /** Converts parsed fighter storage into an array for indexed references. */
     private static GameCharacter[] toArray(CustomLinkedList<GameCharacter> fighters) {
         GameCharacter[] result = new GameCharacter[fighters.size()];
         for (int i = 0; i < result.length; i++) {
@@ -543,6 +577,7 @@ public class Tournament {
         return result;
     }
 
+    /** Parses and validates the eight serialized loss counters. */
     private static int[] parseLosses(String value) {
         String[] values = value.split(",", -1);
         if (values.length != MAX_ENTRANTS) {
@@ -558,10 +593,12 @@ public class Tournament {
         return result;
     }
 
+    /** Copies validated loss counters into tournament state. */
     private static void copyLosses(int[] target, int[] source) {
         System.arraycopy(source, 0, target, 0, target.length);
     }
 
+    /** Resolves a serialized fighter index, allowing -1 for no fighter. */
     private static GameCharacter fighterAt(GameCharacter[] fighters, int index) {
         if (index < -1 || index >= fighters.length) {
             throw new IllegalArgumentException("Fighter reference is invalid");
@@ -569,6 +606,7 @@ public class Tournament {
         return index == -1 ? null : fighters[index];
     }
 
+    /** Retrieves a required key-value field from snapshot lines. */
     private static String value(String[] lines, String key) {
         String prefix = key + "=";
         for (String line : lines) {
@@ -579,6 +617,7 @@ public class Tournament {
         throw new IllegalArgumentException("Missing tournament field");
     }
 
+    /** Validates core consistency of restored tournament state. */
     private static void validateState(Tournament tournament) {
         if (tournament.entrants.size() != MAX_ENTRANTS
                 || tournament.phase < 0 || tournament.phase > 8
@@ -589,11 +628,13 @@ public class Tournament {
         }
     }
 
+    /** Encodes fighter names for snapshot storage. */
     private static String encode(String value) {
         return Base64.getEncoder().encodeToString(
             value.getBytes(java.nio.charset.StandardCharsets.UTF_8));
     }
 
+    /** Decodes fighter names from snapshot storage. */
     private static String decode(String value) {
         return new String(Base64.getDecoder().decode(value),
             java.nio.charset.StandardCharsets.UTF_8);
@@ -619,11 +660,13 @@ public class Tournament {
         return bracket.toString();
     }
 
+    /** Returns a display name or pending marker for a bracket position. */
     private String fighterName(CustomLinkedList<GameCharacter> fighters,
             int index) {
         return index < fighters.size() ? fighters.get(index).getName() : "pending";
     }
 
+    /** Converts the internal phase number into a display label. */
     private String phaseName() {
         if (finished) {
             return "Complete";

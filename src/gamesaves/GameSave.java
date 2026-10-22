@@ -92,12 +92,14 @@ public class GameSave {
         }
     }
 
+    /** Validates arguments required to write a named save. */
     private void validateSaveValues(String name, Player player, Path path) {
         if (name == null || name.isBlank() || player == null || path == null) {
             throw new IllegalArgumentException("Save values are invalid");
         }
     }
 
+    /** Builds the scalar player fields at the start of a save. */
     private StringBuilder playerHeader(String name, Player player) {
         return new StringBuilder()
             .append("name=").append(encode(name)).append('\n')
@@ -107,11 +109,13 @@ public class GameSave {
             .append("losses=").append(player.getLosses()).append('\n');
     }
 
+    /** Appends an encoded tournament snapshot to a save buffer. */
     private void appendTournament(StringBuilder content, Tournament tournament) {
         content.append("tournament=").append(encode(tournament.saveState()))
             .append('\n');
     }
 
+    /** Appends each equipped item to a save buffer. */
     private void appendItems(StringBuilder content, Player player) {
         for (int slot = 0; slot < player.getInventory().length; slot++) {
             Item item = player.getItem(slot);
@@ -121,6 +125,7 @@ public class GameSave {
         }
     }
 
+    /** Appends one item record in the save format. */
     private void appendItem(StringBuilder content, int slot, Item item) {
         content.append("item|").append(slot).append('|').append(encode(item.getName()))
             .append('|').append(item.getAggro()).append('|').append(item.getControl())
@@ -128,18 +133,21 @@ public class GameSave {
             .append('\n');
     }
 
+    /** Validates arguments required to read a named save. */
     private void validateLoadValues(String expectedName, Path path) {
         if (expectedName == null || expectedName.isBlank() || path == null) {
             throw new IllegalArgumentException("Load values are invalid");
         }
     }
 
+    /** Confirms that the save header matches the requested name. */
     private void validateHeader(String[] lines, String expectedName) {
         if (lines.length < 3 || !("name=" + encode(expectedName)).equals(lines[0])) {
             throw new IllegalArgumentException("Save name or format is invalid");
         }
     }
 
+    /** Reconstructs a player from parsed save lines. */
     private Player parsePlayer(String[] lines, String expectedName) {
         int level = Integer.parseInt(requiredValue(lines[1], "level"));
         int gold = Integer.parseInt(requiredValue(lines[2], "gold"));
@@ -155,11 +163,13 @@ public class GameSave {
         return player;
     }
 
+    /** Reads an optional progress counter from a save line. */
     private int optionalCounter(String[] lines, int index, String key) {
         return index < lines.length && lines[index].startsWith(key + "=")
             ? Integer.parseInt(requiredValue(lines[index], key)) : 0;
     }
 
+    /** Counts progress-counter lines before item records begin. */
     private int counterLines(String[] lines) {
         int count = 0;
         if (lines.length > 3 && lines[3].startsWith("wins=")) {
@@ -171,6 +181,7 @@ public class GameSave {
         return count;
     }
 
+    /** Reconstructs the five-slot inventory from save records. */
     private Item[] parseItems(String[] lines, int start) {
         Item[] inventory = new Item[5];
         boolean[] occupied = new boolean[inventory.length];
@@ -182,6 +193,7 @@ public class GameSave {
         return inventory;
     }
 
+    /** Validates and inserts one serialized item record. */
     private void parseItemLine(String line, Item[] inventory, boolean[] occupied) {
         String[] fields = line.split("\\|", -1);
         if (fields.length != 7 || !"item".equals(fields[0])) {
@@ -232,14 +244,17 @@ public class GameSave {
     public record LoadedGame(Player player, Tournament tournament) {
     }
 
+    /** Encodes text for safe storage in the save format. */
     private String encode(String value) {
         return Base64.getEncoder().encodeToString(value.getBytes(StandardCharsets.UTF_8));
     }
 
+    /** Decodes text from the save format. */
     private String decode(String value) {
         return new String(Base64.getDecoder().decode(value), StandardCharsets.UTF_8);
     }
 
+    /** Extracts a required key-value field from one save line. */
     private String requiredValue(String line, String key) {
         String prefix = key + "=";
         if (!line.startsWith(prefix)) {

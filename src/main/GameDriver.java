@@ -30,6 +30,7 @@ public class GameDriver {
         runMenu(input);
     }
 
+    /** Prints the top-level action menu. */
     private static void printMenu() {
         String menu = "\n1. View Status"
                 + "\n2. Buy gear"
@@ -42,6 +43,7 @@ public class GameDriver {
         System.out.println(menu);
     }
 
+    /** Runs the menu loop and owns the current game state. */
     private static void runMenu(Scanner input) {
         if (input == null) {
             throw new IllegalArgumentException("Input required");
@@ -61,6 +63,7 @@ public class GameDriver {
         }
     }
 
+    /** Reads and parses one top-level menu choice. */
     private static Integer readChoice(Scanner input, boolean firstChoice) {
         String rawChoice = input.nextLine().trim();
         if (firstChoice && rawChoice.isEmpty()) {
@@ -69,6 +72,7 @@ public class GameDriver {
         return parseChoice(rawChoice);
     }
 
+    /** Dispatches one valid menu choice and pauses before the next menu. */
     private static boolean handleChoice(Scanner input, GameState state,
             int choice) {
         switch (choice) {
@@ -88,12 +92,14 @@ public class GameDriver {
         return state.running;
     }
 
+    /** Displays player progress and tournament counters. */
     private static void showStatus(Player player) {
         System.out.println(player.catalogText() + "\nTournament Wins: "
                 + player.getWins() + "/5"
                 + "\nTournament Losses: " + player.getLosses() + "/10");
     }
 
+    /** Opens the current-level category-based shop flow. */
     private static void buyGearFromShop(Scanner input, GameState state) {
         Shop shop = state.progression.getShop(state.player.getLevel());
         if (shop == null) {
@@ -103,6 +109,7 @@ public class GameDriver {
         buyGear(input, shop, state.player);
     }
 
+    /** Plays one match and processes its tournament consequences. */
     private static void playFight(Scanner input, GameState state) {
         if (state.tournament.isFinished()) {
             System.out.println("Tournament is complete.");
@@ -116,18 +123,21 @@ public class GameDriver {
         }
     }
 
+    /** Awards the per-match reward when the player wins. */
     private static void awardMatchGold(MatchResult result, Player player) {
         if (result.getWinner() == player) {
             player.awardGold(5);
         }
     }
 
+    /** Prints match participants, outcome, and the current bracket. */
     private static void printMatchResult(MatchResult result, Tournament tournament) {
         System.out.println("Match winner: " + result.getWinner());
         System.out.println("Match loser: " + result.getLoser());
         System.out.println(tournament);
     }
 
+    /** Records the tournament champion and checks run termination. */
     private static void finishTournament(GameState state) {
         System.out.println("Tournament champion: " + state.tournament.getChampion());
         if (state.tournament.getChampion() == state.player) {
@@ -142,6 +152,7 @@ public class GameDriver {
         }
     }
 
+    /** Applies rewards and starts the next tournament after a win. */
     private static void recordTournamentWin(GameState state) {
         state.player.incrementWins();
         state.player.awardGold(10);
@@ -152,10 +163,12 @@ public class GameDriver {
         System.out.println("Tournament win recorded.");
     }
 
+    /** Checks the configured five-win or ten-loss run limit. */
     private static boolean runIsComplete(Player player) {
         return player.getWins() >= 5 || player.getLosses() >= 10;
     }
 
+    /** Writes the current player and tournament snapshot. */
     private static void saveProgress(GameState state) {
         try {
             state.saves.save("Player", state.player, state.tournament,
@@ -166,6 +179,7 @@ public class GameDriver {
         }
     }
 
+    /** Loads saved player progress and an optional tournament snapshot. */
     private static void loadProgress(GameState state) {
         try {
             GameSave.LoadedGame loaded = state.saves.loadGame("Player",
@@ -181,6 +195,7 @@ public class GameDriver {
         }
     }
 
+    /** Reads a slot and attempts to sell its equipped item. */
     private static void sellGear(Scanner input, Player player) {
         System.out.print("Enter equipment slot (0-4) to sell: ");
         String rawSlot = input.hasNextLine() ? input.nextLine().trim() : "";
@@ -200,6 +215,7 @@ public class GameDriver {
         private boolean running = true;
     }
 
+    /** Parses a top-level choice and reports malformed numeric input. */
     private static Integer parseChoice(String rawChoice) {
         if (rawChoice.isEmpty()) {
             System.out.println("Invalid option. Enter a number from 1 to 7.");
@@ -219,6 +235,7 @@ public class GameDriver {
         }
     }
 
+    /** Waits for one confirmation line before returning to the menu. */
     private static void pauseAfterAction(Scanner input) {
         System.out.println("Press Enter to continue.");
         if (input.hasNextLine()) {
@@ -226,6 +243,7 @@ public class GameDriver {
         }
     }
 
+    /** Runs the equipment-category selection loop. */
     private static void buyGear(Scanner input, Shop shop, Player player) {
         while (input.hasNextLine()) {
             printCategoryMenu();
@@ -242,6 +260,7 @@ public class GameDriver {
         }
     }
 
+    /** Prints the five equipment categories and return option. */
     private static void printCategoryMenu() {
         System.out.println("\nChoose an equipment category:"
                 + "\n1. Head"
@@ -253,6 +272,7 @@ public class GameDriver {
         System.out.print("Choose a category: ");
     }
 
+    /** Runs the numbered item selection loop for one equipment slot. */
     private static void buyCategoryItem(Scanner input, Shop shop, Player player,
             int slot) {
         while (input.hasNextLine()) {
@@ -273,6 +293,7 @@ public class GameDriver {
         }
     }
 
+    /** Prints offers for one category and returns the offer count. */
     private static int printCategoryItems(Shop shop, int slot) {
         int choice = 1;
         System.out.println("\n" + categoryName(slot) + " items:");
@@ -290,6 +311,7 @@ public class GameDriver {
         return choice - 1;
     }
 
+    /** Resolves a category-relative choice to its catalog item. */
     private static Item itemAtCategoryIndex(Shop shop, int slot, int categoryIndex) {
         int currentIndex = 0;
         for (int i = 0; i < shop.size(); i++) {
@@ -304,6 +326,7 @@ public class GameDriver {
         throw new IllegalArgumentException("Category item index is invalid");
     }
 
+    /** Converts a slot index into its category label. */
     private static String categoryName(int slot) {
         return switch (slot) {
             case 0 -> "Head";
@@ -315,6 +338,7 @@ public class GameDriver {
         };
     }
 
+    /** Parses a choice and enforces a category or item range. */
     private static Integer parseBoundedChoice(String rawChoice, int minimum,
             int maximum, String choiceType) {
         Integer choice = parseChoice(rawChoice);
@@ -326,6 +350,7 @@ public class GameDriver {
         return choice;
     }
 
+    /** Creates and fills a fresh eight-fighter tournament. */
     private static Tournament createTournament(Player player) {
         Tournament tournament = new Tournament(player);
         tournament.populateEntrants(player);

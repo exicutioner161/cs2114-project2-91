@@ -34,6 +34,7 @@ public class Item {
         this.type = type;
     }
 
+    /** Checks that a combat statistic is finite and nonnegative. */
     private static boolean validStat(double stat) {
         return !Double.isNaN(stat) && !Double.isInfinite(stat) && stat >= 0;
     }
