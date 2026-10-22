@@ -1,4 +1,4 @@
-# Calculated Combat Prototype
+# Calculated Combat
 
 This is a working MVP slice of Calculated Combat, a text-based tournament
 fighting game. It supports equipment purchases, five level-scaled shops,
