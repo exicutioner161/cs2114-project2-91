@@ -9,12 +9,12 @@ one match at a time and prints its bracket after every battle.
 
 In **Command Prompt**, first navigate to the repository root:
 ```cmd
-cd /d "C:\Users\brian\Desktop\stuff\code\cs2114-project2-91"
+cd /d "C:\Users\example\example2\"
 ```
 
 In **PowerShell**, use:
 ```powershell
-Set-Location "C:\Users\brian\Desktop\stuff\code\cs2114-project2-91"
+Set-Location "C:\Users\example\example2\"
 ```
 
 Compile and run the game in Command Prompt:
