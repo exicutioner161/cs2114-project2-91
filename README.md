@@ -208,6 +208,10 @@ invalid-input, deterministic, resumed-tournament, and full-bracket cases.
 3. **Team - stretch:** decide whether encrypted saves or randomized item names
    are worth implementing; add focused tests before committing either change.
 
+## System Diagram
+<img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/e5d5e8b0-a88f-4605-accd-987fd9b46c32" />
+
+
 ## Attribution
 
 | File | Contributor | Work |
