@@ -3,11 +3,13 @@ package characters;
 import java.util.ArrayList;
 import java.util.Random;
 
+/** Supplies randomly selected names from the opponent name pool. */
 public class RandomNamePicker {
     private static final Random random = new Random();
 
     private ArrayList<String> names;
 
+    /** Creates an empty picker whose names are loaded on first use. */
     public RandomNamePicker() {
         names = new ArrayList<>();
     }
@@ -30,6 +32,7 @@ public class RandomNamePicker {
         names.add("Vale");
     }
 
+    /** @return a randomly selected opponent name */
     public String pickName() {
         if (names.isEmpty()) {
             fillNameList();

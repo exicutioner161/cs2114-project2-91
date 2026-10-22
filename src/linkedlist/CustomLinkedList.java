@@ -3,6 +3,11 @@ package linkedlist;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 
+/**
+ * Generic doubly linked list used by application collections.
+ *
+ * @param <T> element type
+ */
 public class CustomLinkedList<T> {
     private Node<T> head;
     private Node<T> tail;

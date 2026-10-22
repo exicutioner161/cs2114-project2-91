@@ -11,9 +11,18 @@ import characters.Item;
 import characters.Player;
 import tournament.Tournament;
 
+/** Reads and writes named player and optional tournament save files. */
 public class GameSave {
     private static final String CONTENT = "Calculated Combat save\n";
 
+    /**
+     * Writes the default introductory save format.
+     *
+     * @param path destination path
+     * @return {@code true} after writing
+     * @throws IOException if writing fails
+     * @throws IllegalArgumentException if path is null
+     */
     public boolean save(Path path) throws IOException {
         if (path == null) {
             throw new IllegalArgumentException("Path is required");
@@ -22,14 +31,35 @@ public class GameSave {
         return true;
     }
 
+    /** @return {@code true} after writing the default save path */
     public boolean save() throws IOException {
         return save(Path.of("calculated-combat-save.txt"));
     }
 
+    /**
+     * Saves player progress without a tournament snapshot.
+     *
+     * @param name save/player name
+     * @param player player progress
+     * @param path destination path
+     * @return {@code true} after writing
+     * @throws IOException if writing fails
+     */
     public boolean save(String name, Player player, Path path) throws IOException {
         return save(name, player, null, path);
     }
 
+    /**
+     * Saves player progress and an optional active tournament.
+     *
+     * @param name save/player name
+     * @param player player progress
+     * @param tournament optional tournament snapshot
+     * @param path destination path
+     * @return {@code true} after writing
+     * @throws IOException if writing fails
+     * @throws IllegalArgumentException if values are invalid
+     */
     public boolean save(String name, Player player, Tournament tournament,
             Path path) throws IOException {
         validateSaveValues(name, player, path);
@@ -42,6 +72,15 @@ public class GameSave {
         return true;
     }
 
+    /**
+     * Loads named player progress.
+     *
+     * @param expectedName expected save name
+     * @param path save path
+     * @return restored player
+     * @throws IOException if reading fails
+     * @throws IllegalArgumentException if validation fails
+     */
     public Player load(String expectedName, Path path) throws IOException {
         validateLoadValues(expectedName, path);
         String[] lines = Files.readString(path).split("\\R");
@@ -158,6 +197,16 @@ public class GameSave {
             Integer.parseInt(fields[6]), slot);
     }
 
+    /**
+     * Loads player progress and an optional active tournament.
+     *
+     * @param expectedName expected save name
+     * @param path save path
+     * @param random source for future tournament matches
+     * @return restored game components
+     * @throws IOException if reading fails
+     * @throws IllegalArgumentException if validation fails
+     */
     public LoadedGame loadGame(String expectedName, Path path, Random random)
             throws IOException {
         if (random == null) {
@@ -179,6 +228,7 @@ public class GameSave {
             Tournament.restoreState(player, decode(encodedState), random));
     }
 
+    /** Restored player and optional tournament snapshot. */
     public record LoadedGame(Player player, Tournament tournament) {
     }
 

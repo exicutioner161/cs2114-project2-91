@@ -1,5 +1,6 @@
 package characters;
 
+/** The user's fighter, including gold, equipment, and tournament progress. */
 public class Player extends GameCharacter {
     private static final int MAX_LEVEL = 5;
     private static final int SLOT_COUNT = 5;
@@ -8,10 +9,25 @@ public class Player extends GameCharacter {
     private int wins;
     private int losses;
 
+    /**
+     * Creates a player with no gold or equipment.
+     *
+     * @param name player name
+     * @param level starting level
+     */
     public Player(String name, int level) {
         this(name, level, 0, new Item[SLOT_COUNT]);
     }
 
+    /**
+     * Creates a player with saved progress.
+     *
+     * @param name player name
+     * @param level player level
+     * @param gold starting gold
+     * @param inventory five-slot equipment array
+     * @throws IllegalArgumentException if values or slot assignments are invalid
+     */
     public Player(String name, int level, int gold, Item[] inventory) {
         super(name, level);
         if (gold < 0 || inventory == null || inventory.length != SLOT_COUNT) {
@@ -57,18 +73,32 @@ public class Player extends GameCharacter {
         return total;
     }
 
+    /** @return current gold */
     public int getGold() {
         return gold;
     }
 
+    /** @return a copy of the equipment slots */
     public Item[] getInventory() {
         return inventory.clone();
     }
 
+    /**
+     * Returns equipment in a slot.
+     *
+     * @param slot zero-based equipment slot
+     * @return equipped item, or {@code null}
+     */
     public Item getItem(int slot) {
         return validSlot(slot) ? inventory[slot] : null;
     }
 
+    /**
+     * Adds equipment without charging gold.
+     *
+     * @param item item to equip
+     * @return whether the item was added
+     */
     public boolean addItem(Item item) {
         if (item == null || !validSlot(item.getType())
                 || inventory[item.getType()] != null) {
@@ -78,6 +108,12 @@ public class Player extends GameCharacter {
         return true;
     }
 
+    /**
+     * Removes equipment from a slot.
+     *
+     * @param slot zero-based equipment slot
+     * @return removed item, or {@code null}
+     */
     public Item removeItem(int slot) {
         if (!validSlot(slot)) {
             return null;
@@ -87,6 +123,12 @@ public class Player extends GameCharacter {
         return removed;
     }
 
+    /**
+     * Purchases and equips an item when the slot and balance permit it.
+     *
+     * @param item item to purchase
+     * @return whether the purchase succeeded
+     */
     public boolean buy(Item item) {
         if (item == null || !validSlot(item.getType())
                 || inventory[item.getType()] != null || item.getPrice() > gold) {
@@ -97,6 +139,12 @@ public class Player extends GameCharacter {
         return true;
     }
 
+    /**
+     * Sells equipped gear for half its listed price.
+     *
+     * @param slot zero-based equipment slot
+     * @return whether an item was sold
+     */
     public boolean sell(int slot) {
         if (!validSlot(slot) || inventory[slot] == null) {
             return false;
@@ -106,6 +154,12 @@ public class Player extends GameCharacter {
         return true;
     }
 
+    /**
+     * Adds gold to the player's balance.
+     *
+     * @param amount nonnegative gold amount
+     * @throws IllegalArgumentException if amount is negative
+     */
     public void awardGold(int amount) {
         if (amount < 0) {
             throw new IllegalArgumentException("Gold award cannot be negative");
@@ -113,6 +167,11 @@ public class Player extends GameCharacter {
         gold += amount;
     }
 
+    /**
+     * Advances the player one level.
+     *
+     * @throws IllegalStateException if already at the maximum level
+     */
     public void advanceLevel() {
         if (getLevel() == MAX_LEVEL) {
             throw new IllegalStateException("Maximum level reached");
@@ -120,6 +179,7 @@ public class Player extends GameCharacter {
         incrementLevel();
     }
 
+    /** @return a display of current gold and level */
     public String catalogText() {
         return "Current Gold: " + gold + "\nLevel: " + getLevel();
     }
@@ -128,10 +188,17 @@ public class Player extends GameCharacter {
         return slot >= 0 && slot < SLOT_COUNT;
     }
 
+    /** @return total tournament wins */
     public int getWins() {
         return wins;
     }
 
+    /**
+     * Sets total tournament wins.
+     *
+     * @param wins nonnegative win count
+     * @throws IllegalArgumentException if wins is negative
+     */
     public void setWins(int wins) {
         if (wins < 0) {
             throw new IllegalArgumentException("Wins cannot be negative");
@@ -139,14 +206,22 @@ public class Player extends GameCharacter {
         this.wins = wins;
     }
 
+    /** Increments the tournament win count. */
     public void incrementWins() {
         wins++;
     }
 
+    /** @return total tournament losses */
     public int getLosses() {
         return losses;
     }
 
+    /**
+     * Sets total tournament losses.
+     *
+     * @param losses nonnegative loss count
+     * @throws IllegalArgumentException if losses is negative
+     */
     public void setLosses(int losses) {
         if (losses < 0) {
             throw new IllegalArgumentException("Losses cannot be negative");
@@ -154,10 +229,12 @@ public class Player extends GameCharacter {
         this.losses = losses;
     }
 
+    /** Increments the tournament loss count. */
     public void incrementLosses() {
         losses++;
     }
 
+    /** @return a readable summary of progress and equipment */
     @Override
     public String toString() {
         StringBuilder equipment = new StringBuilder();

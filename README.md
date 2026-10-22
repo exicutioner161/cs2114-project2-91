@@ -90,6 +90,8 @@ java -jar lib\junit-platform-console-standalone-1.10.2.jar execute --class-path 
   more than 15 implementation lines where practical, including menu dispatch,
   save parsing, tournament phase transitions, and combat probability
   calculation.
+- Public application and collection APIs include Javadocs describing their
+  parameters, return values, and validation exceptions.
 - `GameSave` writes and validates named player progress, including equipment,
   tournament wins, tournament losses, and an optional mid-tournament bracket
   snapshot. Loading a snapshot resumes the next match instead of rebuilding
