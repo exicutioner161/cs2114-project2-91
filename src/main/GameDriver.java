@@ -327,7 +327,7 @@ public class GameDriver {
                         + " | Price: " + item.getPrice());
             }
         }
-        System.out.println("0. Return to category menu");
+        System.out.println("0. Return to main menu");
         System.out.print("Choose an item: ");
         return choice - 1;
     }

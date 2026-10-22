@@ -48,6 +48,21 @@ class GameDriverTest {
     }
 
     @Test
+    void zeroExitsShopFromCategoryAndItemMenus() {
+        ByteArrayOutputStream categoryOutput = new ByteArrayOutputStream();
+        runWithConsole("2\n0\n4\n", categoryOutput);
+        assertTrue(categoryOutput.toString(StandardCharsets.UTF_8)
+                .contains("Goodbye."));
+
+        ByteArrayOutputStream itemOutput = new ByteArrayOutputStream();
+        runWithConsole("2\n1\n0\n4\n", itemOutput);
+        assertTrue(itemOutput.toString(StandardCharsets.UTF_8)
+                .contains("Goodbye."));
+        assertTrue(itemOutput.toString(StandardCharsets.UTF_8)
+                .contains("0. Return to main menu"));
+    }
+
+    @Test
     void mainRunsTheExitPath() {
         java.io.InputStream originalIn = System.in;
         java.io.PrintStream originalOut = System.out;
