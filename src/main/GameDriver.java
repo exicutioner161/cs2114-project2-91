@@ -158,7 +158,7 @@ public class GameDriver {
             state.tournament = createTournament(state.player, state.queue);
         }
         if (runIsComplete(state.player)) {
-            System.out.println("Run complete.");
+            System.out.println("\nCongratulations, you won!");
             state.running = false;
         }
     }
