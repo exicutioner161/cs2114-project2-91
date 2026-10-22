@@ -38,6 +38,16 @@ class GameDriverTest {
     }
 
     @Test
+    void leadingBlankLineDoesNotDiscardTheFirstMenuChoice() {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        runWithConsole("\n2\n0\n4\n", bytes);
+        String output = bytes.toString(StandardCharsets.UTF_8);
+        assertTrue(output.contains("Choose an equipment category:"));
+        assertTrue(output.indexOf("Choose an equipment category:")
+            < output.lastIndexOf("Goodbye."));
+    }
+
+    @Test
     void invalidCategoryAndItemChoicesRepromptInTheirSubmenus() {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         runWithConsole("2\n9\n5\n9\n0\n0\n4\n", bytes);

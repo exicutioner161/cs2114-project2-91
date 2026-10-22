@@ -74,8 +74,8 @@ public class GameDriver {
     /** Reads and parses one top-level menu choice. */
     private static Integer readChoice(Scanner input, boolean firstChoice) {
         String rawChoice = input.nextLine().trim();
-        if (firstChoice && rawChoice.isEmpty()) {
-            return null;
+        while (firstChoice && rawChoice.isEmpty() && input.hasNextLine()) {
+            rawChoice = input.nextLine().trim();
         }
         return parseChoice(rawChoice);
     }
