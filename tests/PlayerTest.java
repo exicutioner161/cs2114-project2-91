@@ -19,7 +19,7 @@ class PlayerTest {
         assertEquals(10, player.getGold());
         assertEquals(3, player.getAggro());
         assertTrue(player.sell(4));
-        assertEquals(30, player.getGold());
+        assertEquals(40, player.getGold());
         assertNull(player.getItem(4));
     }
 

@@ -55,6 +55,25 @@ public class TournamentQueue {
     }
 
     /**
+     * Refills a loss queue without discarding opponents already waiting.
+     *
+     * @param player player whose level determines generated opponents
+     * @param count desired queue size
+     * @throws IllegalArgumentException if arguments are invalid
+     */
+    public void repopulateAfterLoss(Player player, int count) {
+        if (player == null || count < fighters.size()) {
+            throw new IllegalArgumentException("Queue values are invalid");
+        }
+        int next = fighters.size();
+        while (fighters.size() < count) {
+            fighters.add(new GameCharacter("Queued Opponent " + next,
+                player.getLevel()));
+            next++;
+        }
+    }
+
+    /**
      * Replaces the queue with stronger opponents for the next level.
      *
      * @param player player whose level determines opponent strength

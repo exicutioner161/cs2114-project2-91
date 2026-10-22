@@ -150,7 +150,7 @@ public class Player extends GameCharacter {
         if (!validSlot(slot) || inventory[slot] == null) {
             return false;
         }
-        gold += inventory[slot].getPrice() / 2;
+        gold += inventory[slot].getPrice() * 3 / 4;
         inventory[slot] = null;
         return true;
     }

@@ -33,6 +33,17 @@ class TournamentQueueTest {
     }
 
     @Test
+    void refillsAfterLossWithoutDiscardingWaitingFighters() {
+        TournamentQueue queue = new TournamentQueue();
+        Player player = new Player("Player", 1, 0, new Item[5]);
+        GameCharacter waiting = new GameCharacter("Waiting", 1);
+        queue.add(waiting);
+        queue.repopulateAfterLoss(player, 3);
+        assertEquals(3, queue.size());
+        assertEquals(waiting, queue.removeNext());
+    }
+
+    @Test
     void rejectsInvalidQueueActions() {
         TournamentQueue queue = new TournamentQueue();
         assertFalse(queue.add(null));
@@ -40,5 +51,7 @@ class TournamentQueueTest {
         assertThrows(IllegalArgumentException.class,
             () -> queue.repopulateAfterWin(null, 1));
         assertThrows(IndexOutOfBoundsException.class, () -> queue.get(0));
+        assertThrows(IllegalArgumentException.class,
+            () -> queue.repopulateAfterLoss(null, 1));
     }
 }

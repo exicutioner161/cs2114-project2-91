@@ -54,8 +54,16 @@ class ShopProgressionTest {
                     assertNotNull(shop.findItem(
                         "Level " + level + " " + prefix + " of " + element));
                 }
+
             }
             assertEquals(25, shop.size());
         }
+    }
+
+    @Test
+    void createsTheMaximumLevelShop() {
+        ShopProgression progression = new ShopProgression(5, new Random(9));
+        assertNotNull(progression.getShop(5));
+        assertEquals(25, progression.getShop(5).size());
     }
 }
