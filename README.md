@@ -81,9 +81,9 @@ java -jar lib\junit-platform-console-standalone-1.10.2.jar execute --class-path 
   and Midrange counter relationships, then resolves a match.
 - `GameDriver` provides a retrying menu for status, category-based gear buying,
   fighting, saving, loading, and exiting, records rewards and run termination,
-  and prints the full ASCII bracket after every completed battle. After every
-  active menu action, the driver waits for Enter before showing the menu again,
-  so output remains visible. Buying gear
+  and prints the full ASCII bracket after every completed battle. Each menu
+  action consumes only its own input and returns directly to the main menu.
+  Buying gear
   opens Head, Body, Legs, Feet, and Weapon submenus; each category displays
   only its offers and uses numbered item choices.
 - The main application workflows are decomposed into focused methods of no
@@ -128,6 +128,23 @@ each fighter's Aggro against the opponent's Control, Control against Midrange,
 and Midrange against Aggro, combines those differences, and maps the result
 through a logistic function to keep the probability between zero and one.
 The match accepts an injectable `Random` source so tests can be repeatable.
+
+### Deliverable 4 change evidence
+
+| Area | Specific implementation changes | Evidence |
+| --- | --- | --- |
+| Input and menu flow | `GameDriver.runMenu`, `readChoice`, `buyGear`, and `buyCategoryItem` consume one intended line per choice, ignore only leading blank startup lines, and return from shop `0` choices without a confirmation pause. | `GameDriverTest.leadingBlankLineDoesNotDiscardTheFirstMenuChoice`, `zeroExitsShopFromCategoryAndItemMenus`, and `returnsToTheMenuAfterTheBracketWithoutAnExtraInput` |
+| Tournament lifecycle | `Tournament.playNextMatch` advances winners/losers phases, `recordLoss` records same-round losses, and `Tournament.saveState`/`restoreState` preserve an active bracket. | `TournamentTest.completesAllDoubleEliminationPhasesWithoutReset`, `toStringDisplaysAsciiBracketState`, and `GameSaveTest.savesAndLoadsMidTournamentState` |
+| Progression and rewards | `GameDriver.recordTournamentWin` applies level advancement and rewards, `prepareStrongerQueue` integrates adaptive/background opponents, and `Player.sell` returns 75% of listed price. | `ShopProgressionTest.createsTheMaximumLevelShop`, `TournamentQueueTest.refillsAfterLossWithoutDiscardingWaitingFighters`, and `PlayerTest.buysSellsAndCalculatesEquipmentStats` |
+| Stretch goals | `AdaptiveOpponentFactory.create`, `BackgroundTournament.simulatePool`, and `SameRoundLossQueue.addLoss` are implemented and used/tested. | `StretchGoalTest` covers normal and invalid-input behavior for all three services |
+| Persistence | `GameSave.save` and `loadGame` serialize player counters, equipment, and optional tournament snapshots with validation. | `GameSaveTest` covers named saves, malformed/missing data, duplicate slots, and resumed tournaments |
+
+The test suite contains normal and bad-input coverage for every public method
+with a meaningful invalid-input branch. Pure getters, counters, and
+zero-argument display methods have no invalid input to reject; their normal
+behavior is covered directly, while invalid constructor and boundary inputs
+are tested at the owning API boundary. The full suite currently contains
+**63 passing tests**.
 
 ### Changes to LinkedChain
 
@@ -223,5 +240,4 @@ GenAI was used to help inspect the existing codebase, identify compile blockers,
 draft edge-case tests, review public-method coverage, propose the save/load and
 scaled-shop designs, and review the README. The team selected the two
 committed stretch goals after discussion; implementation details and tests
-were then adapted and run by Brian. The completed prototype test suite
-contains 51 passing tests.
+were then adapted and run by Brian. The completed prototype test suite currently contains 63 passing tests.

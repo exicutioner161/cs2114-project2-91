@@ -53,5 +53,7 @@ class TournamentQueueTest {
         assertThrows(IndexOutOfBoundsException.class, () -> queue.get(0));
         assertThrows(IllegalArgumentException.class,
             () -> queue.repopulateAfterLoss(null, 1));
+        assertThrows(IllegalArgumentException.class,
+            () -> queue.repopulateAfterLoss(new Player("Player", 1), -1));
     }
 }
