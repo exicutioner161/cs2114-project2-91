@@ -1,6 +1,6 @@
 # Calculated Combat
 
-This is a working MVP slice of Calculated Combat, a text-based tournament
+Calculated Combat a text-based tournament
 fighting game. It supports equipment purchases, five level-scaled shops,
 named save/load, and an eight-fighter double-elimination tournament that runs
 one match at a time and prints its bracket after every battle.
