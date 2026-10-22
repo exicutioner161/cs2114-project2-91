@@ -68,6 +68,12 @@ printing the main menu again.
 [C - 10/21 Brian] Refactor oversized application methods into focused helpers
 of 15 or fewer implementation lines.
 [C - 10/21 Brian] Add Javadocs to public and package-visible APIs across src.
+[C - 10/22 Brian] Remove duplicate menu input and the global action pause.
+[C - 10/22 Brian] Apply 15-gold match and 30-gold tournament rewards.
+[C - 10/22 Brian] Align active progression and shops with levels 1 through 5.
+[C - 10/22 Brian] Preserve and refill waiting opponents after tournament losses.
+[C - 10/22 Brian] Integrate adaptive, background, and same-round loss systems.
+[C - 10/22 Brian] Return 75% of listed price when selling equipment.
 
 Deferred follow-up
 ------------------

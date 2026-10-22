@@ -2,16 +2,25 @@ package main;
 
 import java.nio.file.Path;
 import java.util.Scanner;
+import characters.GameCharacter;
 import characters.Item;
 import characters.Player;
 import gamesaves.GameSave;
 import shop.Shop;
 import shop.ShopProgression;
+import tournament.AdaptiveOpponentFactory;
+import tournament.BackgroundTournament;
 import tournament.Tournament;
 import tournament.MatchResult;
+import tournament.TournamentQueue;
+import linkedlist.CustomLinkedList;
 
 /** Console entry point for the Calculated Combat game. */
 public class GameDriver {
+    private static final int MAX_LEVEL = 5;
+    private static final int MATCH_REWARD = 15;
+    private static final int TOURNAMENT_REWARD = 30;
+
     /** Starts an interactive game using standard input and output. */
     public static void main(String[] args) {
         System.out.println("Welcome to Calculated Combat!");
@@ -52,7 +61,7 @@ public class GameDriver {
         boolean running = true;
         boolean firstChoice = true;
 
-        while (running && input.hasNextLine()) {
+        while (running) {
             printMenu();
             Integer choice = readChoice(input, firstChoice);
             firstChoice = false;
@@ -66,13 +75,13 @@ public class GameDriver {
     /** Reads and parses one top-level menu choice. */
     private static Integer readChoice(Scanner input, boolean firstChoice) {
         String rawChoice = input.nextLine().trim();
-        if (firstChoice && rawChoice.isEmpty()) {
-            return null;
+        while (firstChoice && rawChoice.isEmpty()) {
+            rawChoice = input.nextLine().trim();
         }
         return parseChoice(rawChoice);
     }
 
-    /** Dispatches one valid menu choice and pauses before the next menu. */
+    /** Dispatches one valid menu choice before the next menu. */
     private static boolean handleChoice(Scanner input, GameState state,
             int choice) {
         switch (choice) {
@@ -88,7 +97,6 @@ public class GameDriver {
             case 7 -> sellGear(input, state.player);
             default -> System.out.println("Invalid option. Enter a number from 1 to 7.");
         }
-        pauseAfterAction(input);
         return state.running;
     }
 
@@ -126,7 +134,7 @@ public class GameDriver {
     /** Awards the per-match reward when the player wins. */
     private static void awardMatchGold(MatchResult result, Player player) {
         if (result.getWinner() == player) {
-            player.awardGold(5);
+            player.awardGold(MATCH_REWARD);
         }
     }
 
@@ -145,9 +153,12 @@ public class GameDriver {
         } else {
             state.player.incrementLosses();
             System.out.println("Tournament loss recorded.");
+            state.queue.preserveAfterLoss();
+            state.queue.repopulateAfterLoss(state.player, 14);
+            state.tournament = createTournament(state.player, state.queue);
         }
         if (runIsComplete(state.player)) {
-            System.out.println("Run complete.");
+            System.out.println("\nCongratulations, you won!");
             state.running = false;
         }
     }
@@ -155,12 +166,24 @@ public class GameDriver {
     /** Applies rewards and starts the next tournament after a win. */
     private static void recordTournamentWin(GameState state) {
         state.player.incrementWins();
-        state.player.awardGold(10);
-        if (state.player.getLevel() < 5) {
+        state.player.awardGold(TOURNAMENT_REWARD);
+        if (state.player.getLevel() < MAX_LEVEL) {
             state.player.advanceLevel();
         }
-        state.tournament = createTournament(state.player);
+        prepareStrongerQueue(state);
+        state.tournament = createTournament(state.player, state.queue);
         System.out.println("Tournament win recorded.");
+    }
+
+    /** Seeds the next queue with stronger and stretch-goal opponents. */
+    private static void prepareStrongerQueue(GameState state) {
+        state.queue.repopulateAfterWin(state.player, 14);
+        state.queue.add(new AdaptiveOpponentFactory().create(state.player,
+                "Adaptive Opponent"));
+        CustomLinkedList<GameCharacter> champions = new BackgroundTournament().simulatePool(state.player, 1);
+        if (champions.size() > 0 && champions.get(0) != state.player) {
+            state.queue.add(champions.get(0));
+        }
     }
 
     /** Checks the configured five-win or ten-loss run limit. */
@@ -198,21 +221,31 @@ public class GameDriver {
     /** Reads a slot and attempts to sell its equipped item. */
     private static void sellGear(Scanner input, Player player) {
         System.out.print("Enter equipment slot (0-4) to sell: ");
-        String rawSlot = input.hasNextLine() ? input.nextLine().trim() : "";
-        try {
-            int slot = Integer.parseInt(rawSlot);
-            System.out.println(player.sell(slot) ? "Item sold." : "Unable to sell item.");
-        } catch (NumberFormatException exception) {
-            System.out.println("Invalid equipment slot.");
+        String rawSlot;
+        while (true) {
+            rawSlot = input.nextLine().trim();
+            try {
+                int slot = Integer.parseInt(rawSlot);
+                System.out.println(player.sell(slot) ? "Item sold." : "Unable to sell item.");
+                break;
+            } catch (NumberFormatException exception) {
+                System.out.println("Invalid equipment slot.");
+            }
         }
     }
 
     private static class GameState {
         private Player player = new Player("Player", 1, 100, new Item[5]);
-        private final ShopProgression progression = new ShopProgression(4);
+        private final ShopProgression progression = new ShopProgression(MAX_LEVEL);
         private final GameSave saves = new GameSave();
-        private Tournament tournament = createTournament(player);
+        private final TournamentQueue queue = new TournamentQueue();
+        private Tournament tournament;
         private boolean running = true;
+
+        private GameState() {
+            queue.repopulateAfterLoss(player, 14);
+            tournament = createTournament(player, queue);
+        }
     }
 
     /** Parses a top-level choice and reports malformed numeric input. */
@@ -235,17 +268,9 @@ public class GameDriver {
         }
     }
 
-    /** Waits for one confirmation line before returning to the menu. */
-    private static void pauseAfterAction(Scanner input) {
-        System.out.println("Press Enter to continue.");
-        if (input.hasNextLine()) {
-            input.nextLine();
-        }
-    }
-
     /** Runs the equipment-category selection loop. */
     private static void buyGear(Scanner input, Shop shop, Player player) {
-        while (input.hasNextLine()) {
+        while (true) {
             printCategoryMenu();
             Integer category = parseBoundedChoice(input.nextLine().trim(), 0, 5,
                     "category");
@@ -275,7 +300,7 @@ public class GameDriver {
     /** Runs the numbered item selection loop for one equipment slot. */
     private static void buyCategoryItem(Scanner input, Shop shop, Player player,
             int slot) {
-        while (input.hasNextLine()) {
+        while (true) {
             int itemCount = printCategoryItems(shop, slot);
             Integer itemChoice = parseBoundedChoice(input.nextLine().trim(), 0,
                     itemCount, "item");
@@ -306,7 +331,7 @@ public class GameDriver {
                         + " | Price: " + item.getPrice());
             }
         }
-        System.out.println("0. Return to category menu");
+        System.out.println("0. Return to main menu");
         System.out.print("Choose an item: ");
         return choice - 1;
     }
@@ -352,8 +377,21 @@ public class GameDriver {
 
     /** Creates and fills a fresh eight-fighter tournament. */
     private static Tournament createTournament(Player player) {
+        TournamentQueue queue = new TournamentQueue();
+        queue.repopulateAfterLoss(player, 14);
+        return createTournament(player, queue);
+    }
+
+    /** Creates a tournament from the next seven waiting opponents. */
+    private static Tournament createTournament(Player player,
+            TournamentQueue queue) {
         Tournament tournament = new Tournament(player);
-        tournament.populateEntrants(player);
+        while (tournament.size() < 8 && queue.size() > 0) {
+            tournament.addFighter(queue.removeNext());
+        }
+        if (tournament.size() < 8) {
+            tournament.populateEntrants(player);
+        }
         tournament.fillBracket();
         return tournament;
     }

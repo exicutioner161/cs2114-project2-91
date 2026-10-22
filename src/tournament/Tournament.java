@@ -21,6 +21,7 @@ public class Tournament {
     private final CustomLinkedList<GameCharacter> losers;
     private final int[] lossCounts;
     private final Random random;
+    private final SameRoundLossQueue sameRoundLosses;
     private int phase;
     private int matchIndex;
     private boolean finished;
@@ -53,6 +54,7 @@ public class Tournament {
         entrants = new CustomLinkedList<>();
         winners = new CustomLinkedList<>();
         losers = new CustomLinkedList<>();
+        sameRoundLosses = new SameRoundLossQueue();
         lossCounts = new int[MAX_ENTRANTS];
         this.random = random;
         addFighter(player);
@@ -287,6 +289,7 @@ public class Tournament {
             throw new IllegalArgumentException("Fighter is not registered");
         }
         lossCounts[index]++;
+        sameRoundLosses.addLoss(phase, fighter);
     }
 
     /** Finds a registered fighter by object identity. */

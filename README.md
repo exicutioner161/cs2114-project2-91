@@ -1,7 +1,7 @@
 # Calculated Combat Prototype
 
 This is a working MVP slice of Calculated Combat, a text-based tournament
-fighting game. It supports equipment purchases, four level-scaled shops,
+fighting game. It supports equipment purchases, five level-scaled shops,
 named save/load, and an eight-fighter double-elimination tournament that runs
 one match at a time and prints its bracket after every battle.
 
@@ -75,7 +75,7 @@ java -jar lib\junit-platform-console-standalone-1.10.2.jar execute --class-path 
   brackets through the public list API.
 - `ShopProgression` stores level-specific `Shop` objects in that same generic
   `CustomLinkedList<T>`, so three application element types use one chain.
-  Levels 1 through 4 each contain 25 offers: five unique named items in each
+  Levels 1 through 5 each contain 25 offers: five unique named items in each
   of the five equipment slots.
 - `TournamentRound` calculates a bounded win probability from Aggro, Control,
   and Midrange counter relationships, then resolves a match.
@@ -100,6 +100,10 @@ java -jar lib\junit-platform-console-standalone-1.10.2.jar execute --class-path 
   stronger opponents after a win.
 - `AdaptiveOpponentFactory`, `BackgroundTournament`, and
   `SameRoundLossQueue` implement the three stretch goals from the scope.
+  The active driver uses stronger queues after wins, preserves and refills
+  waiting opponents after losses, adds adaptive opponents and background
+  champions to post-win queues, and records same-round losses during bracket
+  play.
 
 Invalid actions return `false` or `null` without changing state. The driver
 reprompts inside the current shop submenu for invalid category or item
@@ -164,8 +168,9 @@ named progress serialization, level-scaled randomized store generation, the
 double-elimination bracket lifecycle, deterministic seeded outcomes, and
 mid-tournament persistence. The shop uses a fixed name catalog and randomized
 stats/prices with stronger level ranges. Combat probabilities are bounded to
-0-100%, shop offers cost 50-140 gold at level 1 and increase by level, and
-match/tournament rewards are fixed and documented by the driver tests.
+0-100%, shop offers cost 50-140 gold at level 1 and increase by level.
+Player match wins award 15 gold, tournament wins award an additional 30
+gold, and selling equipped gear returns 75% of its listed price.
 
 ### What does not work yet
 
