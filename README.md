@@ -228,7 +228,7 @@ invalid-input, deterministic, resumed-tournament, and full-bracket cases.
 | `src/tournament/SameRoundLossQueue.java` | Brian | Wrote and tested with GenAI assistance |
 | `src/tournament/TournamentRound.java` | Brian | Revised and tested with GenAI assistance |
 | `src/main/GameDriver.java` | Brian, David, Ben | Revised and tested with GenAI assistance |
-| `src/gamesaves/GameSave.java` | David, Ben | Revised and tested with GenAI assistance |
+| `src/gamesaves/GameSave.java` | David, Ben, Brian | Revised and tested with GenAI assistance |
 | `tests/ItemTest.java` | David, Brian, Ben | Revised and tested with GenAI assistance |
 | `tests/GameCharacterTest.java` | Leo, Brian | Wrote and tested with GenAI assistance |
 | `tests/GameDriverTest.java` | Brian | Wrote and tested with GenAI assistance |
