@@ -72,7 +72,7 @@ public class GameDriver {
         return parseChoice(rawChoice);
     }
 
-    /** Dispatches one valid menu choice and pauses before the next menu. */
+    /** Dispatches one valid menu choice before the next menu. */
     private static boolean handleChoice(Scanner input, GameState state,
             int choice) {
         switch (choice) {
@@ -88,7 +88,6 @@ public class GameDriver {
             case 7 -> sellGear(input, state.player);
             default -> System.out.println("Invalid option. Enter a number from 1 to 7.");
         }
-        pauseAfterAction(input);
         return state.running;
     }
 
@@ -232,14 +231,6 @@ public class GameDriver {
         } catch (NumberFormatException exception) {
             System.out.println("Invalid option. Enter a number from 1 to 7.");
             return null;
-        }
-    }
-
-    /** Waits for one confirmation line before returning to the menu. */
-    private static void pauseAfterAction(Scanner input) {
-        System.out.println("Press Enter to continue.");
-        if (input.hasNextLine()) {
-            input.nextLine();
         }
     }
 
