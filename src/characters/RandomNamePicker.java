@@ -14,6 +14,7 @@ public class RandomNamePicker {
         names = new ArrayList<>();
     }
 
+    /** Loads the fixed pool of opponent names. */
     private void fillNameList() {
         names.add("Ash");
         names.add("Blaze");

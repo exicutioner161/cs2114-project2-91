@@ -51,6 +51,7 @@ public class GameCharacter {
         this.midrange = midrange;
     }
 
+    /** Generates deterministic level-scaled stats from the fighter identity. */
     private void randomizeStats() {
         double ceiling = BASE_STAT_CEILING * Math.pow(LEVEL_MULTIPLIER, level);
         Random random = new Random(name.hashCode() * 31L + level);
@@ -63,6 +64,7 @@ public class GameCharacter {
         midrange = third * ceiling / total;
     }
 
+    /** Checks that an explicit statistic is finite and nonnegative. */
     private static boolean validStat(double stat) {
         return !Double.isNaN(stat) && !Double.isInfinite(stat) && stat >= 0;
     }

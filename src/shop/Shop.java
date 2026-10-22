@@ -137,6 +137,7 @@ public class Shop {
         return item != null && player.buy(item);
     }
 
+    /** Converts an equipment slot index to its display label. */
     private String slotName(int slot) {
         return switch (slot) {
             case 0 -> "Head";

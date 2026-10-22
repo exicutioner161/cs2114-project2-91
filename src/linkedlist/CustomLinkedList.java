@@ -71,6 +71,7 @@ public class CustomLinkedList<T> {
      *
      * @param x the value to store in the first node
      */
+    /** Initializes both list endpoints with the first node. */
     private void createFirstNode(T x) {
         head = new Node<>(x);
         tail = head;
@@ -260,6 +261,7 @@ public class CustomLinkedList<T> {
      * @param node the node to unlink
      * @return the value stored in the removed node
      */
+    /** Removes a node and reconnects its neighboring links. */
     private T unlinkNode(Node<T> node) {
         T oldValue = node.getValue();
         if (size == 1) {
@@ -291,6 +293,7 @@ public class CustomLinkedList<T> {
      * @param index the index to resolve
      * @return the node at {@code index}
      */
+    /** Locates a node by traversing from the nearer list endpoint. */
     private Node<T> getNode(int index) {
         int distanceFromTail = size - index - 1;
         Node<T> node;

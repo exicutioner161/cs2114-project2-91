@@ -68,6 +68,7 @@ public class ShopProgression {
         return shops.size();
     }
 
+    /** Generates all offers for one level-specific shop. */
     private Shop createShop(int level, Random random) {
         Item[] items = new Item[ITEM_NAMES.length * ITEMS_PER_SLOT];
         int itemIndex = 0;
