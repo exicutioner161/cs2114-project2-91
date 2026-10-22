@@ -26,10 +26,23 @@ public class Tournament {
     private boolean finished;
     private GameCharacter champion;
 
+    /**
+     * Creates a tournament with a default random source.
+     *
+     * @param player player entrant
+     * @throws IllegalArgumentException if player is null
+     */
     public Tournament(Player player) {
         this(player, new Random());
     }
 
+    /**
+     * Creates a tournament with an injectable random source.
+     *
+     * @param player player entrant
+     * @param random source for match outcomes
+     * @throws IllegalArgumentException if either argument is null
+     */
     public Tournament(Player player, Random random) {
         if (player == null) {
             throw new IllegalArgumentException("Player cannot be null");
@@ -45,6 +58,12 @@ public class Tournament {
         addFighter(player);
     }
 
+    /**
+     * Registers a fighter before bracket play begins.
+     *
+     * @param fighter fighter to register
+     * @return whether registration succeeded
+     */
     public boolean addFighter(GameCharacter fighter) {
         if (fighter == null || phase != 0 || entrants.size() >= MAX_ENTRANTS
                 || containsIdentity(entrants, fighter)) {
@@ -54,6 +73,11 @@ public class Tournament {
         return true;
     }
 
+    /**
+     * Starts the bracket after exactly eight fighters are registered.
+     *
+     * @return whether the bracket was filled
+     */
     public boolean fillBracket() {
         if (phase != 0 || entrants.size() != MAX_ENTRANTS) {
             return false;
@@ -64,6 +88,12 @@ public class Tournament {
         return true;
     }
 
+    /**
+     * Simulates the next match and advances bracket state as needed.
+     *
+     * @return the completed match result
+     * @throws IllegalStateException if the bracket is not playable
+     */
     public MatchResult playNextMatch() {
         validatePlayable();
         GameCharacter[] fighters = currentFighters();
@@ -276,6 +306,12 @@ public class Tournament {
         }
     }
 
+    /**
+     * Fills remaining entrant slots with generated opponents.
+     *
+     * @param player player whose level controls generated opponents
+     * @throws IllegalArgumentException if player is null
+     */
     public void populateEntrants(Player player) {
         if (player == null) {
             throw new IllegalArgumentException("Player cannot be null");
@@ -285,6 +321,13 @@ public class Tournament {
         }
     }
 
+    /**
+     * Generates one opponent at the player's level.
+     *
+     * @param player player whose level is copied
+     * @return generated opponent
+     * @throws IllegalArgumentException if player is null
+     */
     public GameCharacter generateCharacter(Player player) {
         if (player == null) {
             throw new IllegalArgumentException("Player cannot be null");
@@ -292,18 +335,28 @@ public class Tournament {
         return new GameCharacter(NAME_GENERATOR.pickName(), player.getLevel());
     }
 
+    /** @return the number of registered entrants */
     public int size() {
         return entrants.size();
     }
 
+    /** @return the number of fighters currently in the winners bracket */
     public int winnersSize() {
         return winners.size();
     }
 
+    /** @return the number of fighters currently in the losers bracket */
     public int losersSize() {
         return losers.size();
     }
 
+    /**
+     * Returns the number of recorded losses for a fighter.
+     *
+     * @param fighter registered fighter
+     * @return loss count
+     * @throws IllegalArgumentException if fighter is not registered
+     */
     public int getLossCount(GameCharacter fighter) {
         int index = findFighterIndex(fighter);
         if (index < 0) {
@@ -312,10 +365,17 @@ public class Tournament {
         return lossCounts[index];
     }
 
+    /** @return whether the tournament has a champion */
     public boolean isFinished() {
         return finished;
     }
 
+    /**
+     * Returns the champion after completion.
+     *
+     * @return tournament champion
+     * @throws IllegalStateException if the tournament is incomplete
+     */
     public GameCharacter getChampion() {
         if (!finished) {
             throw new IllegalStateException("Tournament is not finished");
@@ -323,6 +383,7 @@ public class Tournament {
         return champion;
     }
 
+    /** @return a validated text snapshot of the current bracket state */
     public String saveState() {
         StringBuilder state = new StringBuilder();
         state.append("phase=").append(phase).append('\n');
@@ -345,6 +406,15 @@ public class Tournament {
         return state.toString();
     }
 
+    /**
+     * Restores a tournament from a snapshot.
+     *
+     * @param player player entrant represented by the snapshot
+     * @param state serialized tournament state
+     * @param random source for future matches
+     * @return restored tournament
+     * @throws IllegalArgumentException if the snapshot is malformed
+     */
     public static Tournament restoreState(Player player, String state,
             Random random) {
         if (player == null || state == null || random == null) {

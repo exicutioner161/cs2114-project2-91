@@ -67,6 +67,7 @@ bracket view before returning to the main menu.
 printing the main menu again.
 [C - 10/21 Brian] Refactor oversized application methods into focused helpers
 of 15 or fewer implementation lines.
+[C - 10/21 Brian] Add Javadocs to public and package-visible APIs across src.
 
 Deferred follow-up
 ------------------

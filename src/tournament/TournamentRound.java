@@ -4,6 +4,7 @@ import java.util.Random;
 
 import characters.GameCharacter;
 
+/** Resolves one match using style advantages and a random roll. */
 public class TournamentRound {
     private static final double ONE_HUNDRED = 100.0;
     private static final double BASE_WIN_PERCENT = 50.0;
@@ -16,10 +17,24 @@ public class TournamentRound {
     private GameCharacter fighter2;
     private GameCharacter winner;
 
+    /**
+     * Creates a match with a default random source.
+     *
+     * @param fighter1 first fighter
+     * @param fighter2 second fighter
+     */
     public TournamentRound(GameCharacter fighter1, GameCharacter fighter2) {
         this(fighter1, fighter2, new Random());
     }
 
+    /**
+     * Creates a match with an injectable random source.
+     *
+     * @param fighter1 first fighter
+     * @param fighter2 second fighter
+     * @param random source for the result
+     * @throws IllegalArgumentException if a fighter or random source is invalid
+     */
     public TournamentRound(GameCharacter fighter1, GameCharacter fighter2,
             Random random) {
         if (fighter1 == null || fighter2 == null || fighter1 == fighter2){
@@ -34,6 +49,11 @@ public class TournamentRound {
         this.random = random;
     }
 
+    /**
+     * Resolves and returns the winner, caching the result.
+     *
+     * @return winning fighter
+     */
     public GameCharacter getWinner() {
         if (winner != null) {
             return winner;

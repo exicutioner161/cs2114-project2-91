@@ -5,6 +5,7 @@ import java.util.Random;
 import characters.Item;
 import linkedlist.CustomLinkedList;
 
+/** Generates and stores level-specific equipment catalogs. */
 public class ShopProgression {
     private static final int FIRST_LEVEL = 1;
     private static final int ITEMS_PER_SLOT = 5;
@@ -23,6 +24,13 @@ public class ShopProgression {
 
     private final CustomLinkedList<Shop> shops;
 
+    /**
+     * Creates shops from level one through the requested highest level.
+     *
+     * @param levelCount highest generated level
+     * @param random source for generated stats and prices
+     * @throws IllegalArgumentException if arguments are invalid
+     */
     public ShopProgression(int levelCount, Random random) {
         if (levelCount < FIRST_LEVEL || random == null) {
             throw new IllegalArgumentException("Shop progression values are invalid");
@@ -33,10 +41,21 @@ public class ShopProgression {
         }
     }
 
+    /**
+     * Creates level shops using a new random source.
+     *
+     * @param highestLevel highest generated level
+     */
     public ShopProgression(int highestLevel) {
         this(highestLevel, new Random());
     }
 
+    /**
+     * Returns the shop unlocked at a level.
+     *
+     * @param level requested player level
+     * @return the level shop, or {@code null} if it is unavailable
+     */
     public Shop getShop(int level) {
         if (level < FIRST_LEVEL || level > shops.size()) {
             return null;
@@ -44,6 +63,7 @@ public class ShopProgression {
         return shops.get(level - FIRST_LEVEL);
     }
 
+    /** @return the number of generated shops */
     public int size() {
         return shops.size();
     }

@@ -10,7 +10,9 @@ import shop.ShopProgression;
 import tournament.Tournament;
 import tournament.MatchResult;
 
+/** Console entry point for the Calculated Combat game. */
 public class GameDriver {
+    /** Starts an interactive game using standard input and output. */
     public static void main(String[] args) {
         System.out.println("Welcome to Calculated Combat!");
         try (Scanner input = new Scanner(System.in)) {
@@ -18,6 +20,12 @@ public class GameDriver {
         }
     }
 
+    /**
+     * Runs the interactive menu with the supplied input source.
+     *
+     * @param input source of menu and confirmation lines
+     * @throws IllegalArgumentException if input is null
+     */
     public static void run(Scanner input) {
         runMenu(input);
     }
