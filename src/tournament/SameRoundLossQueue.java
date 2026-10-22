@@ -7,13 +7,12 @@ import linkedlist.CustomLinkedList;
  * Groups tournament losers by the round in which they were eliminated.
  */
 public class SameRoundLossQueue {
-    private final CustomLinkedList<CustomLinkedList<GameCharacter>> rounds =
-        new CustomLinkedList<>();
+    private final CustomLinkedList<CustomLinkedList<GameCharacter>> rounds = new CustomLinkedList<>();
 
     /**
      * Adds a fighter to the queue for an elimination round.
      *
-     * @param round zero-based round number
+     * @param round   zero-based round number
      * @param fighter eliminated fighter
      * @throws IllegalArgumentException if round or fighter is invalid
      */

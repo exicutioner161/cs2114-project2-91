@@ -102,7 +102,7 @@ public class Tournament {
         GameCharacter fighter1 = fighters[0];
         GameCharacter fighter2 = fighters[1];
         GameCharacter winner = new TournamentRound(fighter1, fighter2, random)
-            .getWinner();
+                .getWinner();
         GameCharacter loser = winner == fighter1 ? fighter2 : fighter1;
         recordLoss(loser);
         recordPhaseResult(winner, loser);
@@ -133,13 +133,13 @@ public class Tournament {
             return pair(losers, matchIndex);
         }
         if (phase == 5) {
-            return new GameCharacter[] {winners.get(0), winners.get(1)};
+            return new GameCharacter[] { winners.get(0), winners.get(1) };
         }
         if (phase == 6 || phase == 7) {
-            return new GameCharacter[] {losers.get(0), losers.get(1)};
+            return new GameCharacter[] { losers.get(0), losers.get(1) };
         }
         if (phase == 8) {
-            return new GameCharacter[] {winners.get(0), losers.get(0)};
+            return new GameCharacter[] { winners.get(0), losers.get(0) };
         }
         throw new IllegalStateException("Invalid tournament phase");
     }
@@ -147,8 +147,8 @@ public class Tournament {
     /** Returns an adjacent pair from a bracket list. */
     private GameCharacter[] pair(CustomLinkedList<GameCharacter> fighters,
             int index) {
-        return new GameCharacter[] {fighters.get(index * 2),
-            fighters.get(index * 2 + 1)};
+        return new GameCharacter[] { fighters.get(index * 2),
+                fighters.get(index * 2 + 1) };
     }
 
     /** Stores a match result in the phase-local transition lists. */
@@ -165,14 +165,14 @@ public class Tournament {
     private void advancePhase(GameCharacter finalWinner,
             GameCharacter finalLoser) {
         switch (phase) {
-        case 1 -> transitionWinnersAndLosers(openingWinners(), openingLosers());
-        case 2 -> advanceToWinnersSemifinals();
-        case 3 -> transitionWinnersAndLosers(phaseWinners, merge(phaseLosers, losers));
-        case 4 -> advanceToWinnersFinal();
-        case 5 -> advanceToLosersRound(finalWinner, finalLoser);
-        case 6 -> advanceToLosersFinal(finalWinner);
-        case 7 -> advanceToGrandFinal(finalWinner);
-        default -> finish(finalWinner);
+            case 1 -> transitionWinnersAndLosers(openingWinners(), openingLosers());
+            case 2 -> advanceToWinnersSemifinals();
+            case 3 -> transitionWinnersAndLosers(phaseWinners, merge(phaseLosers, losers));
+            case 4 -> advanceToWinnersFinal();
+            case 5 -> advanceToLosersRound(finalWinner, finalLoser);
+            case 6 -> advanceToLosersFinal(finalWinner);
+            case 7 -> advanceToGrandFinal(finalWinner);
+            default -> finish(finalWinner);
         }
     }
 
@@ -232,10 +232,8 @@ public class Tournament {
         matchIndex = 0;
     }
 
-    private CustomLinkedList<GameCharacter> phaseWinners =
-        new CustomLinkedList<>();
-    private CustomLinkedList<GameCharacter> phaseLosers =
-        new CustomLinkedList<>();
+    private CustomLinkedList<GameCharacter> phaseWinners = new CustomLinkedList<>();
+    private CustomLinkedList<GameCharacter> phaseLosers = new CustomLinkedList<>();
 
     /** Returns the winners collected during the opening round. */
     private CustomLinkedList<GameCharacter> openingWinners() {
@@ -278,8 +276,10 @@ public class Tournament {
 
     /** Returns the number of matches required by the current phase. */
     private int phaseMatchCount() {
-        return phase == 1 ? 4 : phase == 2 || phase == 3 || phase == 4
-                ? 2 : 1;
+        return phase == 1 ? 4
+                : phase == 2 || phase == 3 || phase == 4
+                        ? 2
+                        : 1;
     }
 
     /** Increments the registered loss count for a fighter. */
@@ -435,7 +435,7 @@ public class Tournament {
      * Restores a tournament from a snapshot.
      *
      * @param player player entrant represented by the snapshot
-     * @param state serialized tournament state
+     * @param state  serialized tournament state
      * @param random source for future matches
      * @return restored tournament
      * @throws IllegalArgumentException if the snapshot is malformed
@@ -450,7 +450,7 @@ public class Tournament {
             return restoreParsedState(lines, player, random);
         } catch (RuntimeException exception) {
             throw new IllegalArgumentException("Tournament state is invalid",
-                exception);
+                    exception);
         }
     }
 
@@ -476,11 +476,11 @@ public class Tournament {
         for (int i = 0; i < entrants.size(); i++) {
             GameCharacter fighter = entrants.get(i);
             state.append("fighter=").append(i).append('|')
-                .append(encode(fighter.getName())).append('|')
-                .append(fighter.getLevel()).append('|')
-                .append(fighter.getAggro()).append('|')
-                .append(fighter.getControl()).append('|')
-                .append(fighter.getMidrange()).append('\n');
+                    .append(encode(fighter.getName())).append('|')
+                    .append(fighter.getLevel()).append('|')
+                    .append(fighter.getAggro()).append('|')
+                    .append(fighter.getControl()).append('|')
+                    .append(fighter.getMidrange()).append('\n');
         }
     }
 
@@ -566,9 +566,10 @@ public class Tournament {
     /** Creates either the saved player or a restored opponent. */
     private static GameCharacter createFighter(String[] fields, boolean player,
             Player savedPlayer) {
-        return player ? savedPlayer : new GameCharacter(decode(fields[1]),
-            Integer.parseInt(fields[2]), Double.parseDouble(fields[3]),
-            Double.parseDouble(fields[4]), Double.parseDouble(fields[5]));
+        return player ? savedPlayer
+                : new GameCharacter(decode(fields[1]),
+                        Integer.parseInt(fields[2]), Double.parseDouble(fields[3]),
+                        Double.parseDouble(fields[4]), Double.parseDouble(fields[5]));
     }
 
     /** Converts parsed fighter storage into an array for indexed references. */
@@ -634,13 +635,13 @@ public class Tournament {
     /** Encodes fighter names for snapshot storage. */
     private static String encode(String value) {
         return Base64.getEncoder().encodeToString(
-            value.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+                value.getBytes(java.nio.charset.StandardCharsets.UTF_8));
     }
 
     /** Decodes fighter names from snapshot storage. */
     private static String decode(String value) {
         return new String(Base64.getDecoder().decode(value),
-            java.nio.charset.StandardCharsets.UTF_8);
+                java.nio.charset.StandardCharsets.UTF_8);
     }
 
     @Override
@@ -651,10 +652,10 @@ public class Tournament {
         bracket.append("Winners Bracket\n");
         bracket.append("  [").append(fighterName(winners, 0)).append("]--+\n");
         bracket.append("                         +-- ")
-            .append(fighterName(winners, 1)).append('\n');
+                .append(fighterName(winners, 1)).append('\n');
         bracket.append("  [").append(fighterName(winners, 2)).append("]--+\n");
         bracket.append("                         +-- ")
-            .append(fighterName(winners, 3)).append('\n');
+                .append(fighterName(winners, 3)).append('\n');
         bracket.append("Losers Bracket\n");
         for (int i = 0; i < losers.size(); i++) {
             bracket.append("  [").append(losers.get(i)).append("]\n");

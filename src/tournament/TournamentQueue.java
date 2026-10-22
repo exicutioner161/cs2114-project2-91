@@ -8,8 +8,7 @@ import linkedlist.CustomLinkedList;
  * Holds opponents waiting for the next tournament.
  */
 public class TournamentQueue {
-    private final CustomLinkedList<GameCharacter> fighters =
-        new CustomLinkedList<>();
+    private final CustomLinkedList<GameCharacter> fighters = new CustomLinkedList<>();
 
     /**
      * Adds a waiting fighter if it is not already queued.
@@ -58,7 +57,7 @@ public class TournamentQueue {
      * Refills a loss queue without discarding opponents already waiting.
      *
      * @param player player whose level determines generated opponents
-     * @param count desired queue size
+     * @param count  desired queue size
      * @throws IllegalArgumentException if arguments are invalid
      */
     public void repopulateAfterLoss(Player player, int count) {
@@ -68,7 +67,7 @@ public class TournamentQueue {
         int next = fighters.size();
         while (fighters.size() < count) {
             fighters.add(new GameCharacter("Queued Opponent " + next,
-                player.getLevel()));
+                    player.getLevel()));
             next++;
         }
     }
@@ -77,7 +76,7 @@ public class TournamentQueue {
      * Replaces the queue with stronger opponents for the next level.
      *
      * @param player player whose level determines opponent strength
-     * @param count number of opponents to create
+     * @param count  number of opponents to create
      * @throws IllegalArgumentException if arguments are invalid
      */
     public void repopulateAfterWin(Player player, int count) {
@@ -87,7 +86,7 @@ public class TournamentQueue {
         fighters.clear();
         for (int i = 0; i < count; i++) {
             fighters.add(new GameCharacter("Stronger Opponent " + i,
-                player.getLevel() + 1));
+                    player.getLevel() + 1));
         }
     }
 }

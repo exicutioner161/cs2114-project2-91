@@ -20,7 +20,7 @@ public class GameSave {
      *
      * @param path destination path
      * @return {@code true} after writing
-     * @throws IOException if writing fails
+     * @throws IOException              if writing fails
      * @throws IllegalArgumentException if path is null
      */
     public boolean save(Path path) throws IOException {
@@ -39,9 +39,9 @@ public class GameSave {
     /**
      * Saves player progress without a tournament snapshot.
      *
-     * @param name save/player name
+     * @param name   save/player name
      * @param player player progress
-     * @param path destination path
+     * @param path   destination path
      * @return {@code true} after writing
      * @throws IOException if writing fails
      */
@@ -52,12 +52,12 @@ public class GameSave {
     /**
      * Saves player progress and an optional active tournament.
      *
-     * @param name save/player name
-     * @param player player progress
+     * @param name       save/player name
+     * @param player     player progress
      * @param tournament optional tournament snapshot
-     * @param path destination path
+     * @param path       destination path
      * @return {@code true} after writing
-     * @throws IOException if writing fails
+     * @throws IOException              if writing fails
      * @throws IllegalArgumentException if values are invalid
      */
     public boolean save(String name, Player player, Tournament tournament,
@@ -76,9 +76,9 @@ public class GameSave {
      * Loads named player progress.
      *
      * @param expectedName expected save name
-     * @param path save path
+     * @param path         save path
      * @return restored player
-     * @throws IOException if reading fails
+     * @throws IOException              if reading fails
      * @throws IllegalArgumentException if validation fails
      */
     public Player load(String expectedName, Path path) throws IOException {
@@ -102,17 +102,17 @@ public class GameSave {
     /** Builds the scalar player fields at the start of a save. */
     private StringBuilder playerHeader(String name, Player player) {
         return new StringBuilder()
-            .append("name=").append(encode(name)).append('\n')
-            .append("level=").append(player.getLevel()).append('\n')
-            .append("gold=").append(player.getGold()).append('\n')
-            .append("wins=").append(player.getWins()).append('\n')
-            .append("losses=").append(player.getLosses()).append('\n');
+                .append("name=").append(encode(name)).append('\n')
+                .append("level=").append(player.getLevel()).append('\n')
+                .append("gold=").append(player.getGold()).append('\n')
+                .append("wins=").append(player.getWins()).append('\n')
+                .append("losses=").append(player.getLosses()).append('\n');
     }
 
     /** Appends an encoded tournament snapshot to a save buffer. */
     private void appendTournament(StringBuilder content, Tournament tournament) {
         content.append("tournament=").append(encode(tournament.saveState()))
-            .append('\n');
+                .append('\n');
     }
 
     /** Appends each equipped item to a save buffer. */
@@ -128,9 +128,9 @@ public class GameSave {
     /** Appends one item record in the save format. */
     private void appendItem(StringBuilder content, int slot, Item item) {
         content.append("item|").append(slot).append('|').append(encode(item.getName()))
-            .append('|').append(item.getAggro()).append('|').append(item.getControl())
-            .append('|').append(item.getMidrange()).append('|').append(item.getPrice())
-            .append('\n');
+                .append('|').append(item.getAggro()).append('|').append(item.getControl())
+                .append('|').append(item.getMidrange()).append('|').append(item.getPrice())
+                .append('\n');
     }
 
     /** Validates arguments required to read a named save. */
@@ -166,7 +166,8 @@ public class GameSave {
     /** Reads an optional progress counter from a save line. */
     private int optionalCounter(String[] lines, int index, String key) {
         return index < lines.length && lines[index].startsWith(key + "=")
-            ? Integer.parseInt(requiredValue(lines[index], key)) : 0;
+                ? Integer.parseInt(requiredValue(lines[index], key))
+                : 0;
     }
 
     /** Counts progress-counter lines before item records begin. */
@@ -205,18 +206,18 @@ public class GameSave {
         }
         occupied[slot] = true;
         inventory[slot] = new Item(decode(fields[2]), Double.parseDouble(fields[3]),
-            Double.parseDouble(fields[4]), Double.parseDouble(fields[5]),
-            Integer.parseInt(fields[6]), slot);
+                Double.parseDouble(fields[4]), Double.parseDouble(fields[5]),
+                Integer.parseInt(fields[6]), slot);
     }
 
     /**
      * Loads player progress and an optional active tournament.
      *
      * @param expectedName expected save name
-     * @param path save path
-     * @param random source for future tournament matches
+     * @param path         save path
+     * @param random       source for future tournament matches
      * @return restored game components
-     * @throws IOException if reading fails
+     * @throws IOException              if reading fails
      * @throws IllegalArgumentException if validation fails
      */
     public LoadedGame loadGame(String expectedName, Path path, Random random)
@@ -237,7 +238,7 @@ public class GameSave {
             return new LoadedGame(player, null);
         }
         return new LoadedGame(player,
-            Tournament.restoreState(player, decode(encodedState), random));
+                Tournament.restoreState(player, decode(encodedState), random));
     }
 
     /** Restored player and optional tournament snapshot. */

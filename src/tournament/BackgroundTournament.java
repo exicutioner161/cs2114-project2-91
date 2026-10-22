@@ -11,7 +11,7 @@ public class BackgroundTournament {
     /**
      * Simulates a complete background tournament.
      *
-     * @param player player included in the tournament
+     * @param player        player included in the tournament
      * @param opponentLevel level for generated opponents
      * @return the background tournament champion
      * @throws IllegalArgumentException if arguments are invalid
@@ -23,7 +23,7 @@ public class BackgroundTournament {
         Tournament tournament = new Tournament(player);
         for (int i = 0; i < 7; i++) {
             tournament.addFighter(new GameCharacter("Background " + i,
-                opponentLevel));
+                    opponentLevel));
         }
         tournament.fillBracket();
         while (!tournament.isFinished()) {
@@ -35,7 +35,7 @@ public class BackgroundTournament {
     /**
      * Simulates multiple background tournaments.
      *
-     * @param player player used for each tournament
+     * @param player      player used for each tournament
      * @param tournaments number of tournaments
      * @return champions in simulation order
      * @throws IllegalArgumentException if arguments are invalid
