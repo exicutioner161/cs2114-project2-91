@@ -111,35 +111,6 @@ choices, and `0` returns from either submenu. Invalid constructor values throw
 `IllegalArgumentException`, so bad input is rejected at the validation
 boundary rather than crashing later in the game.
 
-## System diagram
-
-```mermaid
-flowchart TD
-    Driver[GameDriver] --> Player[Player]
-    Driver --> Tournament[Tournament]
-    Driver --> Shops[ShopProgression]
-    Driver --> Saves[GameSave]
-    Shops --> Shop[Shop]
-    Shop --> Item[Item]
-    Tournament --> Fighter[GameCharacter]
-    Tournament --> Round[TournamentRound]
-    Tournament --> Queue[TournamentQueue]
-    Player --> Item
-    Shop --> Chain[CustomLinkedList<T>]
-    Tournament --> Chain
-    Shops --> Chain
-    Chain --> Item
-    Chain --> Fighter
-    Chain --> Shop
-```
-
-`CustomLinkedList<T>` is the single generic chain implementation. `Shop`
-stores `Item` offers, `Tournament` stores `GameCharacter` entrants and
-bracket fighters, and `ShopProgression` stores `Shop` objects. Application
-classes use only the chain's public methods (`add`, `get`, `remove`, `size`,
-`contains`, and related operations); nodes and links remain private to the
-collection.
-
 ## Reflection
 
 ### Changes from the specification
