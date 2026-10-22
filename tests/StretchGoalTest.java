@@ -20,6 +20,10 @@ class StretchGoalTest {
         assertEquals(player.getControl() + 1, opponent.getAggro());
         assertEquals(player.getMidrange() + 1, opponent.getControl());
         assertEquals(player.getAggro() + 1, opponent.getMidrange());
+        assertThrows(IllegalArgumentException.class,
+            () -> new AdaptiveOpponentFactory().create(null, "Counter"));
+        assertThrows(IllegalArgumentException.class,
+            () -> new AdaptiveOpponentFactory().create(player, ""));
     }
 
     @Test
@@ -28,6 +32,10 @@ class StretchGoalTest {
         BackgroundTournament background = new BackgroundTournament();
         assertTrue(background.simulate(player, 2) != null);
         assertEquals(2, background.simulatePool(player, 2).size());
+        assertThrows(IllegalArgumentException.class,
+            () -> background.simulate(null, 2));
+        assertThrows(IllegalArgumentException.class,
+            () -> background.simulatePool(player, -1));
     }
 
     @Test
@@ -40,5 +48,7 @@ class StretchGoalTest {
             () -> losses.getRound(4));
         assertThrows(IllegalArgumentException.class,
             () -> losses.addLoss(-1, fighter));
+        assertThrows(IllegalArgumentException.class,
+            () -> losses.addLoss(2, null));
     }
 }
